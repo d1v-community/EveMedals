@@ -9,6 +9,9 @@ const MOCK_MEDALS = [
   { label: 'Galactic Courier', tone: '#4ecdc4', claimed: false },
   { label: 'Turret Sentry', tone: '#d9a441', claimed: false },
   { label: 'Assembly Pioneer', tone: '#8ea1ad', claimed: false },
+  { label: 'Turret Anchor', tone: '#d9a441', claimed: false },
+  { label: 'SSU Trader', tone: '#4ecdc4', claimed: false },
+  { label: 'Fuel Feeder', tone: '#8ea1ad', claimed: false },
 ]
 
 const USE_CASES = [
@@ -136,7 +139,7 @@ export default function WarriorCallout() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>MEDALS BOUND</span>
-                  <span className="text-xs" style={{ color: '#f0642f' }}>2 / 5</span>
+                  <span className="text-xs" style={{ color: '#f0642f' }}>2 / 8</span>
                 </div>
               </div>
             </div>

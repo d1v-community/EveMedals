@@ -94,8 +94,11 @@ export const buildMedalStates = (
   const courier = getMedalDefinitionByKind(3)
   const turretSentry = getMedalDefinitionByKind(4)
   const assemblyPioneer = getMedalDefinitionByKind(5)
+  const turretAnchor = getMedalDefinitionByKind(6)
+  const ssuTrader = getMedalDefinitionByKind(7)
+  const fuelFeeder = getMedalDefinitionByKind(8)
 
-  if (!bloodlust || !courier || !turretSentry || !assemblyPioneer) {
+  if (!bloodlust || !courier || !turretSentry || !assemblyPioneer || !turretAnchor || !ssuTrader || !fuelFeeder) {
     throw new Error('Medal catalog is incomplete')
   }
 
@@ -148,6 +151,39 @@ export const buildMedalStates = (
         ? `Eve Eyes indexed ${counts.assemblyOps} Smart Assembly interaction(s).`
         : null,
       `${counts.assemblyOps} / 3 Smart Assembly interactions`,
+      contractReady
+    ),
+    buildStandardMedal(
+      turretAnchor,
+      counts.turretAnchors,
+      3,
+      claimedSlugs.has(turretAnchor.slug),
+      counts.turretAnchors >= 3
+        ? `Eve Eyes indexed ${counts.turretAnchors} turret::anchor call(s).`
+        : null,
+      `${counts.turretAnchors} / 3 turret anchor deployments`,
+      contractReady
+    ),
+    buildStandardMedal(
+      ssuTrader,
+      counts.ssuTradeOps,
+      5,
+      claimedSlugs.has(ssuTrader.slug),
+      counts.ssuTradeOps >= 5
+        ? `Eve Eyes indexed ${counts.ssuTradeOps} SSU deposit/withdraw call(s).`
+        : null,
+      `${counts.ssuTradeOps} / 5 SSU deposit or withdraw operations`,
+      contractReady
+    ),
+    buildStandardMedal(
+      fuelFeeder,
+      counts.networkNodeFuels,
+      5,
+      claimedSlugs.has(fuelFeeder.slug),
+      counts.networkNodeFuels >= 5
+        ? `Eve Eyes indexed ${counts.networkNodeFuels} network_node::feed_fuel call(s).`
+        : null,
+      `${counts.networkNodeFuels} / 5 network node fuel feeds`,
       contractReady
     ),
   ]

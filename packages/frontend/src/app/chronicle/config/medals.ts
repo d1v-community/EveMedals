@@ -49,6 +49,36 @@ export const MEDAL_CATALOG = [
     teaser: '你搭起来的每一个装配体，都是 Frontier 基础设施版图上的新坐标。',
     tone: 'steel',
   },
+  {
+    kind: 6,
+    slug: 'turret-anchor',
+    title: '炮台筑防者',
+    subtitle: 'Turret Anchor',
+    rarity: 'Rare',
+    requirement: '永久部署（锚定）炮台达 3 次。',
+    teaser: '每一门永久钉入星图的炮台，都是你主权意志的宣言。',
+    tone: 'amber',
+  },
+  {
+    kind: 7,
+    slug: 'ssu-trader',
+    title: '星际贸易商',
+    subtitle: 'SSU Trader',
+    rarity: 'Uncommon',
+    requirement: '通过智能存储单元完成 5 次货物存取操作。',
+    teaser: '供应链不会无中生有——是你的货舱让 Frontier 的经济持续运转。',
+    tone: 'teal',
+  },
+  {
+    kind: 8,
+    slug: 'fuel-feeder',
+    title: '节点燃料官',
+    subtitle: 'Fuel Feeder',
+    rarity: 'Uncommon',
+    requirement: '向网络节点投喂燃料达 5 次。',
+    teaser: '基地的灯不会自己亮。每一次投喂，都是对整个网络的承诺。',
+    tone: 'steel',
+  },
 ] as const
 
 export type MedalDefinition = (typeof MEDAL_CATALOG)[number]

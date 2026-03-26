@@ -3,11 +3,11 @@ import type { ScoreBreakdownEntry, WarriorScore } from '../types'
 import { getRankByScore, MAX_DISPLAY_SCORE } from '../config/ranks'
 
 // ─── Rarity weight table ──────────────────────────────────────────────────────
-// Max raw score (5 medals, all claimed + full-set bonus):
-//   claimed raw = 1000 + 600 + 350 + 150 + 150 = 2250
-//   full-set bonus = 2250 * 0.25 = 562.5
-//   MAX_RAW_SCORE = 2812.5
-const MAX_RAW_SCORE = 2812.5
+// Max raw score (8 medals, all claimed + full-set bonus):
+//   claimed raw = 1000 + 600 + 350 + 150 + 150 + 350 + 150 + 150 = 2900
+//   full-set bonus = 2900 * 0.25 = 725
+//   MAX_RAW_SCORE = 3625
+const MAX_RAW_SCORE = 3625
 
 const RARITY_WEIGHTS: Record<string, number> = {
   Legendary: 1000,

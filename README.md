@@ -142,6 +142,29 @@ This repo is a pnpm monorepo:
 - `packages/frontend`: Next.js app
 - `packages/backend`: Move package + Suibase helpers
 
+## Frontier Chronicle Demo
+
+This repository now ships a hackathon-ready `Frontier Chronicle` flow for EVE Frontier:
+
+- Eve Eyes-backed activity scan via `app/api/chronicle`
+- Non-transferable `medals::medals` SBT contract
+- Wallet dashboard for scan -> claim -> showcase
+
+Recommended environment:
+
+```bash
+NEXT_PUBLIC_TESTNET_CONTRACT_PACKAGE_ID=0x...
+EVE_EYES_API_KEY=...
+# optional override
+EVE_EYES_BASE_URL=https://eve-eyes.d0v.xyz
+```
+
+Notes:
+
+- If `EVE_EYES_API_KEY` is missing, the dashboard still works in preview mode, but only scans the public page window from Eve Eyes.
+- Claiming requires a configured `NEXT_PUBLIC_*_CONTRACT_PACKAGE_ID` for the wallet network.
+- The default wallet network in the app is now `testnet`, because the Eve Eyes index currently tracks frontier activity there.
+
 ### Develop (from repo root)
 
 ```bash

@@ -18,6 +18,9 @@ const MEDAL_TONE_MAP: Record<string, string> = {
   'galactic-courier': 'teal',
   'turret-sentry': 'amber',
   'assembly-pioneer': 'steel',
+  'turret-anchor': 'amber',
+  'ssu-trader': 'teal',
+  'fuel-feeder': 'steel',
 }
 
 // SVG icons keyed by slug
@@ -32,6 +35,9 @@ const MedalIcon = ({ slug, active }: { slug: string; active: boolean }) => {
     'galactic-courier': 'M3 12 A9 9 0 1 0 21 12 A9 9 0 1 0 3 12 M12 6 L12 18 M6 12 L18 12',
     'turret-sentry': 'M12 2 L14 9 L22 9 L16 14 L18 22 L12 17 L6 22 L8 14 L2 9 L10 9 Z',
     'assembly-pioneer': 'M4 4 L20 4 L20 20 L4 20 Z M8 8 L16 8 L16 16 L8 16 Z',
+    'turret-anchor': 'M12 3 L12 13 M8 9 L16 9 M6 13 L18 13 L19 21 L5 21 Z',
+    'ssu-trader': 'M4 8 L20 8 L20 20 L4 20 Z M9 8 L9 4 L15 4 L15 8 M12 11 L12 17 M9 14 L15 14',
+    'fuel-feeder': 'M10 3 L14 3 L14 6 L16 6 L16 21 L8 21 L8 6 L10 6 Z M10 10 L14 10 M10 15 L14 15',
   }[slug] || 'M12 2 L22 12 L12 22 L2 12 Z'
 
   return (

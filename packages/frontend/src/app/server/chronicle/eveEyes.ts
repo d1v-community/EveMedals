@@ -60,6 +60,9 @@ export interface WalletActivitySnapshot {
     gateJumps: number
     turretOps: number
     assemblyOps: number
+    turretAnchors: number
+    ssuTradeOps: number
+    networkNodeFuels: number
   }
   characterId: string | null
   evePackageId: string | null
@@ -197,6 +200,10 @@ export const fetchWalletActivitySnapshot = async (
     gateJumpWindow,
     turretWindow,
     assemblyWindow,
+    turretAnchorWindow,
+    ssuDepositWindow,
+    ssuWithdrawWindow,
+    networkNodeFuelWindow,
   ] = await Promise.all([
     collectMoveCalls({
       senderAddress: walletAddress,
@@ -229,11 +236,35 @@ export const fetchWalletActivitySnapshot = async (
       senderAddress: walletAddress,
       moduleName: 'assembly',
     }),
+    collectMoveCalls({
+      senderAddress: walletAddress,
+      moduleName: 'turret',
+      functionName: 'anchor',
+    }),
+    collectMoveCalls({
+      senderAddress: walletAddress,
+      moduleName: 'storage_unit',
+      functionName: 'deposit',
+    }),
+    collectMoveCalls({
+      senderAddress: walletAddress,
+      moduleName: 'storage_unit',
+      functionName: 'withdraw',
+    }),
+    collectMoveCalls({
+      senderAddress: walletAddress,
+      moduleName: 'network_node',
+      functionName: 'feed_fuel',
+    }),
   ])
 
   const killmailCalls = dedupeMoveCalls(
     killmailRegistryWindow.items,
     killmailWindow.items
+  )
+  const ssuTradeCalls = dedupeMoveCalls(
+    ssuDepositWindow.items,
+    ssuWithdrawWindow.items
   )
   const activityCalls = dedupeMoveCalls(
     killmailCalls,
@@ -252,6 +283,9 @@ export const fetchWalletActivitySnapshot = async (
       gateJumps: gateJumpWindow.items.length,
       turretOps: turretWindow.items.length,
       assemblyOps: assemblyWindow.items.length,
+      turretAnchors: turretAnchorWindow.items.length,
+      ssuTradeOps: ssuTradeCalls.length,
+      networkNodeFuels: networkNodeFuelWindow.items.length,
     },
     characterId: getCharacterId(gateJumpWindow.items),
     evePackageId: getFirstValue(activityCalls, (item) => item.packageId),
@@ -265,6 +299,10 @@ export const fetchWalletActivitySnapshot = async (
       gateJumpWindow.authType,
       turretWindow.authType,
       assemblyWindow.authType,
+      turretAnchorWindow.authType,
+      ssuDepositWindow.authType,
+      ssuWithdrawWindow.authType,
+      networkNodeFuelWindow.authType,
     ].some((authType) => authType !== 'anonymous')
       ? 'authenticated'
       : 'preview',
@@ -275,7 +313,11 @@ export const fetchWalletActivitySnapshot = async (
       storageUnitWindow.scanLimitReached ||
       gateJumpWindow.scanLimitReached ||
       turretWindow.scanLimitReached ||
-      assemblyWindow.scanLimitReached,
+      assemblyWindow.scanLimitReached ||
+      turretAnchorWindow.scanLimitReached ||
+      ssuDepositWindow.scanLimitReached ||
+      ssuWithdrawWindow.scanLimitReached ||
+      networkNodeFuelWindow.scanLimitReached,
     scannedPages:
       killmailRegistryWindow.scannedPages +
       killmailWindow.scannedPages +
@@ -283,6 +325,10 @@ export const fetchWalletActivitySnapshot = async (
       storageUnitWindow.scannedPages +
       gateJumpWindow.scannedPages +
       turretWindow.scannedPages +
-      assemblyWindow.scannedPages,
+      assemblyWindow.scannedPages +
+      turretAnchorWindow.scannedPages +
+      ssuDepositWindow.scannedPages +
+      ssuWithdrawWindow.scannedPages +
+      networkNodeFuelWindow.scannedPages,
   }
 }

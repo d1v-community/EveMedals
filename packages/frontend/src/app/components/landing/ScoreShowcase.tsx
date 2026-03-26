@@ -4,8 +4,11 @@ const MEDAL_WEIGHTS = [
   { rarity: 'Legendary', medal: 'Bloodlust Butcher', points: 1000, tone: '#e63946' },
   { rarity: 'Epic', medal: 'Void Pioneer', points: 600, tone: '#7c919d' },
   { rarity: 'Rare', medal: 'Galactic Courier', points: 350, tone: '#4ecdc4' },
+  { rarity: 'Rare', medal: 'Turret Anchor', points: 350, tone: '#d9a441' },
   { rarity: 'Uncommon', medal: 'Turret Sentry', points: 150, tone: '#d9a441' },
   { rarity: 'Uncommon', medal: 'Assembly Pioneer', points: 150, tone: '#8ea1ad' },
+  { rarity: 'Uncommon', medal: 'SSU Trader', points: 150, tone: '#4ecdc4' },
+  { rarity: 'Uncommon', medal: 'Fuel Feeder', points: 150, tone: '#8ea1ad' },
 ]
 
 const RANK_TONE_COLORS: Record<string, string> = {
@@ -107,7 +110,7 @@ export default function ScoreShowcase() {
               {[
                 { label: 'Medal Claimed (on-chain)', value: '× 1.0', color: '#7ec38f' },
                 { label: 'Medal Verified (not claimed)', value: '× 0.5', color: '#d9a441' },
-                { label: 'Full Set Bonus (5/5 claimed)', value: '+25%', color: '#f0642f' },
+                { label: 'Full Set Bonus (8/8 claimed)', value: '+25%', color: '#f0642f' },
                 { label: 'Normalized to', value: '0–10,000', color: '#f3ede2' },
               ].map((rule) => (
                 <div key={rule.label} className="flex items-center justify-between">

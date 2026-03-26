@@ -21,6 +21,9 @@ export interface ChronicleMetrics {
   gateJumps: number
   turretOps: number
   assemblyOps: number
+  turretAnchors: number
+  ssuTradeOps: number
+  networkNodeFuels: number
 }
 
 export interface ChronicleMedalState {
