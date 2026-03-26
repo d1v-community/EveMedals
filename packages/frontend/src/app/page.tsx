@@ -12,6 +12,8 @@ import ChronicleDashboard from '~~/chronicle/components/ChronicleDashboard'
 import CustomConnectButton from './components/CustomConnectButton'
 import EnvironmentRequirements from './components/EnvironmentRequirements'
 import NetworkSupportChecker from './components/NetworkSupportChecker'
+import ScoreShowcase from './components/landing/ScoreShowcase'
+import WarriorCallout from './components/landing/WarriorCallout'
 
 type SignalTone = 'martian' | 'steel' | 'amber' | 'success'
 
@@ -423,18 +425,26 @@ export default function Home() {
                 <OfficialActionButton
                   className="!px-3 !py-2 !text-[0.62rem]"
                   icon="none"
-                  targetId="protocol"
+                  targetId="combat-score"
                   typeClass="ghost"
                 >
-                  Protocol
+                  Combat Score
                 </OfficialActionButton>
                 <OfficialActionButton
                   className="!px-3 !py-2 !text-[0.62rem]"
                   icon="none"
-                  targetId="proof-classes"
+                  targetId="warrior-card"
                   typeClass="ghost"
                 >
-                  Proof Classes
+                  Warrior Card
+                </OfficialActionButton>
+                <OfficialActionButton
+                  className="!px-3 !py-2 !text-[0.62rem]"
+                  icon="none"
+                  targetId="protocol"
+                  typeClass="ghost"
+                >
+                  Protocol
                 </OfficialActionButton>
                 <OfficialActionButton
                   className="!px-3 !py-2 !text-[0.62rem]"
@@ -452,17 +462,21 @@ export default function Home() {
                 <div>
                   <SectionEyebrow>pilot-facing redesign</SectionEyebrow>
                   <h1 className="mt-6 max-w-3xl font-display text-5xl uppercase leading-[0.92] tracking-[0.08em] text-[#f4efe2] sm:text-6xl xl:text-7xl">
-                    让 Frontier 行为自己开口。
+                    证明你在 Frontier 的位置。
                   </h1>
                   <p className="mt-6 max-w-2xl text-lg leading-8 text-[#f4efe2]/72">
-                    这套前端不再把奖章当收藏页摆拍，而是先向玩家说明：
-                    Eve Eyes 会扫描你做过什么、系统如何判定门槛、为什么现在能或者不能 Claim。
+                    你的跃迁、锚定、击杀记录会被 Eve Eyes 实时索引，
+                    转化为链上勋章与战力评分，供任何人验证。
+                    不是截图，不是自述——是可验证的 Frontier 档案。
                   </p>
                 </div>
 
                 <div className="mt-8 flex flex-wrap items-center gap-4">
                   <OfficialActionButton targetId="chronicle-command">
                     Open Live Chronicle
+                  </OfficialActionButton>
+                  <OfficialActionButton targetId="warrior-card" typeClass="secondary">
+                    View Warrior Card
                   </OfficialActionButton>
                   <div className="sds-connect-button-container">
                     <CustomConnectButton />
@@ -495,6 +509,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <ScoreShowcase />
+      <WarriorCallout />
 
       <section
         id="protocol"

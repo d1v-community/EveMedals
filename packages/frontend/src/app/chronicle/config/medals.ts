@@ -29,6 +29,26 @@ export const MEDAL_CATALOG = [
     teaser: '真正让文明运转的，从来不是炮火，而是持续抵达的货舱。',
     tone: 'teal',
   },
+  {
+    kind: 4,
+    slug: 'turret-sentry',
+    title: '炮塔哨卫',
+    subtitle: 'Turret Sentry',
+    rarity: 'Uncommon',
+    requirement: '部署或操作 turret 达 3 次。',
+    teaser: '每一门炮塔都是主权的宣言——你告诉宇宙，这片空间有人守着。',
+    tone: 'amber',
+  },
+  {
+    kind: 5,
+    slug: 'assembly-pioneer',
+    title: '装配先驱',
+    subtitle: 'Assembly Pioneer',
+    rarity: 'Uncommon',
+    requirement: '与 Smart Assembly 交互达 3 次。',
+    teaser: '你搭起来的每一个装配体，都是 Frontier 基础设施版图上的新坐标。',
+    tone: 'steel',
+  },
 ] as const
 
 export type MedalDefinition = (typeof MEDAL_CATALOG)[number]

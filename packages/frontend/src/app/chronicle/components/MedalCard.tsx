@@ -27,6 +27,20 @@ const TONE_STYLES = {
     bar: 'from-[#c98f33] via-[#d9a441] to-[#e7c06c]',
     accent: 'text-[#f5dfae]',
   },
+  amber: {
+    shell:
+      'border-[#b45309]/30 bg-[linear-gradient(180deg,rgba(180,83,9,0.12),rgba(10,10,11,0.96))] text-[#fef3c7]',
+    badge: 'border-[#b45309]/30 bg-[#b45309]/12 text-[#fcd34d]',
+    bar: 'from-[#92400e] via-[#b45309] to-[#d97706]',
+    accent: 'text-[#fcd34d]',
+  },
+  steel: {
+    shell:
+      'border-[#475569]/30 bg-[linear-gradient(180deg,rgba(71,85,105,0.12),rgba(10,10,11,0.96))] text-[#f1f5f9]',
+    badge: 'border-[#475569]/30 bg-[#475569]/12 text-[#cbd5e1]',
+    bar: 'from-[#334155] via-[#475569] to-[#64748b]',
+    accent: 'text-[#cbd5e1]',
+  },
 } as const
 
 const MedalCard = ({
@@ -63,7 +77,7 @@ const MedalCard = ({
     >
       <div className="flex items-start justify-between gap-4">
         <div>
-          <div className="font-mono text-[0.62rem] uppercase tracking-[0.32em] text-white/48">
+          <div className="text-white/48 font-mono text-[0.62rem] uppercase tracking-[0.32em]">
             {medal.subtitle}
           </div>
           <h3 className="mt-3 font-display text-3xl uppercase leading-none tracking-[0.08em]">
@@ -76,28 +90,28 @@ const MedalCard = ({
           >
             {medal.rarity}
           </span>
-          <span className="border border-white/10 bg-black/14 px-3 py-1 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-white/68">
+          <span className="bg-black/14 text-white/68 border border-white/10 px-3 py-1 font-mono text-[0.62rem] uppercase tracking-[0.22em]">
             {status}
           </span>
         </div>
       </div>
 
-      <p className="mt-4 text-sm leading-7 text-white/74">{medal.teaser}</p>
+      <p className="text-white/74 mt-4 text-sm leading-7">{medal.teaser}</p>
 
-      <div className="mt-6 border border-white/10 bg-black/14 px-4 py-4 text-sm leading-7 text-white/74">
-        <div className="font-mono text-[0.62rem] uppercase tracking-[0.28em] text-white/42">
+      <div className="bg-black/14 text-white/74 mt-6 border border-white/10 px-4 py-4 text-sm leading-7">
+        <div className="text-white/42 font-mono text-[0.62rem] uppercase tracking-[0.28em]">
           threshold
         </div>
         <div className="mt-3">{medal.requirement}</div>
       </div>
 
       <div className="mt-5">
-        <div className="flex items-center justify-between text-xs uppercase tracking-[0.18em] text-white/58">
+        <div className="text-white/58 flex items-center justify-between text-xs uppercase tracking-[0.18em]">
           <span>{medal.progressLabel}</span>
           <span>{medal.progressPercent}%</span>
         </div>
 
-        <div className="mt-3 text-sm text-white/72">
+        <div className="text-white/72 mt-3 text-sm">
           <EveLinearBar
             nominator={medal.progressCurrent}
             denominator={medal.progressTarget}
@@ -105,8 +119,8 @@ const MedalCard = ({
         </div>
       </div>
 
-      <div className="mt-5 border border-white/10 bg-black/14 px-4 py-4 text-sm leading-7 text-white/74">
-        <div className="font-mono text-[0.62rem] uppercase tracking-[0.28em] text-white/42">
+      <div className="bg-black/14 text-white/74 mt-5 border border-white/10 px-4 py-4 text-sm leading-7">
+        <div className="text-white/42 font-mono text-[0.62rem] uppercase tracking-[0.28em]">
           indexed evidence
         </div>
         <div className={`mt-3 text-sm leading-7 ${tone.accent}`}>
@@ -115,7 +129,7 @@ const MedalCard = ({
       </div>
 
       <div className="mt-5 flex items-start justify-between gap-4">
-        <div className="min-h-10 text-sm leading-7 text-white/68">
+        <div className="text-white/68 min-h-10 text-sm leading-7">
           {statusDetail}
         </div>
 
@@ -129,8 +143,12 @@ const MedalCard = ({
             {isClaiming ? 'Claiming...' : 'Claim Medal'}
           </EveButton>
         ) : (
-          <div className="border border-white/10 bg-black/14 px-4 py-2 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-white/65">
-            {medal.claimed ? 'Bound' : medal.unlocked ? 'Await Chain' : 'Locked'}
+          <div className="bg-black/14 border border-white/10 px-4 py-2 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-white/65">
+            {medal.claimed
+              ? 'Bound'
+              : medal.unlocked
+                ? 'Await Chain'
+                : 'Locked'}
           </div>
         )}
       </div>
