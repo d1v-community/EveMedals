@@ -19,6 +19,8 @@ export interface ChronicleMetrics {
   networkNodeAnchors: number
   storageUnitAnchors: number
   gateJumps: number
+  turretOps: number
+  assemblyOps: number
 }
 
 export interface ChronicleMedalState {
@@ -44,4 +46,35 @@ export interface ChronicleSnapshot {
   metrics: ChronicleMetrics
   medals: ChronicleMedalState[]
   warnings: string[]
+  warriorScore: WarriorScore
+}
+
+// ─── Combat Rank & Warrior Score ─────────────────────────────────────────────
+
+export type RankTone = 'steel' | 'amber' | 'azure' | 'martian' | 'crimson'
+
+export interface CombatRank {
+  tier: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
+  title: string
+  titleZh: string
+  minScore: number
+  maxScore: number
+  tone: RankTone
+  description: string
+}
+
+export interface ScoreBreakdownEntry {
+  medal: MedalSlug
+  basePoints: number
+  multiplier: number
+  contribution: number
+}
+
+export interface WarriorScore {
+  displayScore: number
+  rank: CombatRank
+  claimedMedalCount: number
+  unlockedMedalCount: number
+  hasFullSet: boolean
+  breakdown: ScoreBreakdownEntry[]
 }
