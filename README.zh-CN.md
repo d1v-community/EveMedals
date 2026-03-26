@@ -19,6 +19,12 @@
 pnpm install
 ```
 
+## 团队工具配置
+
+如果团队需要统一配置高权限 Codex 启动别名 `codexfly`，可参考：
+
+- [`docs/codexfly-setup.md`](./docs/codexfly-setup.md)
+
 ## 本地开发（从根目录启动前端）
 
 在仓库根目录执行：
