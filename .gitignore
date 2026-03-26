@@ -14,3 +14,10 @@ node_modules
 
 # Arweave
 arweave-keyfile*
+
+# ENV
+.env
+
+# Local agent state
+.serena/
+.spec-workflow/
