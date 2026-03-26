@@ -1,3 +1,5 @@
+import AlertAsset from '@eveworld/ui-components/assets/alert.svg'
+import Image from 'next/image'
 import { hasDatabaseUrl } from '~~/server/db/client.mjs'
 
 const CONTRACT_ENV_VARS = [
@@ -8,6 +10,9 @@ const CONTRACT_ENV_VARS = [
 ] as const
 
 const CONTRACT_PLACEHOLDER = '0xNOTDEFINED'
+const eveEyesApiKeyConfigured =
+  typeof process.env.EVE_EYES_API_KEY === 'string' &&
+  process.env.EVE_EYES_API_KEY.trim().length > 0
 
 function getConfiguredContractEnvVars() {
   return CONTRACT_ENV_VARS.filter((key) => {
@@ -25,27 +30,71 @@ const EnvironmentRequirements = () => {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-3 px-3 pt-3">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 pt-2">
       {configuredContractEnvVars.length === 0 ? (
-        <div className="rounded-2xl border border-sky-300/70 bg-sky-50/90 px-4 py-3 text-sm text-sky-950 shadow-sm dark:border-sky-400/25 dark:bg-sky-950/30 dark:text-sky-100">
-          <div className="font-semibold">Contract environment variables are optional</div>
-          <div className="mt-1">
-            This app can still deploy and open normally without any contract package
-            IDs. If none of the following variables are set, on-chain greeting
-            features will stay disabled until you configure one later:
+        <div className="sds-panel rounded-[1.4rem] px-4 py-4 text-sm text-[#f4efe2]/84">
+          <div className="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.32em] text-[#d9a441]">
+            <Image
+              src={AlertAsset}
+              alt=""
+              width={16}
+              height={16}
+              className="h-4 w-4"
+            />
+            <span>config notice</span>
           </div>
-          <div className="mt-2 font-mono text-xs leading-6">
+          <div className="mt-2 text-base font-semibold text-[#f4efe2]">
+            当前网络没有公开的 medals package 也没关系
+          </div>
+          <div className="mt-2 leading-7 text-[#f4efe2]/68">
+            页面依旧能扫描玩家行为，只是链上 Claim 会保持关闭。只要后面补上这些环境变量，领取链路就会自动接回去：
+          </div>
+          <div className="mt-3 font-mono text-xs leading-6 text-[#f4efe2]/74">
             {CONTRACT_ENV_VARS.join('\n')}
           </div>
         </div>
       ) : null}
 
       {!databaseEnabled ? (
-        <div className="rounded-2xl border border-slate-300/70 bg-white/80 px-4 py-3 text-sm text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-950/50 dark:text-slate-200">
-          <div className="font-semibold">Database is disabled in this environment</div>
-          <div className="mt-1">
-            <code>DATABASE_URL</code> is empty, so wallet login will not sync users
-            to the database. The frontend will still work normally.
+        <div className="sds-panel rounded-[1.4rem] px-4 py-4 text-sm text-[#f4efe2]/84">
+          <div className="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.32em] text-[#8ea1ad]">
+            <Image
+              src={AlertAsset}
+              alt=""
+              width={16}
+              height={16}
+              className="h-4 w-4"
+            />
+            <span>runtime notice</span>
+          </div>
+          <div className="mt-2 text-base font-semibold text-[#f4efe2]">
+            数据库同步当前关闭
+          </div>
+          <div className="mt-2 leading-7 text-[#f4efe2]/68">
+            <code>DATABASE_URL</code> 为空，所以钱包连接后不会同步用户档案到 SQL。
+            扫描和前端显示不受影响。
+          </div>
+        </div>
+      ) : null}
+
+      {!eveEyesApiKeyConfigured ? (
+        <div className="rounded-[1.4rem] border border-[#d9a441]/35 bg-[#2a2112]/72 px-4 py-4 text-sm text-[#f9e3b2] shadow-[0_20px_60px_rgba(0,0,0,0.18)]">
+          <div className="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.32em]">
+            <Image
+              src={AlertAsset}
+              alt=""
+              width={16}
+              height={16}
+              className="h-4 w-4"
+            />
+            <span>eve eyes preview mode</span>
+          </div>
+          <div className="mt-2 text-base font-semibold">
+            当前只在公开窗口里取样
+          </div>
+          <div className="mt-2 leading-7">
+            <code>EVE_EYES_API_KEY</code> 为空，所以 Dashboard
+            只会扫描公开页的行为窗口。Claim 判定仍然可用，但深历史数据可能不完整。
           </div>
         </div>
       ) : null}

@@ -1,41 +1,59 @@
 'use client'
 
+import EveFrontierLogo from '@eveworld/ui-components/assets/logo.svg'
 import { useCurrentWallet } from '@mysten/dapp-kit'
 import { Link } from '@radix-ui/themes'
 import Balance from '@suiware/kit/Balance'
 import NetworkType from '@suiware/kit/NetworkType'
 import { APP_NAME } from '../../config/main'
 import Image from 'next/image'
-import Logo from '../../assets/logo.svg'
 import CustomConnectButton from '../CustomConnectButton'
 
 const Header = () => {
   const { isConnected } = useCurrentWallet()
 
   return (
-    <header className="supports-backdrop-blur:bg-white/60 dark:border-slate-50/1 sticky top-0 z-40 flex w-full flex-row flex-wrap items-center justify-center gap-4 bg-white/95 px-3 py-3 backdrop-blur transition-colors duration-500 sm:justify-between sm:gap-3 lg:z-50 lg:border-b lg:border-slate-900/10 dark:bg-transparent">
-      <Link
-        href="#"
-        className="flex flex-col items-center justify-center gap-1 text-sds-dark outline-none hover:no-underline sm:flex-row dark:text-sds-light"
-      >
-        <Image
-          width={40}
-          height={40}
-          src={Logo}
-          alt="Logo"
-          className="h-12 w-12"
-        />
-        <div className="pt-1 text-xl sm:text-2xl">{APP_NAME}</div>
-      </Link>
+    <header className="sticky top-0 z-40 border-b border-white/10 bg-[rgba(8,9,10,0.84)] backdrop-blur-xl transition-colors duration-500">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+        <Link
+          href="/"
+          className="flex items-center gap-3 text-sds-light outline-none hover:no-underline"
+        >
+          <Image
+            width={88}
+            height={32}
+            src={EveFrontierLogo}
+            alt="EVE Frontier"
+            className="h-10 w-auto"
+          />
+          <div className="min-w-0">
+            <div className="font-display text-lg uppercase tracking-[0.2em] sm:text-xl">
+              {APP_NAME}
+            </div>
+            <div className="font-mono text-[0.62rem] uppercase tracking-[0.34em] text-[#f4efe2]/60">
+              eve frontier player chronicle
+            </div>
+          </div>
+        </Link>
 
-      <div className="flex w-full flex-col items-center justify-center gap-3 sm:w-auto sm:flex-row">
-        <div className="flex flex-row items-center justify-center gap-3">
-          <Balance />
-          {isConnected ? <NetworkType /> : null}
-        </div>
+        <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="sds-system-chip">pilot terminal</span>
+            {isConnected ? (
+              <div className="sds-system-chip">
+                <Balance />
+              </div>
+            ) : null}
+            {isConnected ? (
+              <div className="sds-system-chip">
+                <NetworkType />
+              </div>
+            ) : null}
+          </div>
 
-        <div className="sds-connect-button-container">
-          <CustomConnectButton />
+          <div className="sds-connect-button-container shrink-0">
+            <CustomConnectButton />
+          </div>
         </div>
       </div>
     </header>

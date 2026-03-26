@@ -21,10 +21,10 @@ export default function RootLayout({
   const databaseEnabled = hasDatabaseUrl()
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="zh-CN" suppressHydrationWarning>
       <body className="flex min-h-screen flex-col" suppressHydrationWarning>
         <ClientProviders databaseEnabled={databaseEnabled}>
-          <div className="flex min-h-screen flex-col items-center justify-center gap-6">
+          <div className="flex min-h-screen w-full flex-col gap-6">
             <Header />
             <Body>{children}</Body>
             <Footer />

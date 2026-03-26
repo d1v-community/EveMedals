@@ -1,10 +1,13 @@
 'use client'
 
+import { isValidSuiObjectId } from '@mysten/sui/utils'
 import { useCurrentAccount } from '@mysten/dapp-kit'
 import { Link } from '@radix-ui/themes'
 import Faucet from '@suiware/kit/Faucet'
-import { HeartIcon, SearchIcon } from 'lucide-react'
+import { HeartIcon } from 'lucide-react'
+import OfficialActionButton from '../OfficialActionButton'
 import {
+  CONTRACT_PACKAGE_ID_NOT_DEFINED,
   CONTRACT_PACKAGE_VARIABLE_NAME,
   EXPLORER_URL_VARIABLE_NAME,
 } from '../../config/network'
@@ -19,78 +22,66 @@ const Footer = () => {
   const explorerUrl = networkVariables[EXPLORER_URL_VARIABLE_NAME]
   const packageId = networkVariables[CONTRACT_PACKAGE_VARIABLE_NAME]
   const currentAccount = useCurrentAccount()
+  const isPackageConfigured =
+    packageId !== CONTRACT_PACKAGE_ID_NOT_DEFINED &&
+    isValidSuiObjectId(packageId)
 
   return (
-    <footer className="flex w-full flex-col items-center justify-between gap-3 p-3 sm:flex-row sm:items-end">
-      <div className="flex flex-row gap-3 lg:w-1/3">
-        {currentAccount != null && (
-          <>
-            <Faucet
-              onError={notification.error}
-              onSuccess={notification.success}
-            />
+    <footer className="border-t border-white/10 px-4 py-5 sm:px-6 lg:px-8">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-wrap items-center gap-3 lg:w-1/3">
+          <span className="sds-system-chip">command support</span>
+          {currentAccount != null && (
+            <>
+              <Faucet
+                onError={notification.error}
+                onSuccess={notification.success}
+              />
+              {isPackageConfigured ? (
+                <OfficialActionButton
+                  className="!text-xs"
+                  href={packageUrl(explorerUrl, packageId)}
+                  icon="external"
+                  typeClass="ghost"
+                >
+                  Explorer
+                </OfficialActionButton>
+              ) : null}
+            </>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-1 text-sm text-[#f4efe2]/58 lg:items-center">
+          <div className="font-mono text-[0.62rem] uppercase tracking-[0.32em] text-[#f4efe2]/45">
+            frontier chronicle runtime
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <span>Built with</span>
+            <HeartIcon className="h-4 w-4 text-[#f0642f]" />
             <Link
-              href={packageUrl(explorerUrl, packageId)}
+              href="https://d1v.ai"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex flex-row items-center gap-1"
               highContrast={true}
             >
-              <SearchIcon className="h-4 w-4" />
-              <span>Block Explorer</span>
+              d1v.ai
             </Link>
-          </>
-        )}
-      </div>
-
-      <div className="flex flex-grow flex-col items-center justify-center gap-1">
-        <div className="flex flex-row items-center justify-center gap-1">
-          <span>Built with</span>
-          <HeartIcon className="h-4 w-4" />
-          <span>by</span>
-          <Link
-            href="https://d1v.ai"
-            target="_blank"
-            rel="noopener noreferrer"
-            highContrast={true}
-          >
-            d1v.ai
-          </Link>
-          <span>·</span>
-          <Link
-            href="http://x.com/d1v_lab"
-            target="_blank"
-            rel="noopener noreferrer"
-            highContrast={true}
-          >
-            @d1v_lab
-          </Link>
+            <span>for EVE Frontier pilots</span>
+            <span className="hidden sm:inline">·</span>
+            <Link
+              href="http://x.com/d1v_lab"
+              target="_blank"
+              rel="noopener noreferrer"
+              highContrast={true}
+            >
+              @d1v_lab
+            </Link>
+          </div>
         </div>
-        <div className="text-center text-sm opacity-70">
-          Product design, engineering and ecosystem research by{' '}
-          <Link
-            href="https://d1v.ai"
-            target="_blank"
-            rel="noopener noreferrer"
-            highContrast={true}
-          >
-            d1v.ai
-          </Link>
-          <br />
-          Follow updates and releases on{' '}
-          <Link
-            href="http://x.com/d1v_lab"
-            target="_blank"
-            rel="noopener noreferrer"
-            highContrast={true}
-          >
-            x.com/d1v_lab
-          </Link>
-        </div>
-      </div>
 
-      <div className="flex flex-row justify-end lg:w-1/3">
-        <ThemeSwitcher />
+        <div className="flex justify-start lg:w-1/3 lg:justify-end">
+          <ThemeSwitcher />
+        </div>
       </div>
     </footer>
   )
