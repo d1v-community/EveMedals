@@ -2,6 +2,7 @@ import { isValidSuiAddress } from '@mysten/sui/utils'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getMedalDefinitionBySlug } from '~~/chronicle/config/medals'
+import { getSuiExplorerUrl } from '~~/chronicle/helpers/sui'
 import { getChronicleSnapshot } from '~~/server/chronicle/getSnapshot'
 import {
   buildMedalPageMetadata,
@@ -244,6 +245,21 @@ export default async function MedalSharePage({ params, searchParams }: PageProps
               >
                 Open Share Card
               </a>
+              {medal.claimed && (
+                <a
+                  href={getSuiExplorerUrl(network, walletAddress, 'address')}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-full border px-4 py-2 font-mono text-[0.68rem] uppercase tracking-[0.22em] transition-opacity hover:opacity-70"
+                  style={{
+                    color: '#69b8f7',
+                    borderColor: 'rgba(105,184,247,0.28)',
+                    background: 'rgba(105,184,247,0.12)',
+                  }}
+                >
+                  View on Sui Explorer ↗
+                </a>
+              )}
             </div>
           </article>
         </section>
