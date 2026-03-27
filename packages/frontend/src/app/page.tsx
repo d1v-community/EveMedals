@@ -216,7 +216,11 @@ function StepCard({
 
 function HeroPreviewCard() {
   return (
-    <div className="sds-panel sds-panel-framed sds-grid-overlay sds-scanline overflow-hidden rounded-[2rem] border">
+    <div className="sds-panel sds-grid-overlay sds-scanline overflow-hidden rounded-[2rem] border">
+      <span className="sds-bracket-tl" aria-hidden="true" />
+      <span className="sds-bracket-tr" aria-hidden="true" />
+      <span className="sds-bracket-bl" aria-hidden="true" />
+      <span className="sds-bracket-br" aria-hidden="true" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(240,100,47,0.18),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(142,161,173,0.14),transparent_32%)]" />
 
       <div className="relative z-10 p-5 sm:p-6">
@@ -361,7 +365,11 @@ export default function Home() {
     <div className="relative pb-14">
       <section className="px-4 pt-5 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="sds-panel sds-panel-framed sds-grid-overlay overflow-hidden rounded-[2.4rem] border">
+          <div className="sds-panel sds-grid-overlay overflow-hidden rounded-[2.4rem] border">
+            <span className="sds-bracket-tl" aria-hidden="true" />
+            <span className="sds-bracket-tr" aria-hidden="true" />
+            <span className="sds-bracket-bl" aria-hidden="true" />
+            <span className="sds-bracket-br" aria-hidden="true" />
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(240,100,47,0.12),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(142,161,173,0.08),transparent_28%)]" />
 
             <div className="grid gap-10 px-5 py-8 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:py-10">

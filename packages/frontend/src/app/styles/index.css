@@ -706,28 +706,44 @@ button.Eve-Button {
   position: relative;
 }
 
-.sds-panel-framed::before,
-.sds-panel-framed::after {
-  content: '';
+/* Use .sds-bracket-* child elements for corner decorations */
+.sds-bracket-tl,
+.sds-bracket-tr,
+.sds-bracket-bl,
+.sds-bracket-br {
   position: absolute;
   width: 14px;
   height: 14px;
   pointer-events: none;
-  opacity: 0.38;
+  z-index: 2;
 }
 
-.sds-panel-framed::before {
+.sds-bracket-tl {
   top: 8px;
   left: 8px;
-  border-top: 1px solid rgba(240, 100, 47, 0.6);
-  border-left: 1px solid rgba(240, 100, 47, 0.6);
+  border-top: 1px solid rgba(240, 100, 47, 0.5);
+  border-left: 1px solid rgba(240, 100, 47, 0.5);
 }
 
-.sds-panel-framed::after {
+.sds-bracket-tr {
+  top: 8px;
+  right: 8px;
+  border-top: 1px solid rgba(240, 100, 47, 0.5);
+  border-right: 1px solid rgba(240, 100, 47, 0.5);
+}
+
+.sds-bracket-bl {
+  bottom: 8px;
+  left: 8px;
+  border-bottom: 1px solid rgba(240, 100, 47, 0.38);
+  border-left: 1px solid rgba(240, 100, 47, 0.38);
+}
+
+.sds-bracket-br {
   bottom: 8px;
   right: 8px;
-  border-bottom: 1px solid rgba(240, 100, 47, 0.6);
-  border-right: 1px solid rgba(240, 100, 47, 0.6);
+  border-bottom: 1px solid rgba(240, 100, 47, 0.38);
+  border-right: 1px solid rgba(240, 100, 47, 0.38);
 }
 
 /* Hero eyebrow text with left accent bar */
