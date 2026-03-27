@@ -14,6 +14,7 @@ import EnvironmentRequirements from './components/EnvironmentRequirements'
 import NetworkSupportChecker from './components/NetworkSupportChecker'
 import ScoreShowcase from './components/landing/ScoreShowcase'
 import WarriorCallout from './components/landing/WarriorCallout'
+import WowMomentShowcase from './components/landing/WowMomentShowcase'
 
 type SignalTone = 'martian' | 'steel' | 'amber' | 'success'
 
@@ -373,8 +374,8 @@ export default function Home() {
                   <OfficialActionButton targetId="chronicle-command">
                     Connect Wallet &amp; Scan
                   </OfficialActionButton>
-                  <OfficialActionButton targetId="warrior-card" typeClass="secondary">
-                    View Sample Warrior Card
+                  <OfficialActionButton targetId="wow-moment" typeClass="secondary">
+                    Watch Wow Moment Flow
                   </OfficialActionButton>
                   <div className="sds-connect-button-container">
                     <CustomConnectButton />
@@ -486,6 +487,8 @@ export default function Home() {
           <NetworkSupportChecker />
         </div>
       </section>
+
+      <WowMomentShowcase />
 
       <section
         id="achievements"
