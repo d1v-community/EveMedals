@@ -168,9 +168,16 @@ const toneCardClasses: Record<SignalTone, string> = {
     'border-[#7ec38f]/24 bg-[linear-gradient(180deg,rgba(126,195,143,0.12),rgba(10,10,11,0.96))]',
 }
 
-function SectionEyebrow({ children }: { children: string }) {
+function SectionEyebrow({ children, variant = 'default' }: { children: string; variant?: 'default' | 'ping' }) {
+  if (variant === 'ping') {
+    return (
+      <div className="sds-eyebrow-accented sds-section-ping font-mono text-[0.68rem] uppercase tracking-[0.34em] text-[#f0642f]">
+        {children}
+      </div>
+    )
+  }
   return (
-    <div className="font-mono text-[0.68rem] uppercase tracking-[0.34em] text-[#f0642f]">
+    <div className="sds-eyebrow-accented font-mono text-[0.68rem] uppercase tracking-[0.34em] text-[#f0642f]">
       {children}
     </div>
   )
@@ -209,7 +216,7 @@ function StepCard({
 
 function HeroPreviewCard() {
   return (
-    <div className="sds-panel sds-grid-overlay sds-scanline overflow-hidden rounded-[2rem] border">
+    <div className="sds-panel sds-panel-framed sds-grid-overlay sds-scanline overflow-hidden rounded-[2rem] border">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(240,100,47,0.18),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(142,161,173,0.14),transparent_32%)]" />
 
       <div className="relative z-10 p-5 sm:p-6">
@@ -354,7 +361,7 @@ export default function Home() {
     <div className="relative pb-14">
       <section className="px-4 pt-5 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="sds-panel sds-grid-overlay overflow-hidden rounded-[2.4rem] border">
+          <div className="sds-panel sds-panel-framed sds-grid-overlay overflow-hidden rounded-[2.4rem] border">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(240,100,47,0.12),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(142,161,173,0.08),transparent_28%)]" />
 
             <div className="grid gap-10 px-5 py-8 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:py-10">
@@ -456,7 +463,7 @@ export default function Home() {
           <div className="sds-panel rounded-[2rem] px-5 py-6 sm:px-8 sm:py-8">
             <div className="grid gap-6 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
               <div>
-                <SectionEyebrow>Live Chronicle</SectionEyebrow>
+                <SectionEyebrow variant="ping">Live Chronicle</SectionEyebrow>
                 <h2 className="mt-4 font-display text-4xl uppercase tracking-[0.08em] text-[#f4efe2] sm:text-5xl">
                   这里才是玩家自己的实时编年史。
                 </h2>

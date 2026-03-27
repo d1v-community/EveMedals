@@ -27,7 +27,8 @@ const Footer = () => {
     isValidSuiObjectId(packageId)
 
   return (
-    <footer className="border-t border-white/10 px-4 py-5 sm:px-6 lg:px-8">
+    <footer className="relative px-4 py-5 sm:px-6 lg:px-8">
+      <div className="sds-footer-divider mb-5" />
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-wrap items-center gap-3 lg:w-1/3">
           <span className="sds-system-chip">command support</span>
