@@ -54,6 +54,22 @@ export default function MedalShareDialog({
   const imageUrl = `${origin}${imagePath}`
   const shareText = `${medal.subtitle} is chain-bound in Frontier Chronicle on Sui ${network.toUpperCase()}.`
 
+  const trackShare = async (platform: string) => {
+    try {
+      await fetch('/api/share-stats', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          medalSlug: medal.slug,
+          platform,
+          walletAddress,
+        }),
+      })
+    } catch (error) {
+      console.error('Failed to track share:', error)
+    }
+  }
+
   const handleCopy = async ({
     quiet = false,
   }: {
@@ -81,11 +97,13 @@ export default function MedalShareDialog({
   }
 
   const handleShareToX = () => {
+    trackShare('x')
     const target = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`
     openShareWindow(target)
   }
 
   const handleShareToTelegram = () => {
+    trackShare('telegram')
     const target = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`
     openShareWindow(target)
   }
@@ -97,6 +115,7 @@ export default function MedalShareDialog({
       return
     }
 
+    trackShare('discord')
     openShareWindow('https://discord.com/channels/@me')
     notification.success('Medal link copied. Paste it into Discord.')
   }
