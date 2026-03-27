@@ -43,6 +43,19 @@ export interface ChronicleMedalState {
   progressPercent: number
   progressLabel: string
   proof: string | null
+  claimTicket: ChronicleClaimTicket | null
+}
+
+export interface ChronicleClaimTicket {
+  templateObjectId: string
+  templateVersion: number
+  proofDigestBase64: string
+  evidenceUri: string
+  issuedAtMs: string
+  deadlineMs: string
+  nonceBase64: string
+  signerPublicKeyBase64: string
+  signatureBase64: string
 }
 
 export interface ChronicleSnapshot {

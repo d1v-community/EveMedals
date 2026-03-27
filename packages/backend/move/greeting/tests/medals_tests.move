@@ -1,14 +1,55 @@
-// Copyright (c) Konstantin Komelin and other contributors
-// SPDX-License-Identifier: MIT
-
 #[test_only]
 module medals::medals_tests;
 
 use medals::medals;
+use std::string::{utf8, String};
 use sui::test_scenario as ts;
 
+const TEST_PROOF_DIGEST: vector<u8> =
+    x"000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
+const TEST_SIGNER_PUBLIC_KEY: vector<u8> =
+    x"79b5562e8fe654f94078b112e8a98ba7901f853ae695bed7e0e3910bad049664";
+const TEST_SIGNATURE: vector<u8> =
+    x"9a0e1ef40d4f97d5ac16645b1785f3c23127fa67ac0344b38fd5122c817c45f2a9d9dad3243104eacc7fed1b91dee5a329d63ab654e71418ba78142bc4556e00";
+
+fun test_nonce(): vector<u8> {
+    x"09080706"
+}
+
+fun test_evidence_uri(): String {
+    utf8(b"https://frontier.example/evidence/1")
+}
+
 #[test]
-fun test_claim_medal() {
+fun test_verify_claim_signature_payload() {
+    let payload = medals::sample_claim_payload_for_testing();
+
+    assert!(
+        medals::verify_claim_signature_for_testing(
+            &payload,
+            TEST_SIGNER_PUBLIC_KEY,
+            TEST_SIGNATURE,
+        ),
+        0,
+    );
+}
+
+#[test]
+fun test_verify_claim_signature_rejects_tampered_signature() {
+    let payload = medals::sample_claim_payload_for_testing();
+
+    assert!(
+        !medals::verify_claim_signature_for_testing(
+            &payload,
+            TEST_SIGNER_PUBLIC_KEY,
+            x"9b0e1ef40d4f97d5ac16645b1785f3c23127fa67ac0344b38fd5122c817c45f2a9d9dad3243104eacc7fed1b91dee5a329d63ab654e71418ba78142bc4556e00",
+        ),
+        0,
+    );
+}
+
+#[test]
+fun test_claim_medal_with_test_ticket() {
     let owner = @0xA;
     let mut ts = ts::begin(owner);
 
@@ -18,31 +59,35 @@ fun test_claim_medal() {
 
     ts.next_tx(owner);
     let mut registry: medals::MedalRegistry = ts.take_shared();
-    medals::claim_medal(
+    let template_id = medals::active_template_id(&registry, medals::bloodlust_butcher());
+    let template: medals::MedalTemplate = ts.take_shared_by_id(template_id);
+    medals::claim_medal_with_test_ticket(
         &mut registry,
-        medals::bloodlust_butcher(),
-        b"Indexed five confirmed killmail attacks.".to_string(),
+        &template,
+        TEST_PROOF_DIGEST,
+        test_evidence_uri(),
+        1000,
+        test_nonce(),
         ts.ctx(),
     );
     ts::return_shared(registry);
+    ts::return_shared(template);
 
     ts.next_tx(owner);
     let medal = ts.take_from_sender<medals::Medal>();
     assert!(medals::medal_kind(&medal) == medals::bloodlust_butcher(), 0);
-    assert!(medals::name(&medal) == b"Bloodlust Butcher".to_string(), 1);
-    assert!(medals::rarity(&medal) == b"Legendary".to_string(), 2);
-    assert!(
-        medals::proof(&medal) == b"Indexed five confirmed killmail attacks.".to_string(),
-        3,
-    );
-    assert!(medals::awarded_at_ms(&medal) == 0, 4);
+    assert!(medals::template_version(&medal) == 1, 1);
+    assert!(medals::name(&medal) == b"Bloodlust Butcher".to_string(), 2);
+    assert!(medals::rarity(&medal) == b"Legendary".to_string(), 3);
+    assert!(medals::proof_digest(&medal) == TEST_PROOF_DIGEST, 4);
+    assert!(medals::evidence_uri(&medal) == test_evidence_uri(), 5);
 
     medals::destroy_for_testing(medal);
     ts.end();
 }
 
 #[test]
-fun test_claim_turret_sentry() {
+fun test_add_and_remove_signer() {
     let owner = @0xA;
     let mut ts = ts::begin(owner);
 
@@ -51,27 +96,18 @@ fun test_claim_turret_sentry() {
     };
 
     ts.next_tx(owner);
+    let admin_cap = ts.take_from_sender<medals::AdminCap>();
     let mut registry: medals::MedalRegistry = ts.take_shared();
-    medals::claim_medal(
-        &mut registry,
-        medals::turret_sentry(),
-        b"Eve Eyes indexed 3 turret operation(s).".to_string(),
-        ts.ctx(),
-    );
+    medals::add_signer(&admin_cap, &mut registry, TEST_SIGNER_PUBLIC_KEY);
+    medals::remove_signer(&admin_cap, &mut registry, TEST_SIGNER_PUBLIC_KEY);
     ts::return_shared(registry);
+    medals::destroy_admin_cap_for_testing(admin_cap);
 
-    ts.next_tx(owner);
-    let medal = ts.take_from_sender<medals::Medal>();
-    assert!(medals::medal_kind(&medal) == medals::turret_sentry(), 0);
-    assert!(medals::name(&medal) == b"Turret Sentry".to_string(), 1);
-    assert!(medals::rarity(&medal) == b"Uncommon".to_string(), 2);
-
-    medals::destroy_for_testing(medal);
     ts.end();
 }
 
 #[test]
-fun test_claim_assembly_pioneer() {
+fun test_deactivate_template() {
     let owner = @0xA;
     let mut ts = ts::begin(owner);
 
@@ -80,73 +116,14 @@ fun test_claim_assembly_pioneer() {
     };
 
     ts.next_tx(owner);
+    let admin_cap = ts.take_from_sender<medals::AdminCap>();
     let mut registry: medals::MedalRegistry = ts.take_shared();
-    medals::claim_medal(
-        &mut registry,
-        medals::assembly_pioneer(),
-        b"Eve Eyes indexed 3 Smart Assembly interaction(s).".to_string(),
-        ts.ctx(),
-    );
+    let template_id = medals::active_template_id(&registry, medals::turret_sentry());
+    let mut template: medals::MedalTemplate = ts.take_shared_by_id(template_id);
+    medals::deactivate_medal_template(&admin_cap, &mut registry, &mut template);
     ts::return_shared(registry);
+    ts::return_shared(template);
+    medals::destroy_admin_cap_for_testing(admin_cap);
 
-    ts.next_tx(owner);
-    let medal = ts.take_from_sender<medals::Medal>();
-    assert!(medals::medal_kind(&medal) == medals::assembly_pioneer(), 0);
-    assert!(medals::name(&medal) == b"Assembly Pioneer".to_string(), 1);
-    assert!(medals::rarity(&medal) == b"Uncommon".to_string(), 2);
-
-    medals::destroy_for_testing(medal);
-    ts.end();
-}
-
-#[test]
-#[expected_failure(abort_code = medals::EMedalAlreadyClaimed)]
-fun test_duplicate_claim_fails() {
-    let owner = @0xA;
-    let mut ts = ts::begin(owner);
-
-    {
-        medals::init_for_testing(ts.ctx());
-    };
-
-    ts.next_tx(owner);
-    let mut registry: medals::MedalRegistry = ts.take_shared();
-    medals::claim_medal(
-        &mut registry,
-        medals::void_pioneer(),
-        b"Anchored a network node.".to_string(),
-        ts.ctx(),
-    );
-    medals::claim_medal(
-        &mut registry,
-        medals::void_pioneer(),
-        b"Anchored a network node twice.".to_string(),
-        ts.ctx(),
-    );
-
-    ts::return_shared(registry);
-    ts.end();
-}
-
-#[test]
-#[expected_failure(abort_code = medals::EUnsupportedMedal)]
-fun test_unknown_medal_fails() {
-    let owner = @0xA;
-    let mut ts = ts::begin(owner);
-
-    {
-        medals::init_for_testing(ts.ctx());
-    };
-
-    ts.next_tx(owner);
-    let mut registry: medals::MedalRegistry = ts.take_shared();
-    medals::claim_medal(
-        &mut registry,
-        99,
-        b"This should never mint.".to_string(),
-        ts.ctx(),
-    );
-
-    ts::return_shared(registry);
     ts.end();
 }

@@ -147,8 +147,8 @@ const ChronicleDashboard = () => {
       return
     }
 
-    if (!medal.proof) {
-      notification.error(null, 'This achievement is not ready to mint yet')
+    if (!medal.claimTicket) {
+      notification.error(null, 'This achievement does not have a valid claim ticket')
       return
     }
 
@@ -159,8 +159,7 @@ const ChronicleDashboard = () => {
       prepareClaimMedalTransaction(
         packageId,
         data.profile.registryObjectId,
-        medal.kind,
-        medal.proof
+        medal.claimTicket
       )
     )
   }

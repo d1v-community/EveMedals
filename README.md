@@ -8,6 +8,17 @@
 
 [Won the 1st place in the Randomness category of the Sui Overflow 2024 hackathon](https://blog.sui.io/2024-sui-overflow-hackathon-winners/)
 
+## Frontier Chronicle Product Direction
+
+This repository now ships an EVE Frontier-focused `Frontier Chronicle` product, not just a generic starter template.
+
+- `packages/frontend`: Chronicle dashboard, warrior pages, API routes, DB sync
+- `packages/backend`: Sui Move medals contract and deployment helpers
+
+Architecture notes:
+
+- [Chronicle product architecture](./docs/chronicle-product-architecture.md)
+
 ## Motivation
 
 Most of the Sui starters I found were either very basic or one-sided (frontend or backend). Thanks to my experience with various full-stack starters and templates, I knew how to do better, so I started this template with the goal of providing all basic tools and components for you to focus on your business logic from day one and not spend weeks on creating your app skeleton. // [@kkomelin](https://github.com/kkomelin)

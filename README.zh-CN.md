@@ -1,9 +1,22 @@
-# sui-nextjs-auth-template（pnpm Monorepo）
+# Frontier Chronicle（pnpm Monorepo）
 
-这个仓库基于 **Sui dApp Starter**，使用 pnpm workspace 管理前后端代码：
+这个仓库当前的产品主线是 **EVE Frontier Chronicle 奖章产品**，不是通用 starter 模板。
+
+使用 pnpm workspace 管理前后端代码：
 
 - `packages/frontend`：Next.js 前端
-- `packages/backend`：Move 合约 + Suibase 相关脚本
+- `packages/backend`：Move 合约 + 部署脚本
+
+## 当前产品能力
+
+- Chronicle 面板：扫描玩家活动、展示奖章进度、发起链上领取
+- Warrior 页面：展示玩家资历卡和奖章分享页
+- Move 奖章合约：承载奖章模板、领取结果和链上持久化
+- 钱包用户同步：钱包连接后可同步到 SQL 数据库
+
+架构说明见：
+
+- [`docs/chronicle-product-architecture.md`](./docs/chronicle-product-architecture.md)
 
 ## 环境要求
 
@@ -140,7 +153,7 @@ vercel --prod
 
 目前已经包含：
 
-- 钱包登录后自动同步用户：钱包连接成功时，前端会调用 [`/api/users`](/Users/apple/project/sui-nextjs-auth-template/packages/frontend/src/app/api/users/route.ts)，把用户 upsert 到数据库
+- 钱包登录后自动同步用户：钱包连接成功时，前端会调用 `packages/frontend/src/app/api/users/route.ts`，把用户 upsert 到数据库
 - SQL 迁移执行器：按顺序执行 `.sql` 文件，并记录到 `schema_migrations`
 - SQL 迁移生成器：可以连续生成 `00001_init.sql`、`00002_xxx.sql` 这种文件
 
@@ -154,11 +167,11 @@ pnpm --filter frontend test
 
 迁移文件目录：
 
-- [`packages/frontend/db/migrations`](/Users/apple/project/sui-nextjs-auth-template/packages/frontend/db/migrations)
+- `packages/frontend/db/migrations`
 
 `00001_init.sql` 已经帮你生成好了，位置在：
 
-- [`packages/frontend/db/migrations/00001_init.sql`](/Users/apple/project/sui-nextjs-auth-template/packages/frontend/db/migrations/00001_init.sql)
+- `packages/frontend/db/migrations/00001_init.sql`
 
 当前数据库行为：
 

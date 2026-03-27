@@ -1,6 +1,10 @@
 import type { MedalDefinition } from '~~/chronicle/config/medals'
 import { getMedalDefinitionByKind } from '~~/chronicle/config/medals'
-import type { ChronicleMedalState, ChronicleMetrics } from '~~/chronicle/types'
+import type {
+  ChronicleClaimTicket,
+  ChronicleMedalState,
+  ChronicleMetrics,
+} from '~~/chronicle/types'
 
 // ─── Shared server-only snapshot logic ───────────────────────────────────────
 // Used by both /api/chronicle/route.ts and /warrior/[walletAddress]/page.tsx
@@ -17,7 +21,7 @@ const buildStandardMedal = (
   claimed: boolean,
   proof: string | null,
   progressLabel: string,
-  contractReady: boolean
+  claimTicket: ChronicleClaimTicket | null
 ): ChronicleMedalState => {
   const unlocked = current >= target
 
@@ -31,12 +35,13 @@ const buildStandardMedal = (
     teaser: definition.teaser,
     unlocked,
     claimed,
-    claimable: unlocked && !claimed && contractReady && proof != null,
+    claimable: unlocked && !claimed && claimTicket != null,
     progressCurrent: current,
     progressTarget: target,
     progressPercent: clampPercent(current, target),
     progressLabel,
     proof,
+    claimTicket,
   }
 }
 
@@ -44,7 +49,7 @@ const buildVoidPioneerMedal = (
   claimed: boolean,
   networkNodeAnchors: number,
   storageUnitAnchors: number,
-  contractReady: boolean
+  claimTicket: ChronicleClaimTicket | null
 ): ChronicleMedalState => {
   const definition = getMedalDefinitionByKind(2)
 
@@ -76,19 +81,20 @@ const buildVoidPioneerMedal = (
     teaser: definition.teaser,
     unlocked,
     claimed,
-    claimable: unlocked && !claimed && contractReady && proof != null,
+    claimable: unlocked && !claimed && claimTicket != null,
     progressCurrent,
     progressTarget,
     progressPercent: unlocked ? 100 : clampPercent(progressCurrent, progressTarget),
     progressLabel: `${networkNodeAnchors}/1 network node 或 ${storageUnitAnchors}/3 storage units`,
     proof,
+    claimTicket,
   }
 }
 
 export const buildMedalStates = (
   counts: ChronicleMetrics,
   claimedSlugs: Set<string>,
-  contractReady: boolean
+  claimTicketsByKind: Partial<Record<number, ChronicleClaimTicket>>
 ): ChronicleMedalState[] => {
   const bloodlust = getMedalDefinitionByKind(1)
   const courier = getMedalDefinitionByKind(3)
@@ -112,13 +118,13 @@ export const buildMedalStates = (
         ? `Eve Eyes indexed ${counts.killmailAttacks} confirmed killmail attacker call(s).`
         : null,
       `${counts.killmailAttacks} / 5 indexed killmail attacker records`,
-      contractReady
+      claimTicketsByKind[bloodlust.kind] || null
     ),
     buildVoidPioneerMedal(
       claimedSlugs.has('void-pioneer'),
       counts.networkNodeAnchors,
       counts.storageUnitAnchors,
-      contractReady
+      claimTicketsByKind[2] || null
     ),
     buildStandardMedal(
       courier,
@@ -129,7 +135,7 @@ export const buildMedalStates = (
         ? `Eve Eyes indexed ${counts.gateJumps} successful gate::jump call(s).`
         : null,
       `${counts.gateJumps} / 10 verified gate jumps`,
-      contractReady
+      claimTicketsByKind[courier.kind] || null
     ),
     buildStandardMedal(
       turretSentry,
@@ -140,7 +146,7 @@ export const buildMedalStates = (
         ? `Eve Eyes indexed ${counts.turretOps} turret operation(s).`
         : null,
       `${counts.turretOps} / 3 indexed turret operations`,
-      contractReady
+      claimTicketsByKind[turretSentry.kind] || null
     ),
     buildStandardMedal(
       assemblyPioneer,
@@ -151,7 +157,7 @@ export const buildMedalStates = (
         ? `Eve Eyes indexed ${counts.assemblyOps} Smart Assembly interaction(s).`
         : null,
       `${counts.assemblyOps} / 3 Smart Assembly interactions`,
-      contractReady
+      claimTicketsByKind[assemblyPioneer.kind] || null
     ),
     buildStandardMedal(
       turretAnchor,
@@ -162,7 +168,7 @@ export const buildMedalStates = (
         ? `Eve Eyes indexed ${counts.turretAnchors} turret::anchor call(s).`
         : null,
       `${counts.turretAnchors} / 3 turret anchor deployments`,
-      contractReady
+      claimTicketsByKind[turretAnchor.kind] || null
     ),
     buildStandardMedal(
       ssuTrader,
@@ -173,7 +179,7 @@ export const buildMedalStates = (
         ? `Eve Eyes indexed ${counts.ssuTradeOps} SSU deposit/withdraw call(s).`
         : null,
       `${counts.ssuTradeOps} / 5 SSU deposit or withdraw operations`,
-      contractReady
+      claimTicketsByKind[ssuTrader.kind] || null
     ),
     buildStandardMedal(
       fuelFeeder,
@@ -184,7 +190,7 @@ export const buildMedalStates = (
         ? `Eve Eyes indexed ${counts.networkNodeFuels} network_node::feed_fuel call(s).`
         : null,
       `${counts.networkNodeFuels} / 5 network node fuel feeds`,
-      contractReady
+      claimTicketsByKind[fuelFeeder.kind] || null
     ),
   ]
 }
