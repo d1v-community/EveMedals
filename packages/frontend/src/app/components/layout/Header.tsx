@@ -42,7 +42,8 @@ const Header = () => {
           {/* Nav links */}
           <nav className="hidden lg:flex items-center gap-1">
             {[
-              { href: '/#combat-score', label: 'Combat Score' },
+              { href: '/#how-it-works', label: 'How It Works' },
+              { href: '/#achievements', label: 'Achievements' },
               { href: '/#warrior-card', label: 'Warrior Card' },
               { href: '/#chronicle-command', label: 'Live Chronicle' },
             ].map((link) => (
