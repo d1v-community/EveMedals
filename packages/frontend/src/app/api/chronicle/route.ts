@@ -1,5 +1,6 @@
 import { isValidSuiAddress } from '@mysten/sui/utils'
 import { getChronicleSnapshot } from '~~/server/chronicle/getSnapshot'
+import { generateDemoSnapshot } from '~~/server/chronicle/demoData'
 import { ENetwork } from '~~/types/ENetwork'
 
 export const runtime = 'nodejs'
@@ -15,6 +16,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const walletAddress = searchParams.get('walletAddress')
     const requestedNetwork = searchParams.get('network') || ENetwork.TESTNET
+    const demoMode = searchParams.get('demo') === 'true'
 
     if (!walletAddress || !isValidSuiAddress(walletAddress)) {
       return json(
@@ -32,10 +34,9 @@ export async function GET(request: Request) {
       )
     }
 
-    const snapshot = await getChronicleSnapshot(
-      walletAddress,
-      requestedNetwork as ENetwork
-    )
+    const snapshot = demoMode
+      ? generateDemoSnapshot(walletAddress, requestedNetwork as ENetwork)
+      : await getChronicleSnapshot(walletAddress, requestedNetwork as ENetwork)
 
     return json(snapshot)
   } catch (error) {
