@@ -12,6 +12,7 @@ import {
 } from '@mysten/dapp-kit'
 import { LoaderCircleIcon } from 'lucide-react'
 import Image from 'next/image'
+import { useState } from 'react'
 
 const truncateAddress = (address: string) =>
   `${address.slice(0, 6)}...${address.slice(-4)}`
@@ -22,6 +23,7 @@ const CustomConnectButton = () => {
     useCurrentWallet()
   const { mutate: disconnectWallet, isPending: isDisconnecting } =
     useDisconnectWallet()
+  const [isConnectModalOpen, setConnectModalOpen] = useState(false)
 
   const statusConfig = {
     disconnected: {
@@ -49,6 +51,8 @@ const CustomConnectButton = () => {
   return (
     <div className="flex flex-wrap items-stretch gap-2">
       <ConnectModal
+        open={isConnected ? false : isConnectModalOpen}
+        onOpenChange={setConnectModalOpen}
         trigger={
           <button
             type="button"

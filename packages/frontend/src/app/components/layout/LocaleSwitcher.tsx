@@ -19,7 +19,6 @@ export default function LocaleSwitcher() {
           <Link
             key={item}
             href={item === 'en' ? '/' : `/${item}`}
-            locale={false}
             className={clsx(
               'rounded border px-2 py-1 font-mono text-[0.62rem] uppercase tracking-[0.22em] transition-colors',
               active

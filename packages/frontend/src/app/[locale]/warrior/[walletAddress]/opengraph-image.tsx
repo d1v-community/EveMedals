@@ -1,7 +1,3 @@
-export {
-  alt,
-  contentType,
-  default,
-  dynamic,
-  size,
-} from '../../../warrior/[walletAddress]/opengraph-image'
+export { alt, contentType, default, size } from '../../../warrior/[walletAddress]/opengraph-image'
+
+export const dynamic = 'force-dynamic'

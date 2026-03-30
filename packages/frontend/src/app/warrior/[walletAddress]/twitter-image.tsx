@@ -23,14 +23,15 @@ export const dynamic = 'force-dynamic'
 
 interface ImageProps {
   params: Promise<{ walletAddress: string }>
-  searchParams: Promise<WarriorRouteSearchParams>
+  searchParams?: Promise<WarriorRouteSearchParams | undefined>
 }
 
 export default async function Image({ params, searchParams }: ImageProps) {
   const locale = await getLocale()
   const { walletAddress } = await params
+  const resolvedSearchParams = (await searchParams) ?? {}
   const { network: rawNetwork, m: rawMock, claimed: rawClaimed } =
-    await searchParams
+    resolvedSearchParams
   const network = resolveWarriorNetwork(rawNetwork)
 
   if (!isValidSuiAddress(walletAddress)) {
