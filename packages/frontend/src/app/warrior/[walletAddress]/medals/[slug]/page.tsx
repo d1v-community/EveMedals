@@ -1,6 +1,7 @@
 import { isValidSuiAddress } from '@mysten/sui/utils'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { getLocale, getTranslations } from 'next-intl/server'
 import { getMedalDefinitionBySlug } from '~~/chronicle/config/medals'
 import { getChronicleSnapshot } from '~~/server/chronicle/getSnapshot'
 import { getMockRouteSnapshot } from '~~/server/chronicle/mockRouteSnapshot'
@@ -25,18 +26,20 @@ export async function generateMetadata({
   params,
   searchParams,
 }: PageProps): Promise<Metadata> {
+  const locale = await getLocale()
+  const t = await getTranslations({ locale, namespace: 'medalPage.meta' })
   const { walletAddress, slug } = await params
   const { network: rawNetwork, m: rawMock, claimed: rawClaimed } =
     await searchParams
 
   if (!isValidSuiAddress(walletAddress)) {
-    return { title: 'Medal Not Found — Frontier Chronicle' }
+    return { title: t('notFound') }
   }
 
   const definition = getMedalDefinitionBySlug(slug)
 
   if (!definition) {
-    return { title: 'Medal Not Found — Frontier Chronicle' }
+    return { title: t('notFound') }
   }
 
   try {
@@ -53,13 +56,16 @@ export async function generateMetadata({
       walletAddress,
       network,
       slug: definition.slug,
+      locale,
     })
   } catch {
-    return { title: `${definition.subtitle} — Frontier Chronicle` }
+    return { title: `${definition.subtitle} — ${t('fallbackSuffix')}` }
   }
 }
 
 export default async function MedalSharePage({ params, searchParams }: PageProps) {
+  const locale = await getLocale()
+  const t = await getTranslations({ locale, namespace: 'medalPage.status' })
   const { walletAddress, slug } = await params
   const { network: rawNetwork, m: rawMock, claimed: rawClaimed } =
     await searchParams
@@ -97,26 +103,26 @@ export default async function MedalSharePage({ params, searchParams }: PageProps
 
   const status = medal.claimed
     ? {
-        label: 'Chain Bound on Sui',
+        label: t('bound.label'),
         tone: '#7ec38f',
         shell: 'rgba(126,195,143,0.12)',
         border: 'rgba(126,195,143,0.3)',
-        summary: 'This medal is already bound to the current wallet on-chain.',
+        summary: t('bound.summary'),
       }
     : medal.unlocked
       ? {
-          label: 'Chronicle Verified',
+          label: t('verified.label'),
           tone: '#d9a441',
           shell: 'rgba(217,164,65,0.12)',
           border: 'rgba(217,164,65,0.3)',
-          summary: 'Chronicle has verified the activity, but the medal is not bound on-chain yet.',
+          summary: t('verified.summary'),
         }
       : {
-          label: 'Not Yet Verified',
+          label: t('locked.label'),
           tone: '#e63946',
           shell: 'rgba(230,57,70,0.12)',
           border: 'rgba(230,57,70,0.3)',
-          summary: 'Chronicle has not indexed enough evidence for this medal yet.',
+          summary: t('locked.summary'),
         }
 
   return (

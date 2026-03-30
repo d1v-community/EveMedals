@@ -5,6 +5,7 @@ import { useCurrentAccount } from '@mysten/dapp-kit'
 import { Link } from '@radix-ui/themes'
 import Faucet from '@suiware/kit/Faucet'
 import { HeartIcon } from 'lucide-react'
+import {useTranslations} from 'next-intl'
 import OfficialActionButton from '../OfficialActionButton'
 import {
   CONTRACT_PACKAGE_ID_NOT_DEFINED,
@@ -25,13 +26,14 @@ const Footer = () => {
   const isPackageConfigured =
     packageId !== CONTRACT_PACKAGE_ID_NOT_DEFINED &&
     isValidSuiObjectId(packageId)
+  const t = useTranslations('footer')
 
   return (
     <footer className="relative px-4 py-5 sm:px-6 lg:px-8">
       <div className="sds-footer-divider mb-5" />
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-wrap items-center gap-3 lg:w-1/3">
-          <span className="sds-system-chip">command support</span>
+          <span className="sds-system-chip">{t('supportChip')}</span>
           {currentAccount != null && (
             <>
               <Faucet
@@ -45,7 +47,7 @@ const Footer = () => {
                   icon="external"
                   typeClass="ghost"
                 >
-                  Explorer
+                  {t('explorer')}
                 </OfficialActionButton>
               ) : null}
             </>
@@ -54,10 +56,10 @@ const Footer = () => {
 
         <div className="flex flex-col gap-1 text-sm text-[#f4efe2]/58 lg:items-center">
           <div className="font-mono text-[0.62rem] uppercase tracking-[0.32em] text-[#f4efe2]/45">
-            frontier chronicle runtime
+            {t('runtimeLabel')}
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <span>Built with</span>
+            <span>{t('builtWith')}</span>
             <HeartIcon className="h-4 w-4 text-[#f0642f]" />
             <Link
               href="https://d1v.ai"
@@ -67,7 +69,7 @@ const Footer = () => {
             >
               d1v.ai
             </Link>
-            <span>for EVE Frontier pilots</span>
+            <span>{t('forPilots')}</span>
             <span className="hidden sm:inline">·</span>
             <Link
               href="http://x.com/d1v_lab"

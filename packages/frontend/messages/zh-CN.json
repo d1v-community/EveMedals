@@ -1,0 +1,509 @@
+{
+  "meta": {
+    "title": "EVE Medals | 面向 EVE Frontier 的成就验证",
+    "description": "EVE Medals 将被索引到的 EVE Frontier 行为转化为可验证的成就状态、链上勋章、Warrior 档案和可分享卡片。",
+    "socialDescription": "从行为索引到勋章、档案与可分享荣誉。"
+  },
+  "header": {
+    "runtimeLabel": "eve frontier 成就验证",
+    "nav": {
+      "howItWorks": "运行方式",
+      "product": "产品闭环",
+      "score": "分数逻辑",
+      "warrior": "Warrior 卡片",
+      "warriors": "Warriors",
+      "myCard": "我的卡片 →"
+    },
+    "pilotTerminal": "pilot terminal",
+    "localeLabel": "语言",
+    "locale": {
+      "en": "EN",
+      "zh-CN": "中文",
+      "is": "IS"
+    }
+  },
+  "footer": {
+    "supportChip": "command support",
+    "explorer": "浏览器",
+    "runtimeLabel": "frontier chronicle runtime",
+    "builtWith": "Built with",
+    "forPilots": "for EVE Frontier pilots"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "面向 EVE Frontier 的成就验证",
+      "title": "把 Frontier 行为变成可验证的荣誉",
+      "subtitle": "EVE Medals 将被索引到的 EVE Frontier 行为转化为成就状态、链上勋章、Warrior 档案和可分享卡片，让玩家的真实贡献可以被验证、展示并带出游戏过程。",
+      "primaryCta": "打开 Chronicle",
+      "secondaryCta": "查看 Demo 流程",
+      "chips": {
+        "eveEyes": "Eve Eyes 已索引",
+        "sui": "Sui 勋章证明",
+        "cards": "可分享 Warrior 卡片"
+      },
+      "nextTitle": "接下来会发生什么",
+      "nextBody": "先连接钱包，看看系统已经识别出了什么，再决定继续补进度还是直接领取。",
+      "postureTitle": "产品姿态",
+      "postureBody": "这不是一张摆拍用的 Web3 海报页，而是一条围绕 Chronicle 扫描、链上勋章和公开玩家身份的可运行链路。",
+      "previewLabel": "实时预览",
+      "previewTitle": "扫到了什么、差多少、能不能领，一眼看清。",
+      "previewRecentLabel": "最近轨迹",
+      "previewRecentTitle": "星门跃迁已确认",
+      "previewRecentBody": "一旦时间线被识别，信号会直接映射到勋章进度和领取准备状态。"
+    },
+    "previewStats": {
+      "scanStatusLabel": "扫描状态",
+      "scanStatusValue": "准备分析",
+      "scanStatusDetail": "preview 或钱包关联运行态",
+      "combatScoreLabel": "战斗评分",
+      "combatScoreValue": "4178",
+      "combatScoreDetail": "归一化 Frontier 资历",
+      "claimableLabel": "可领取",
+      "claimableValue": "2 枚勋章",
+      "claimableDetail": "已达阈值的成就",
+      "networkLabel": "网络",
+      "networkValue": "testnet",
+      "networkDetail": "默认跟随钱包"
+    },
+    "solution": {
+      "eyebrow": "How It Works",
+      "title": "讲清产品闭环，不给玩家塞说明书。",
+      "body": "首页应该把闭环讲直：看系统扫到了什么，理解成就状态，再决定能不能领取。",
+      "steps": {
+        "connectTitle": "连接钱包",
+        "connectDescription": "用 Sui 钱包作为玩家身份锚点，Chronicle 围绕这个地址建立档案。",
+        "scanTitle": "扫描行为",
+        "scanDescription": "把跃迁、锚定、击杀和基础设施行为拉成可读的 Frontier 成就视图。",
+        "claimTitle": "领取勋章",
+        "claimDescription": "只有达到阈值的成就才会开放领取，结果不是自述，而是可验证的荣誉层。"
+      }
+    },
+    "live": {
+      "eyebrow": "Live Chronicle",
+      "title": "这里才是玩家自己的实时编年史。",
+      "body": "连接钱包后，玩家会先看到系统已经识别到哪些 Frontier 行为，再决定是继续补条件还是直接领取可用勋章。",
+      "notes": {
+        "network": "默认按 testnet 做校验，除非显式选择了其他受支持网络。",
+        "preview": "没有 EVE_EYES_API_KEY 时会进入 preview mode，但依旧能解释进度。",
+        "claim": "没有当前网络的 package ID 时，扫描照常显示，只是链上 Claim 保持关闭。"
+      }
+    },
+    "activity": {
+      "eyebrow": "Achievement Preview",
+      "title": "先让玩家知道自己到底在追什么。",
+      "body": "最容易理解的轨迹是移动、基础设施和战斗。首页只需要把目标、门槛和证据来源讲清，不需要堆配置表。",
+      "objectiveLabel": "设计目标",
+      "objectiveBody": "玩家应该在一分钟内回答三个问题：识别到了什么、还差多少、为什么现在能不能 Claim。",
+      "courierSubtitle": "Transit Ledger",
+      "courierTitle": "Galactic Courier",
+      "courierMetric": "10 次跃迁",
+      "courierDetail": "持续移动会变成明确的物流行为，而不只是另一张截图。",
+      "courierSource": "`gate::jump` 轨迹会映射成 courier 阈值。",
+      "pioneerSubtitle": "Structure Footprint",
+      "pioneerTitle": "Void Pioneer",
+      "pioneerMetric": "1 / 3 次锚定",
+      "pioneerDetail": "锚定 network node 或 storage unit，才说明玩家真的在边境留下了基础设施。",
+      "pioneerSource": "`network_node::anchor` 和 `storage_unit::anchor` 会输入 builder 轨迹。",
+      "bloodlustSubtitle": "Combat Trace",
+      "bloodlustTitle": "Bloodlust Butcher",
+      "bloodlustMetric": "5 次确认 attacker",
+      "bloodlustDetail": "只有被 killmail 确认的 attacker 记录，才会推进战斗勋章准备状态。",
+      "bloodlustSource": "Confirmed attacker records drive combat medal readiness.",
+      "proofSource": "证据来源"
+    },
+    "trust": {
+      "eyebrow": "Proof & Trust",
+      "title": "玩家最在乎的不是样子，而是凭什么信你。",
+      "body": "产品必须把数据来源、行为类型、阈值逻辑和链上结果讲清。按钮为什么亮、为什么灰，首页都应该能解释。",
+      "cards": {
+        "dataSourceLabel": "数据来源",
+        "dataSourceTitle": "Eve Eyes Chronicle",
+        "dataSourceDetail": "公开窗口支持 preview，有 key 时可以拉更深历史。产品不是前端自己脑补行为数据。",
+        "behaviorLabel": "行为类别",
+        "behaviorTitle": "跃迁 / 锚定 / 战斗",
+        "behaviorDetail": "当前勋章系统围绕移动、锚定、战斗确认和相邻基础设施行为展开。",
+        "thresholdLabel": "阈值逻辑",
+        "thresholdTitle": "Explainable Progress",
+        "thresholdDetail": "每枚勋章都暴露明确门槛，玩家能看到差多少，而不是盯着灰按钮发呆。",
+        "chainLabel": "链上结果",
+        "chainTitle": "Sui 勋章持有",
+        "chainDetail": "只有达阈值后才开放 Claim，把 Frontier 历史沉淀成持续存在的链上身份信号。"
+      }
+    },
+    "demo": {
+      "eyebrow": "Demo Flow",
+      "title": "一分钟内能讲明白的产品闭环。",
+      "body": "最强的 Demo 路径很简单：展示索引状态，打开勋章分享卡，然后从验证入口重新回到产品。",
+      "steps": {
+        "oneLabel": "步骤 1",
+        "oneTitle": "展示 Chronicle 状态",
+        "oneBody": "从一个已有明显行为的钱包开始，展示哪些是 locked、verified、claimable、claimed。",
+        "twoLabel": "步骤 2",
+        "twoTitle": "打开真实分享卡",
+        "twoBody": "用 Medal 分享弹窗证明这张卡已经是现成可传播资产，不是临时摆拍图。",
+        "threeLabel": "步骤 3",
+        "threeTitle": "从验证入口回流",
+        "threeBody": "使用分享链接或二维码重新落回产品，而不是停在一张静态图片上。"
+      }
+    },
+    "cta": {
+      "title": "看看这条产品闭环如何真正跑起来",
+      "body": "查看被索引到的玩家行为如何变成勋章状态、公开档案语境和可分享的荣誉资产。",
+      "primary": "打开 Chronicle",
+      "secondary": "查看 Warrior Demo"
+    }
+  },
+  "score": {
+    "eyebrow": "Combat Score System",
+    "title": "一个数字，把 Frontier 资历翻译给人看。",
+    "body": "每枚勋章都会贡献到可见分数里。稀有度越高，权重越大；已验证未领取的权重更低；集齐整套已绑定勋章还有加成。最终显示会归一化到 0–10,000，方便横向比较。",
+    "weightsTitle": "稀有度权重",
+    "rulesTitle": "计分规则",
+    "sampleTitle": "示例计算",
+    "rankTitle": "Combat Rank Tiers",
+    "claimed": "已领取勋章（链上）",
+    "verified": "已验证勋章（未领取）",
+    "fullSet": "全套加成（8/8 claimed）",
+    "normalized": "归一化到",
+    "sampleTotal": "显示总分",
+    "sampleRank": "军衔"
+  },
+  "warrior": {
+    "eyebrow": "Warrior Profile Card",
+    "title": "这是公开的 Frontier 身份，不是站内小资料页。",
+    "body": "每位玩家都可以生成 Warrior 档案，把分数、勋章、钱包语境和公开证明入口组合在一起，让别人不用相信自述也能看懂你的贡献。",
+    "wallet": "钱包",
+    "network": "网络",
+    "medalsBound": "已绑定勋章",
+    "preview": "预览",
+    "verified": "Sui 已验证",
+    "useCases": {
+      "allianceTitle": "联盟招募",
+      "allianceBody": "把卡片发给舰队管理者，让对方看到的不只是自述，而是跨行为域的真实能力。",
+      "employerTitle": "协作验证",
+      "employerBody": "让军团或合作方直接查看玩家档案，而不是被截图牵着走。",
+      "communityTitle": "社区声望",
+      "communityBody": "给玩家真实做过的事，建立一个可持续、可携带的荣誉表面。"
+    },
+    "generate": "生成我的卡片 →",
+    "connectHint": "连接钱包后即可打开实时 Warrior 档案。"
+  },
+  "environment": {
+    "configNotice": "配置提示",
+    "runtimeNotice": "运行态提示",
+    "previewNotice": "eve eyes preview mode",
+    "missingPackageTitle": "当前网络还没有公开配置 medals package",
+    "missingPackageBody": "行为扫描依旧可用，只是链上 Claim 会保持关闭。后面补上这些环境变量即可接回去：",
+    "databaseTitle": "数据库同步当前关闭",
+    "databaseBody": "没有 DATABASE_URL 时，钱包连接不会把玩家档案同步进 SQL。扫描和前端显示不受影响。",
+    "previewTitle": "当前只在公开索引窗口里取样",
+    "previewBody": "没有 EVE_EYES_API_KEY 时，Dashboard 只会扫描公开行为窗口。Claim 逻辑仍然可用，但深历史数据可能不完整。"
+  },
+  "networkSupport": {
+    "label": "网络不匹配",
+    "title": "当前钱包网络 {network} 不在 Chronicle 运行态支持列表里",
+    "body": "请把钱包切到以下受支持网络之一："
+  },
+  "warriorIndex": {
+    "eyebrow": "warrior chronicle",
+    "title": "连接你的钱包",
+    "body": "连接钱包后即可查看 Warrior 档案和 Chronicle 勋章。"
+  },
+  "warriorPage": {
+    "backLink": "← Frontier Chronicle",
+    "meta": {
+      "notFound": "Warrior 未找到 — Frontier Chronicle",
+      "fallback": "Warrior 档案 — Frontier Chronicle"
+    }
+  },
+  "warriorLoading": {
+    "label": "正在同步 chronicle 数据…"
+  },
+  "warriorNotFound": {
+    "eyebrow": "档案未找到",
+    "title": "虚空漂流者",
+    "body": "你输入的地址无效，或者当前没有可用的行为记录。",
+    "backLink": "← 返回 Chronicle"
+  },
+  "warriorCard": {
+    "eyebrow": "Frontier Chronicle · Warrior 档案",
+    "wallet": "钱包",
+    "character": "角色",
+    "network": "网络",
+    "medalsBound": "已绑定勋章",
+    "fullSet": "✦ 全套达成",
+    "shareCard": "分享卡片",
+    "footer": "Frontier Chronicle · 已在 Sui 验证",
+    "deepScan": "深度扫描",
+    "previewScan": "预览扫描"
+  },
+  "warriorShareDialog": {
+    "closeAria": "关闭 warrior 分享弹窗",
+    "close": "关闭",
+    "eyebrow": "warrior social capsule",
+    "body": "这张档案卡会带上 Warrior 总览、勋章亮点和二维码，把人直接带回实时 Warrior 页面。",
+    "previewFormat": "预览格式",
+    "variants": {
+      "opengraph": {
+        "label": "OG 1200×630",
+        "hint": "Discord / Telegram / 预览机器人"
+      },
+      "twitter": {
+        "label": "X 1200×600",
+        "hint": "X 大图摘要"
+      }
+    },
+    "actions": {
+      "copyLink": "复制链接",
+      "downloadCard": "下载卡片",
+      "shareToX": "分享到 X",
+      "shareToTelegram": "分享到 Telegram",
+      "shareToDiscord": "分享到 Discord"
+    },
+    "notes": {
+      "qr": "扫描卡片上的二维码，可以带着当前网络参数重新打开实时 Warrior 页面，再继续进入勋章验证。",
+      "discord": "Discord 依旧走稳妥兜底：先复制，再打开聊天界面，避免依赖不受支持的深链分享 API。"
+    },
+    "previewAlt": "{rankTitle} warrior 分享卡预览",
+    "toast": {
+      "copyFailed": "复制 Warrior 链接失败",
+      "copied": "Warrior 链接已复制到剪贴板",
+      "discordCopied": "Warrior 链接已复制，请直接粘贴到 Discord。"
+    }
+  },
+  "medalRoster": {
+    "title": "勋章记录",
+    "status": {
+      "minting": "铸造中...",
+      "bound": "已绑定",
+      "verified": "已验证",
+      "locked": "未解锁"
+    },
+    "action": {
+      "tapToShare": "点我分享",
+      "tapToMint": "点我铸造",
+      "noShare": "不可分享"
+    }
+  },
+  "medalShareDialog": {
+    "closeAria": "关闭勋章分享弹窗",
+    "close": "关闭",
+    "eyebrow": "medal share capsule",
+    "body": "这张分享卡会直接落到勋章验证页。目标页会重新加载 Chronicle 证据和当前钱包的 Sui 勋章归属状态。",
+    "actions": {
+      "copyLink": "复制链接",
+      "downloadCard": "下载卡片",
+      "shareToX": "分享到 X",
+      "shareToTelegram": "分享到 Telegram",
+      "shareToDiscord": "分享到 Discord"
+    },
+    "notes": {
+      "qr": "扫描卡片上的二维码可以重新打开实时勋章验证页。打开后看到的是重新计算的 Chronicle 证据和当前勋章状态，不是静态截图。",
+      "discord": "Discord 仍然走稳妥兜底：先复制勋章链接，再打开 Discord，让你直接粘贴进聊天。"
+    },
+    "shareLinks": "分享跳转链接",
+    "launchLinks": {
+      "xIntent": "X Intent",
+      "telegramShare": "Telegram Share",
+      "discordPasteFlow": "Discord Paste Flow"
+    },
+    "previewAlt": "{subtitle} 分享卡预览 — {variant}",
+    "toast": {
+      "copyFailed": "复制勋章链接失败",
+      "copied": "勋章链接已复制到剪贴板",
+      "discordCopied": "勋章链接已复制，请直接粘贴到 Discord。"
+    }
+  },
+  "medalPage": {
+    "meta": {
+      "notFound": "勋章未找到 — Frontier Chronicle",
+      "fallbackSuffix": "Frontier Chronicle"
+    },
+    "status": {
+      "bound": {
+        "label": "已在 Sui 链上绑定",
+        "summary": "这枚勋章已经绑定到当前钱包。"
+      },
+      "verified": {
+        "label": "Chronicle 已验证",
+        "summary": "Chronicle 已验证这段行为，但勋章还没有上链绑定。"
+      },
+      "locked": {
+        "label": "尚未验证完成",
+        "summary": "Chronicle 目前还没有为这枚勋章索引到足够证据。"
+      }
+    },
+    "breadcrumb": {
+      "home": "Frontier Chronicle",
+      "warrior": "Warrior 档案"
+    },
+    "eyebrow": "勋章验证记录",
+    "summarySuffix": "每次打开这个页面，都会重新加载目标钱包的 Chronicle 快照和 Sui 持有状态。",
+    "stats": {
+      "wallet": "钱包",
+      "network": "网络",
+      "character": "角色",
+      "unavailable": "暂无"
+    },
+    "evidenceTitle": "索引证据",
+    "evidenceFallback": "Chronicle 还没有为这枚勋章发布证据字符串。",
+    "requirementTitle": "达成条件",
+    "stateTitle": "勋章状态",
+    "chips": {
+      "rarity": "{rarity} 勋章",
+      "bound": "已绑定",
+      "verified": "已验证",
+      "locked": "未解锁"
+    },
+    "liveNote": "如果这个链接来自社交平台预览图，落到这里后看到的不是静态截图，而是重新计算过的 Chronicle 快照和当前链上归属状态。",
+    "actions": {
+      "openWarrior": "打开 Warrior 档案",
+      "shareMedal": "分享勋章",
+      "viewExplorer": "在 Sui Explorer 查看 ↗"
+    }
+  },
+  "chronicleDashboard": {
+    "actions": {
+      "claimMedal": "领取勋章",
+      "mintMedal": "铸造勋章"
+    },
+    "toast": {
+      "newClaimable": "发现新的链上成就，可以立即领取。",
+      "mockMintReady": "Galactic Courier 已完成 mock mint，下一步直接分享。"
+    },
+    "errors": {
+      "missingMedalConfig": "勋章配置缺失",
+      "packageMissing": "当前网络没有配置 medals package",
+      "registryMissing": "还没有发现共享 medal registry",
+      "claimTicketMissing": "这个成就没有有效的 claim ticket",
+      "templateMissing": "这枚勋章当前没有可用的链上模板"
+    },
+    "connect": {
+      "eyebrow": "chronicle command deck",
+      "title": "先接上钱包，系统才知道该替谁写编年史。",
+      "body": "钱包连上以后，Chronicle 会按当前网络拉取玩家快照，检查 Eve Eyes 索引、链上 registry 和勋章领取状态。",
+      "chip": "wallet in // proof out"
+    },
+    "error": {
+      "eyebrow": "chronicle failure",
+      "title": "扫描失败",
+      "retry": "重新扫描"
+    },
+    "groups": {
+      "ready": {
+        "title": "Ready To Claim",
+        "description": "这些勋章已经满足门槛，链上领取通道现在是亮的。",
+        "empty": "当前没有可立即领取的勋章。"
+      },
+      "progress": {
+        "title": "In Progress",
+        "description": "门槛还没满，但系统已经在持续记录你的 Frontier 轨迹。",
+        "empty": "当前没有待推进的勋章，说明它们要么已绑定，要么尚未初始化。"
+      },
+      "bound": {
+        "title": "Already Bound",
+        "description": "这些资历已经绑定到当前钱包，不再只是页面状态。",
+        "empty": "当前钱包还没有已绑定的勋章。"
+      }
+    },
+    "mock": {
+      "eyebrow": "mock mode active",
+      "title": "三步把演示打穿",
+      "body": "所有链上动作都被 mock 掉了，但视觉反馈、分享卡片和社交平台跳转都会真实发生，足够把产品叙事讲完整。",
+      "steps": {
+        "one": {
+          "time": "20s",
+          "title": "点击 Mint Medal",
+          "detail": "先点 Galactic Courier，把勋章铸出来。"
+        },
+        "two": {
+          "time": "30s",
+          "title": "点击 Share Card",
+          "detail": "弹出分享卡，切换 X、OG、Discord 尺寸。"
+        },
+        "three": {
+          "time": "40s",
+          "title": "点击平台按钮",
+          "detail": "直接打开 X、Telegram、Discord 的分享跳转。"
+        }
+      }
+    },
+    "status": {
+      "mockMode": "Mock Mode",
+      "deepScan": "深度扫描",
+      "previewScan": "预览扫描",
+      "readyNow": "{count} 个待领取",
+      "noActiveClaim": "当前无可领取"
+    },
+    "hero": {
+      "title": "pilot chronicle",
+      "body": "这里不只是列出 medals，而是把 Frontier 真实行为翻译成可解释的门槛、证据和链上领取状态。"
+    },
+    "metrics": {
+      "claimReady": {
+        "label": "可领取",
+        "ready": "已有勋章达到链上领取条件",
+        "empty": "暂无新勋章可领取"
+      },
+      "indexedPages": {
+        "label": "已索引页数",
+        "limited": "索引页数已触碰当前扫描上限",
+        "complete": "当前扫描范围内已完成索引"
+      },
+      "lastTrace": {
+        "label": "最近 Frontier 轨迹",
+        "emptyValue": "暂时还没有被索引到的边境行为",
+        "detail": "最近一次被 Chronicle 捕获到的 Frontier 行为"
+      }
+    },
+    "recommendation": {
+      "eyebrow": "active recommendation",
+      "body": "先去看 Ready To Claim 区域，别让已经达标的勋章躺着发霉。",
+      "cta": "打开领取队列"
+    },
+    "manifest": {
+      "eyebrow": "pilot manifest",
+      "wallet": "钱包",
+      "walletName": "钱包名称",
+      "unknownWallet": "未知钱包",
+      "characterId": "角色 ID",
+      "noCharacter": "暂时还没有角色映射",
+      "observedNetwork": "观测到的网络",
+      "noObservedNetwork": "还没有被索引到的链路",
+      "worldPackage": "世界包地址",
+      "noWorldPackage": "未发现世界包地址",
+      "packageExplorer": "打开 Package Explorer"
+    },
+    "compact": {
+      "killmail": "击杀记录",
+      "nodeAnchors": "节点锚定",
+      "storageAnchors": "仓储锚定",
+      "gateJumps": "星门跃迁"
+    },
+    "evidence": {
+      "eyebrow": "indexed evidence",
+      "title": "先展示行为证据，再展示勋章状态。",
+      "body": "玩家先看懂系统到底抓到了哪些 Frontier 轨迹，再决定要不要继续冲门槛，逻辑才顺。"
+    },
+    "tracks": {
+      "verified": "已验证",
+      "tracking": "追踪中",
+      "combat": {
+        "label": "战斗轨迹",
+        "progress": "{current} / 5 条已确认 attacker 记录",
+        "detail": "击杀成就只认被索引器确认的 killmail attacker。"
+      },
+      "infrastructure": {
+        "label": "建设轨迹",
+        "nodeLabel": "network node anchors",
+        "storageLabel": "storage unit anchors",
+        "detail": "建设类勋章按“1 个 network node 或 3 个 storage unit”判定，满足任一条都算成立。"
+      },
+      "transit": {
+        "label": "航线账本",
+        "progress": "{current} / 10 次已验证星门跃迁",
+        "detail": "跃迁次数是物流与航线活跃度最直观的 Frontier 信号。"
+      }
+    }
+  }
+}

@@ -1,0 +1,509 @@
+{
+  "meta": {
+    "title": "EVE Medals | Achievement Verification for EVE Frontier",
+    "description": "EVE Medals turns indexed EVE Frontier activity into verifiable achievement states, on-chain medals, Warrior profiles, and shareable cards.",
+    "socialDescription": "From indexed activity to medals, Warrior profiles, and shareable honor."
+  },
+  "header": {
+    "runtimeLabel": "eve frontier achievement verification",
+    "nav": {
+      "howItWorks": "How It Works",
+      "product": "Product Loop",
+      "score": "Score Logic",
+      "warrior": "Warrior Card",
+      "warriors": "Warriors",
+      "myCard": "My Card →"
+    },
+    "pilotTerminal": "pilot terminal",
+    "localeLabel": "Language",
+    "locale": {
+      "en": "EN",
+      "zh-CN": "中文",
+      "is": "IS"
+    }
+  },
+  "footer": {
+    "supportChip": "command support",
+    "explorer": "Explorer",
+    "runtimeLabel": "frontier chronicle runtime",
+    "builtWith": "Built with",
+    "forPilots": "for EVE Frontier pilots"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "achievement verification for EVE Frontier",
+      "title": "Turn Frontier Activity into Verifiable Honor",
+      "subtitle": "EVE Medals turns indexed EVE Frontier activity into achievement states, on-chain medals, Warrior profiles, and shareable cards, so player contribution can be verified, displayed, and carried beyond the game session.",
+      "primaryCta": "Open Chronicle",
+      "secondaryCta": "See Demo Flow",
+      "chips": {
+        "eveEyes": "Eve Eyes Indexed",
+        "sui": "Sui Medal Proof",
+        "cards": "Shareable Warrior Cards"
+      },
+      "nextTitle": "What happens next",
+      "nextBody": "Connect a wallet, inspect what the system already recognizes, then decide whether to keep pushing progress or claim immediately.",
+      "postureTitle": "Product posture",
+      "postureBody": "This is not a static Web3 poster page. It is a working flow around Chronicle scanning, on-chain medals, and public-facing player identity.",
+      "previewLabel": "live preview",
+      "previewTitle": "See what was indexed, how far it is from the threshold, and whether it is ready to claim.",
+      "previewRecentLabel": "recent trace",
+      "previewRecentTitle": "Gate jump confirmed",
+      "previewRecentBody": "Once the timeline is recognized, the signal maps straight into medal progress and claim readiness."
+    },
+    "previewStats": {
+      "scanStatusLabel": "scan status",
+      "scanStatusValue": "ready to analyze",
+      "scanStatusDetail": "preview or wallet-linked runtime",
+      "combatScoreLabel": "combat score",
+      "combatScoreValue": "4178",
+      "combatScoreDetail": "normalized frontier standing",
+      "claimableLabel": "claimable",
+      "claimableValue": "2 medals",
+      "claimableDetail": "threshold-complete achievements",
+      "networkLabel": "network",
+      "networkValue": "testnet",
+      "networkDetail": "wallet-aligned default"
+    },
+    "solution": {
+      "eyebrow": "How It Works",
+      "title": "A clear product loop, not a wall of explanation.",
+      "body": "The homepage should explain the loop directly: inspect indexed activity, understand achievement state, then decide whether the player can claim.",
+      "steps": {
+        "connectTitle": "Connect Wallet",
+        "connectDescription": "Use a Sui wallet as the player identity anchor. Chronicle builds the profile around that address.",
+        "scanTitle": "Scan Activity",
+        "scanDescription": "Pull jumps, anchors, kills, and infrastructure actions into a readable Frontier achievement view.",
+        "claimTitle": "Claim Medal",
+        "claimDescription": "Only threshold-complete achievements unlock claim. The result is not self-reported status, but a verifiable honor layer."
+      }
+    },
+    "live": {
+      "eyebrow": "Live Chronicle",
+      "title": "This is the player’s real-time chronicle.",
+      "body": "After connecting a wallet, the player first sees what the system has already indexed, then decides whether to continue progressing or claim an available medal.",
+      "notes": {
+        "network": "The default verification target is testnet unless another supported network is explicitly selected.",
+        "preview": "Without EVE_EYES_API_KEY, the app falls back to preview mode while still explaining progress.",
+        "claim": "Without a package ID for the active network, scanning still works but on-chain claim stays disabled."
+      }
+    },
+    "activity": {
+      "eyebrow": "Achievement Preview",
+      "title": "Show the player what they are actually chasing.",
+      "body": "The easiest tracks to understand are movement, infrastructure, and combat. The homepage should explain the goal, the threshold, and the evidence source without dumping a config table.",
+      "objectiveLabel": "Design objective",
+      "objectiveBody": "A player should answer three questions in under a minute: what was recognized, how far away the threshold is, and why claim is or is not available.",
+      "courierSubtitle": "Transit Ledger",
+      "courierTitle": "Galactic Courier",
+      "courierMetric": "10 gate jumps",
+      "courierDetail": "Sustained movement becomes a visible logistics trace instead of just another screenshot.",
+      "courierSource": "`gate::jump` traces become the courier threshold.",
+      "pioneerSubtitle": "Structure Footprint",
+      "pioneerTitle": "Void Pioneer",
+      "pioneerMetric": "1 / 3 anchors",
+      "pioneerDetail": "Anchoring a network node or storage unit is the signal that a player actually left infrastructure behind.",
+      "pioneerSource": "`network_node::anchor` and `storage_unit::anchor` feed the builder trace.",
+      "bloodlustSubtitle": "Combat Trace",
+      "bloodlustTitle": "Bloodlust Butcher",
+      "bloodlustMetric": "5 confirmed attackers",
+      "bloodlustDetail": "Only confirmed killmail attacker records move combat medal readiness forward.",
+      "bloodlustSource": "Confirmed attacker records drive combat medal readiness.",
+      "proofSource": "proof source"
+    },
+    "trust": {
+      "eyebrow": "Proof & Trust",
+      "title": "A player does not care about style unless they can trust the system.",
+      "body": "The product has to explain data source, behavior class, threshold logic, and the on-chain result. If a button is enabled or disabled, the homepage should make that understandable.",
+      "cards": {
+        "dataSourceLabel": "Data Source",
+        "dataSourceTitle": "Eve Eyes Chronicle",
+        "dataSourceDetail": "The public window supports preview mode and the keyed path supports deeper history. The product is not inventing activity on the frontend.",
+        "behaviorLabel": "Behavior Classes",
+        "behaviorTitle": "Jump / Anchor / Combat",
+        "behaviorDetail": "The current medal system is centered on movement, anchoring, combat confirmation, and adjacent infrastructure activity.",
+        "thresholdLabel": "Threshold Logic",
+        "thresholdTitle": "Explainable Progress",
+        "thresholdDetail": "Each medal exposes a visible threshold so the player can see what is missing instead of staring at a disabled button.",
+        "chainLabel": "On-chain Result",
+        "chainTitle": "Sui Medal Ownership",
+        "chainDetail": "Claim only opens after threshold completion, turning Frontier history into a persistent on-chain identity signal."
+      }
+    },
+    "demo": {
+      "eyebrow": "Demo Flow",
+      "title": "A loop that can be shown live in under a minute.",
+      "body": "The strongest demo path is simple: show indexed activity, open a medal share card, then return through the verification entry point.",
+      "steps": {
+        "oneLabel": "Step 1",
+        "oneTitle": "Show the Chronicle state",
+        "oneBody": "Start with a wallet that already has meaningful activity and show what is locked, verified, claimable, or claimed.",
+        "twoLabel": "Step 2",
+        "twoTitle": "Open a real share card",
+        "twoBody": "Use the Medal share dialog to show that the card is already designed for social distribution.",
+        "threeLabel": "Step 3",
+        "threeTitle": "Return through the verification path",
+        "threeBody": "Use the share link or QR path to land back in the product instead of ending on a static image."
+      }
+    },
+    "cta": {
+      "title": "See the product loop in action",
+      "body": "Explore how indexed player activity becomes medal state, public profile context, and shareable reputation assets.",
+      "primary": "Open Chronicle",
+      "secondary": "View Warrior Demo"
+    }
+  },
+  "score": {
+    "eyebrow": "Combat Score System",
+    "title": "One number that translates Frontier standing at a glance.",
+    "body": "Each medal contributes to a visible score. Higher-rarity honors carry more weight, verified-but-unclaimed medals count less, and a full bound set receives a bonus. The display is normalized to 0–10,000 so players can compare cleanly.",
+    "weightsTitle": "Rarity Weights",
+    "rulesTitle": "Scoring Rules",
+    "sampleTitle": "Sample Calculation",
+    "rankTitle": "Combat Rank Tiers",
+    "claimed": "Medal Claimed (on-chain)",
+    "verified": "Medal Verified (not claimed)",
+    "fullSet": "Full Set Bonus (8/8 claimed)",
+    "normalized": "Normalized to",
+    "sampleTotal": "Total Display Score",
+    "sampleRank": "Rank"
+  },
+  "warrior": {
+    "eyebrow": "Warrior Profile Card",
+    "title": "A public-facing Frontier identity, not just a local profile page.",
+    "body": "Each player can generate a Warrior profile that combines score, medals, wallet context, and public-facing proof surfaces. It gives others a way to inspect contribution without trusting self-reported status.",
+    "wallet": "WALLET",
+    "network": "NETWORK",
+    "medalsBound": "MEDALS BOUND",
+    "preview": "PREVIEW",
+    "verified": "Verified on Sui",
+    "useCases": {
+      "allianceTitle": "Alliance Recruitment",
+      "allianceBody": "Share a card with fleet leadership to show cross-domain capability with more than self-reported claims.",
+      "employerTitle": "Employer Verification",
+      "employerBody": "Let corps or collaborators inspect a player-facing record instead of trusting screenshots alone.",
+      "communityTitle": "Community Standing",
+      "communityBody": "Create a persistent and portable honor surface around what a player has actually done."
+    },
+    "generate": "Generate My Card →",
+    "connectHint": "Connect a wallet to open the live Warrior profile."
+  },
+  "environment": {
+    "configNotice": "config notice",
+    "runtimeNotice": "runtime notice",
+    "previewNotice": "eve eyes preview mode",
+    "missingPackageTitle": "No public medals package is configured for this network yet",
+    "missingPackageBody": "Activity scanning still works. On-chain claim simply stays disabled until one of these environment variables is configured:",
+    "databaseTitle": "Database sync is currently disabled",
+    "databaseBody": "Without DATABASE_URL, wallet connections do not sync player profiles into SQL. Scanning and frontend rendering are unaffected.",
+    "previewTitle": "The app is sampling from the public indexing window",
+    "previewBody": "Without EVE_EYES_API_KEY, the dashboard scans only the public activity window. Claim logic still works, but deeper history can be incomplete."
+  },
+  "networkSupport": {
+    "label": "network mismatch",
+    "title": "The current wallet network {network} is not supported by this Chronicle runtime",
+    "body": "Switch the wallet to one of the supported networks:"
+  },
+  "warriorIndex": {
+    "eyebrow": "warrior chronicle",
+    "title": "Connect Your Wallet",
+    "body": "Connect your wallet to view your Warrior profile and Chronicle medals."
+  },
+  "warriorPage": {
+    "backLink": "← Frontier Chronicle",
+    "meta": {
+      "notFound": "Warrior Not Found — Frontier Chronicle",
+      "fallback": "Warrior Profile — Frontier Chronicle"
+    }
+  },
+  "warriorLoading": {
+    "label": "Syncing chronicle data…"
+  },
+  "warriorNotFound": {
+    "eyebrow": "Profile not found",
+    "title": "Void Drifter",
+    "body": "The address you entered is invalid or has no activity on record.",
+    "backLink": "← Return to Chronicle"
+  },
+  "warriorCard": {
+    "eyebrow": "Frontier Chronicle · Warrior Profile",
+    "wallet": "WALLET",
+    "character": "CHARACTER",
+    "network": "NETWORK",
+    "medalsBound": "MEDALS BOUND",
+    "fullSet": "✦ FULL SET",
+    "shareCard": "Share Card",
+    "footer": "Frontier Chronicle · Verified on Sui",
+    "deepScan": "Deep Scan",
+    "previewScan": "Preview Scan"
+  },
+  "warriorShareDialog": {
+    "closeAria": "Close warrior share dialog",
+    "close": "Close",
+    "eyebrow": "warrior social capsule",
+    "body": "This profile card carries the warrior summary, medal highlights, and an embedded QR code that sends viewers straight back to the live warrior page.",
+    "previewFormat": "preview format",
+    "variants": {
+      "opengraph": {
+        "label": "OG 1200×630",
+        "hint": "Discord / Telegram / preview bots"
+      },
+      "twitter": {
+        "label": "X 1200×600",
+        "hint": "X summary large image"
+      }
+    },
+    "actions": {
+      "copyLink": "Copy Link",
+      "downloadCard": "Download Card",
+      "shareToX": "Share to X",
+      "shareToTelegram": "Share to Telegram",
+      "shareToDiscord": "Share to Discord"
+    },
+    "notes": {
+      "qr": "Scan the QR code on the card to reopen the live warrior page with the selected network in the URL, then continue into medal verification from there.",
+      "discord": "Discord still uses the safe fallback: copy first, then open the chat surface so the link can be pasted without relying on unsupported deep share APIs."
+    },
+    "previewAlt": "{rankTitle} warrior share card preview",
+    "toast": {
+      "copyFailed": "Failed to copy the warrior link",
+      "copied": "Warrior link copied to clipboard",
+      "discordCopied": "Warrior link copied. Paste it into Discord."
+    }
+  },
+  "medalRoster": {
+    "title": "Medal Record",
+    "status": {
+      "minting": "MINTING...",
+      "bound": "BOUND",
+      "verified": "VERIFIED",
+      "locked": "LOCKED"
+    },
+    "action": {
+      "tapToShare": "Tap to share",
+      "tapToMint": "Tap to mint",
+      "noShare": "No share"
+    }
+  },
+  "medalShareDialog": {
+    "closeAria": "Close medal share dialog",
+    "close": "Close",
+    "eyebrow": "medal share capsule",
+    "body": "This share card links straight to the medal verification page. The destination page reloads Chronicle evidence and current Sui medal ownership for the target wallet.",
+    "actions": {
+      "copyLink": "Copy Link",
+      "downloadCard": "Download Card",
+      "shareToX": "Share to X",
+      "shareToTelegram": "Share to Telegram",
+      "shareToDiscord": "Share to Discord"
+    },
+    "notes": {
+      "qr": "Scan the QR code on the card to reopen the live medal verification page. The page recalculates Chronicle evidence and current medal state instead of showing a static screenshot.",
+      "discord": "Discord uses a safe fallback: the dialog copies the medal link first, then opens Discord so you can paste it directly into chat."
+    },
+    "shareLinks": "share launch links",
+    "launchLinks": {
+      "xIntent": "X Intent",
+      "telegramShare": "Telegram Share",
+      "discordPasteFlow": "Discord Paste Flow"
+    },
+    "previewAlt": "{subtitle} share card preview — {variant}",
+    "toast": {
+      "copyFailed": "Failed to copy the medal link",
+      "copied": "Medal link copied to clipboard",
+      "discordCopied": "Medal link copied. Paste it into Discord."
+    }
+  },
+  "medalPage": {
+    "meta": {
+      "notFound": "Medal Not Found — Frontier Chronicle",
+      "fallbackSuffix": "Frontier Chronicle"
+    },
+    "status": {
+      "bound": {
+        "label": "Chain Bound on Sui",
+        "summary": "This medal is already bound to the current wallet on-chain."
+      },
+      "verified": {
+        "label": "Chronicle Verified",
+        "summary": "Chronicle has verified the activity, but the medal is not bound on-chain yet."
+      },
+      "locked": {
+        "label": "Not Yet Verified",
+        "summary": "Chronicle has not indexed enough evidence for this medal yet."
+      }
+    },
+    "breadcrumb": {
+      "home": "Frontier Chronicle",
+      "warrior": "Warrior Profile"
+    },
+    "eyebrow": "medal verification record",
+    "summarySuffix": "This page reloads the latest Chronicle snapshot and Sui ownership state for the target wallet each time it opens.",
+    "stats": {
+      "wallet": "Wallet",
+      "network": "Network",
+      "character": "Character",
+      "unavailable": "Unavailable"
+    },
+    "evidenceTitle": "indexed evidence",
+    "evidenceFallback": "Chronicle has not published an evidence string for this medal yet.",
+    "requirementTitle": "requirement",
+    "stateTitle": "medal state",
+    "chips": {
+      "rarity": "{rarity} Medal",
+      "bound": "Bound",
+      "verified": "Verified",
+      "locked": "Locked"
+    },
+    "liveNote": "If this link came from a social preview card, the destination is not a static screenshot. It recalculates the Chronicle snapshot and current on-chain ownership state when opened.",
+    "actions": {
+      "openWarrior": "Open Warrior Profile",
+      "shareMedal": "Share Medal",
+      "viewExplorer": "View on Sui Explorer ↗"
+    }
+  },
+  "chronicleDashboard": {
+    "actions": {
+      "claimMedal": "Claim Medal",
+      "mintMedal": "Mint Medal"
+    },
+    "toast": {
+      "newClaimable": "New on-chain achievements are ready to claim.",
+      "mockMintReady": "Galactic Courier mock mint complete. Share it next."
+    },
+    "errors": {
+      "missingMedalConfig": "Medal configuration is missing",
+      "packageMissing": "Current network has no medals package configured",
+      "registryMissing": "Shared medal registry has not been discovered yet",
+      "claimTicketMissing": "This achievement does not have a valid claim ticket",
+      "templateMissing": "This medal has no active on-chain template"
+    },
+    "connect": {
+      "eyebrow": "chronicle command deck",
+      "title": "Connect a wallet so the system knows whose chronicle to write.",
+      "body": "Once the wallet is connected, Chronicle pulls the player snapshot on the active network, checks Eve Eyes indexing, the on-chain registry, and medal claim status.",
+      "chip": "wallet in // proof out"
+    },
+    "error": {
+      "eyebrow": "chronicle failure",
+      "title": "Scan failed",
+      "retry": "Retry Scan"
+    },
+    "groups": {
+      "ready": {
+        "title": "Ready To Claim",
+        "description": "These medals have already crossed the threshold. The on-chain claim path is live now.",
+        "empty": "No medals are ready to claim right now."
+      },
+      "progress": {
+        "title": "In Progress",
+        "description": "The threshold is not full yet, but the system is continuously recording your Frontier trail.",
+        "empty": "There are no medals in progress. The current set is either already bound or not initialized yet."
+      },
+      "bound": {
+        "title": "Already Bound",
+        "description": "These honors are already bound to the current wallet and no longer exist only as page state.",
+        "empty": "The current wallet does not have any bound medals yet."
+      }
+    },
+    "mock": {
+      "eyebrow": "mock mode active",
+      "title": "Run the demo in three steps",
+      "body": "All on-chain actions are mocked, but the visual feedback, share cards, and social jumps still behave like the real flow.",
+      "steps": {
+        "one": {
+          "time": "20s",
+          "title": "Click Mint Medal",
+          "detail": "Start with Galactic Courier and mint the medal in mock mode."
+        },
+        "two": {
+          "time": "30s",
+          "title": "Click Share Card",
+          "detail": "Open the share card and flip between X, OG, and Discord formats."
+        },
+        "three": {
+          "time": "40s",
+          "title": "Click a platform action",
+          "detail": "Jump directly into X, Telegram, or Discord share flows."
+        }
+      }
+    },
+    "status": {
+      "mockMode": "Mock Mode",
+      "deepScan": "Deep Scan",
+      "previewScan": "Preview Scan",
+      "readyNow": "{count} Ready Now",
+      "noActiveClaim": "No Active Claim"
+    },
+    "hero": {
+      "title": "pilot chronicle",
+      "body": "This is not just a medal list. It translates Frontier activity into explainable thresholds, evidence, and on-chain claim state."
+    },
+    "metrics": {
+      "claimReady": {
+        "label": "Claim Ready",
+        "ready": "Some medals already meet the on-chain claim condition",
+        "empty": "No new medals are ready to claim"
+      },
+      "indexedPages": {
+        "label": "Indexed Pages",
+        "limited": "The current scan has reached its page limit",
+        "complete": "The current scan range has been indexed"
+      },
+      "lastTrace": {
+        "label": "Last Frontier Trace",
+        "emptyValue": "No indexed Frontier activity yet",
+        "detail": "The latest Frontier action captured by Chronicle"
+      }
+    },
+    "recommendation": {
+      "eyebrow": "active recommendation",
+      "body": "Start in Ready To Claim so already-qualified medals do not sit idle.",
+      "cta": "Open Claim Queue"
+    },
+    "manifest": {
+      "eyebrow": "pilot manifest",
+      "wallet": "Wallet",
+      "walletName": "Wallet Name",
+      "unknownWallet": "Unknown Wallet",
+      "characterId": "Character ID",
+      "noCharacter": "No character mapping yet",
+      "observedNetwork": "Observed Network",
+      "noObservedNetwork": "No observed route yet",
+      "worldPackage": "World Package",
+      "noWorldPackage": "World package not discovered",
+      "packageExplorer": "Open Package Explorer"
+    },
+    "compact": {
+      "killmail": "Killmail",
+      "nodeAnchors": "Node Anchors",
+      "storageAnchors": "Storage Anchors",
+      "gateJumps": "Gate Jumps"
+    },
+    "evidence": {
+      "eyebrow": "indexed evidence",
+      "title": "Show the behavior evidence before the medal state.",
+      "body": "Players should first understand which Frontier traces were captured, then decide whether to keep pushing the threshold."
+    },
+    "tracks": {
+      "verified": "Verified",
+      "tracking": "Tracking",
+      "combat": {
+        "label": "Combat Trace",
+        "progress": "{current} / 5 confirmed attacker records",
+        "detail": "Combat medals only count killmail attackers confirmed by the indexer."
+      },
+      "infrastructure": {
+        "label": "Infrastructure Trace",
+        "nodeLabel": "network node anchors",
+        "storageLabel": "storage unit anchors",
+        "detail": "Builder medals pass when the player anchors either 1 network node or 3 storage units."
+      },
+      "transit": {
+        "label": "Transit Ledger",
+        "progress": "{current} / 10 verified gate jumps",
+        "detail": "Gate jumps are the clearest Frontier signal for logistics and route activity."
+      }
+    }
+  }
+}

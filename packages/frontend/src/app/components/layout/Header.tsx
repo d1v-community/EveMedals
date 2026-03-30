@@ -8,11 +8,33 @@ import NetworkType from '@suiware/kit/NetworkType'
 import { APP_NAME } from '../../config/main'
 import Image from 'next/image'
 import NextLink from 'next/link'
+import {useLocale, useTranslations} from 'next-intl'
+import {usePathname} from 'next/navigation'
 import CustomConnectButton from '../CustomConnectButton'
+import {withLocale} from '~~/i18n/pathnames'
+import LocaleSwitcher from './LocaleSwitcher'
+
+const localeBasePath = (locale: string, pathname: string) => {
+  if (pathname === `/${locale}`) {
+    return `/${locale}`
+  }
+
+  if (pathname.startsWith(`/${locale}/`)) {
+    return `/${locale}`
+  }
+
+  return locale === 'en' ? '/' : `/${locale}`
+}
 
 const Header = () => {
   const { isConnected } = useCurrentWallet()
   const account = useCurrentAccount()
+  const t = useTranslations('header')
+  const pathname = usePathname()
+  const locale = useLocale()
+  const homePath = localeBasePath(locale, pathname)
+  const warriorIndexPath = withLocale(locale, '/warrior')
+  const myCardPath = account ? withLocale(locale, `/warrior/${account.address}`) : null
 
   return (
     <header className="sds-header">
@@ -30,7 +52,7 @@ const Header = () => {
 
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
         <Link
-          href="/"
+          href={homePath}
           className="flex items-center gap-3 text-sds-light outline-none hover:no-underline"
         >
           <Image
@@ -47,7 +69,7 @@ const Header = () => {
             <div className="flex items-center gap-2">
               <span className="sds-header-live-dot" aria-label="System online" />
               <div className="font-mono text-[0.62rem] uppercase tracking-[0.34em] text-[#f4efe2]/58">
-                eve frontier player chronicle
+                {t('runtimeLabel')}
               </div>
             </div>
           </div>
@@ -57,30 +79,31 @@ const Header = () => {
           {/* Nav links */}
           <nav className="hidden lg:flex items-center gap-0.5">
             {[
-              { href: '/#how-it-works', label: 'How It Works' },
-              { href: '/#achievements', label: 'Achievements' },
-              { href: '/#warrior-card', label: 'Warrior Card' },
-              { href: '/#chronicle-command', label: 'Live Chronicle' },
+              { href: `${homePath}#how-it-works`, label: t('nav.howItWorks') },
+              { href: `${homePath}#proof-trust`, label: t('nav.product') },
+              { href: `${homePath}#combat-score`, label: t('nav.score') },
+              { href: `${homePath}#warrior-card`, label: t('nav.warrior') },
             ].map((link) => (
               <a key={link.href} href={link.href} className="sds-header-nav-link">
                 {link.label}
               </a>
             ))}
-            <NextLink href="/warrior" className="sds-header-nav-link">
-              Warriors
+            <NextLink href={warriorIndexPath} className="sds-header-nav-link">
+              {t('nav.warriors')}
             </NextLink>
-            {account && (
+            {account && myCardPath && (
               <NextLink
-                href={`/warrior/${account.address}`}
+                href={myCardPath}
                 className="sds-header-nav-cta"
               >
-                My Card →
+                {t('nav.myCard')}
               </NextLink>
             )}
           </nav>
 
           <div className="flex flex-wrap items-center gap-2">
-            <span className="sds-system-chip">pilot terminal</span>
+            <LocaleSwitcher />
+            <span className="sds-system-chip">{t('pilotTerminal')}</span>
             {isConnected ? (
               <div className="sds-system-chip">
                 <Balance />

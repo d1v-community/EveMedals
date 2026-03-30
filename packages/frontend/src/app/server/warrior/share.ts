@@ -29,6 +29,15 @@ export interface WarriorShareCardModel {
   title: string
   titleZh: string
   description: string
+  labels: {
+    eyebrow: string
+    verified: string
+    walletUnavailable: string
+    combatScore: string
+    network: string
+    medalsBound: string
+    character: string
+  }
   shareUrl: string
   qrCodeDataUrl: string
   network: string
@@ -98,6 +107,62 @@ const MEDAL_COLOR_MAP: Record<string, string> = {
   'fuel-feeder': '#8ea1ad',
 }
 
+const resolveLocale = (locale?: string) =>
+  locale === 'zh-CN' || locale === 'is' ? locale : 'en'
+
+const getWarriorShareCopy = (locale?: string) => {
+  switch (resolveLocale(locale)) {
+    case 'zh-CN':
+      return {
+        fallbackTitle: 'Warrior 档案',
+        fallbackTitleZh: '边境战士档案',
+        fallbackDescription: '链上验证的 Frontier 身份正在加载或暂不可用。',
+        snapshotUnavailable: '快照暂不可用',
+        labels: {
+          eyebrow: 'Frontier Chronicle · Warrior 档案',
+          verified: '已在 Sui 验证',
+          walletUnavailable: '钱包不可用',
+          combatScore: '战斗分数',
+          network: '网络',
+          medalsBound: '已绑定勋章',
+          character: '角色',
+        },
+      }
+    case 'is':
+      return {
+        fallbackTitle: 'Warrior Profile',
+        fallbackTitleZh: 'Warrior prófíll',
+        fallbackDescription: 'Keðjustaðfest Frontier auðkenni er að hlaðast eða ekki tiltækt.',
+        snapshotUnavailable: 'Snapshot ófáanlegt',
+        labels: {
+          eyebrow: 'Frontier Chronicle · Warrior prófíll',
+          verified: 'Staðfest á Sui',
+          walletUnavailable: 'Veski ófáanlegt',
+          combatScore: 'Combat Score',
+          network: 'Network',
+          medalsBound: 'Medals Bound',
+          character: 'Character',
+        },
+      }
+    default:
+      return {
+        fallbackTitle: 'Warrior Profile',
+        fallbackTitleZh: 'Warrior Profile',
+        fallbackDescription: 'Chain-verified Frontier identity is loading or unavailable.',
+        snapshotUnavailable: 'Snapshot Unavailable',
+        labels: {
+          eyebrow: 'Frontier Chronicle · Warrior Profile',
+          verified: 'Verified on Sui',
+          walletUnavailable: 'Wallet unavailable',
+          combatScore: 'Combat Score',
+          network: 'Network',
+          medalsBound: 'Medals Bound',
+          character: 'Character',
+        },
+      }
+  }
+}
+
 const formatWalletAddress = (walletAddress: string | null) => {
   if (!walletAddress || walletAddress.length < 14)
     return walletAddress || 'Unknown Wallet'
@@ -124,13 +189,15 @@ const getPreviewMedals = (
 
 export const buildWarriorShareCardModel = async (
   snapshot: ChronicleSnapshot,
-  network: ENetwork
+  network: ENetwork,
+  locale?: string
 ): Promise<WarriorShareCardModel> => {
+  const copy = getWarriorShareCopy(locale)
   const { medals, profile, warriorScore } = snapshot
   const { rank } = warriorScore
   const medalCount = `${warriorScore.claimedMedalCount} / ${medals.length}`
   const shareUrl = toAbsoluteSiteUrl(
-    buildWarriorSharePath(profile.walletAddress, network)
+    buildWarriorSharePath(profile.walletAddress, network, { locale })
   )
   const qrCodeDataUrl = await buildShareQrCodeDataUrl(shareUrl)
 
@@ -138,6 +205,7 @@ export const buildWarriorShareCardModel = async (
     title: rank.title,
     titleZh: rank.titleZh,
     description: rank.description,
+    labels: copy.labels,
     shareUrl,
     qrCodeDataUrl,
     network: network.toUpperCase(),
@@ -159,17 +227,20 @@ export const buildWarriorShareCardModel = async (
 
 export const buildFallbackWarriorShareCardModel = async (
   walletAddress: string | null,
-  network: ENetwork
+  network: ENetwork,
+  locale?: string
 ): Promise<WarriorShareCardModel> => {
+  const copy = getWarriorShareCopy(locale)
   const shareUrl = toAbsoluteSiteUrl(
-    walletAddress ? buildWarriorSharePath(walletAddress, network) : '/'
+    walletAddress ? buildWarriorSharePath(walletAddress, network, { locale }) : '/'
   )
   const qrCodeDataUrl = await buildShareQrCodeDataUrl(shareUrl)
 
   return {
-    title: 'Warrior Profile',
-    titleZh: '边境战士档案',
-    description: 'Chain-verified Frontier identity is loading or unavailable.',
+    title: copy.fallbackTitle,
+    titleZh: copy.fallbackTitleZh,
+    description: copy.fallbackDescription,
+    labels: copy.labels,
     shareUrl,
     qrCodeDataUrl,
     network: network.toUpperCase(),
@@ -179,7 +250,7 @@ export const buildFallbackWarriorShareCardModel = async (
     score: 0,
     scoreLabel: '0 / 10,000',
     medalsLabel: '0 / 8',
-    scanLabel: 'Snapshot Unavailable',
+    scanLabel: copy.snapshotUnavailable,
     previewMedals: [],
     hasFullSet: false,
     tone: RANK_TONE_MAP.steel,
@@ -190,25 +261,46 @@ export const buildWarriorPageMetadata = ({
   snapshot,
   walletAddress,
   network,
+  locale,
 }: {
   snapshot: ChronicleSnapshot
   walletAddress: string
   network: ENetwork
+  locale?: string
 }): Metadata => {
+  const resolvedLocale = resolveLocale(locale)
   const { rank, displayScore, claimedMedalCount } = snapshot.warriorScore
   const shortWallet = formatWalletAddress(walletAddress)
-  const canonicalPath = buildWarriorSharePath(walletAddress, network)
+  const canonicalPath = buildWarriorSharePath(walletAddress, network, {
+    locale: resolvedLocale,
+  })
   const canonicalUrl = toAbsoluteSiteUrl(canonicalPath)
   const ogImageUrl = toAbsoluteSiteUrl(
-    buildWarriorImagePath(walletAddress, network, 'opengraph')
+    buildWarriorImagePath(walletAddress, network, 'opengraph', {
+      locale: resolvedLocale,
+    })
   )
   const twitterImageUrl = toAbsoluteSiteUrl(
-    buildWarriorImagePath(walletAddress, network, 'twitter')
+    buildWarriorImagePath(walletAddress, network, 'twitter', {
+      locale: resolvedLocale,
+    })
   )
+  const description =
+    resolvedLocale === 'zh-CN'
+      ? `Combat Score: ${displayScore.toLocaleString()} / 10,000 · ${claimedMedalCount} 枚勋章已绑定 · ${shortWallet}`
+      : resolvedLocale === 'is'
+        ? `Combat Score: ${displayScore.toLocaleString()} / 10,000 · ${claimedMedalCount} medalíur bundnar · ${shortWallet}`
+        : `Combat Score: ${displayScore.toLocaleString()} / 10,000 · ${claimedMedalCount} Medal${claimedMedalCount !== 1 ? 's' : ''} Bound · ${shortWallet}`
+  const ogDescription =
+    resolvedLocale === 'zh-CN'
+      ? `Combat Score: ${displayScore.toLocaleString()} / 10,000 · ${claimedMedalCount} 枚勋章已在 Sui ${network.toUpperCase()} 绑定`
+      : resolvedLocale === 'is'
+        ? `Combat Score: ${displayScore.toLocaleString()} / 10,000 · ${claimedMedalCount} medalíur bundnar á Sui ${network.toUpperCase()}`
+        : `Combat Score: ${displayScore.toLocaleString()} / 10,000 · ${claimedMedalCount} Medal${claimedMedalCount !== 1 ? 's' : ''} Bound on Sui ${network.toUpperCase()}`
 
   return {
     title: `${rank.title} — ${APP_NAME}`,
-    description: `Combat Score: ${displayScore.toLocaleString()} / 10,000 · ${claimedMedalCount} Medal${claimedMedalCount !== 1 ? 's' : ''} Bound · ${shortWallet}`,
+    description,
     alternates: {
       canonical: canonicalUrl,
     },
@@ -216,7 +308,7 @@ export const buildWarriorPageMetadata = ({
       type: 'website',
       url: canonicalUrl,
       title: `${rank.title} (${rank.titleZh}) — ${APP_NAME}`,
-      description: `Combat Score: ${displayScore.toLocaleString()} / 10,000 · ${claimedMedalCount} Medal${claimedMedalCount !== 1 ? 's' : ''} Bound on Sui ${network.toUpperCase()}`,
+      description: ogDescription,
       siteName: APP_NAME,
       images: [
         {
@@ -230,7 +322,7 @@ export const buildWarriorPageMetadata = ({
     twitter: {
       card: 'summary_large_image',
       title: `${rank.title} — ${APP_NAME}`,
-      description: `Combat Score: ${displayScore.toLocaleString()} / 10,000 · ${claimedMedalCount} Medals Bound · Verified on Sui ${network.toUpperCase()}`,
+      description: ogDescription,
       images: [twitterImageUrl],
     },
   }

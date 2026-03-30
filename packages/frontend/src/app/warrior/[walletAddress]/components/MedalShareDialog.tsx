@@ -1,5 +1,6 @@
 'use client'
 
+import { useLocale, useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 import type { ChronicleMedalState } from '~~/chronicle/types'
 import { notification } from '~~/helpers/notification'
@@ -24,6 +25,7 @@ interface MedalShareDialogProps {
   walletAddress: string
   network: ENetwork
   isMockMode?: boolean
+  mockClaimedSlugs?: string[]
   onClose: () => void
 }
 
@@ -32,9 +34,12 @@ export default function MedalShareDialog({
   walletAddress,
   network,
   isMockMode = false,
+  mockClaimedSlugs,
   onClose,
 }: MedalShareDialogProps) {
   const [previewVariant, setPreviewVariant] = useState<ImageVariant>('opengraph')
+  const locale = useLocale()
+  const t = useTranslations('medalShareDialog')
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow
@@ -55,12 +60,15 @@ export default function MedalShareDialog({
   }, [onClose])
 
   const origin = typeof window === 'undefined' ? '' : window.location.origin
+  const mockOptions = isMockMode
+    ? { mock: true, claimed: mockClaimedSlugs ?? [medal.slug] }
+    : undefined
   const sharePath = buildMedalSharePath(walletAddress, medal.slug, network, {
-    mock: isMockMode,
-    claimed: isMockMode && medal.claimed ? [medal.slug] : [],
+    ...mockOptions,
+    locale,
   })
   const shareUrl = `${origin}${sharePath}`
-  const shareText = generateMedalShareText(medal.slug, medal.subtitle)
+  const shareText = generateMedalShareText(medal.slug, medal.subtitle, locale)
 
   const imageUrl = `${origin}${buildMedalImagePath(
     walletAddress,
@@ -68,8 +76,8 @@ export default function MedalShareDialog({
     network,
     previewVariant,
     {
-      mock: isMockMode,
-      claimed: isMockMode && medal.claimed ? [medal.slug] : [],
+      ...mockOptions,
+      locale,
     }
   )}`
   const xShareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`
@@ -100,12 +108,12 @@ export default function MedalShareDialog({
     const copied = await copyShareValue(shareUrl)
 
     if (!copied) {
-      notification.error(null, 'Failed to copy the medal link')
+      notification.error(null, t('toast.copyFailed'))
       return false
     }
 
     if (!quiet) {
-      notification.success('Medal link copied to clipboard')
+      notification.success(t('toast.copied'))
     }
 
     return true
@@ -140,7 +148,7 @@ export default function MedalShareDialog({
 
     trackShare('discord')
     openShareWindow(discordShareUrl)
-    notification.success('Medal link copied. Paste it into Discord.')
+    notification.success(t('toast.discordCopied'))
   }
 
   return (
@@ -159,7 +167,7 @@ export default function MedalShareDialog({
       >
         <button
           type="button"
-          aria-label="Close medal share dialog"
+          aria-label={t('closeAria')}
           onClick={onClose}
           className="text-white/62 absolute right-4 top-4 rounded-full border px-3 py-2 font-mono text-[0.62rem] uppercase tracking-[0.2em] transition-opacity hover:opacity-70"
           style={{
@@ -167,14 +175,14 @@ export default function MedalShareDialog({
             background: 'rgba(255,255,255,0.04)',
           }}
         >
-          Close
+          {t('close')}
         </button>
 
         <div className="grid gap-6 p-6 lg:grid-cols-[0.95fr_1.05fr] lg:p-8">
           <section className="flex flex-col justify-between gap-6">
             <div>
               <div className="font-mono text-[0.68rem] uppercase tracking-[0.34em] text-[#f0642f]">
-                medal share capsule
+                {t('eyebrow')}
               </div>
               <h2 className="mt-4 font-display text-4xl uppercase tracking-[0.08em] text-[#f4efe2]">
                 {medal.subtitle}
@@ -183,16 +191,14 @@ export default function MedalShareDialog({
                 {medal.title}
               </p>
               <p className="text-white/68 mt-5 max-w-xl text-sm leading-7">
-                This share card links straight to the medal verification page.
-                The destination page reloads Chronicle evidence and current Sui
-                medal ownership for the target wallet.
+                {t('body')}
               </p>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
               {[
                 {
-                  label: 'Copy Link',
+                  label: t('actions.copyLink'),
                   onClick: () => void handleCopy(),
                   shell: 'rgba(240,100,47,0.12)',
                   border: 'rgba(240,100,47,0.3)',
@@ -200,7 +206,7 @@ export default function MedalShareDialog({
                   variant: null,
                 },
                 {
-                  label: 'Download Card',
+                  label: t('actions.downloadCard'),
                   onClick: handleDownload,
                   shell: 'rgba(124,145,157,0.12)',
                   border: 'rgba(124,145,157,0.24)',
@@ -208,7 +214,7 @@ export default function MedalShareDialog({
                   variant: null,
                 },
                 {
-                  label: 'Share to X',
+                  label: t('actions.shareToX'),
                   onClick: handleShareToX,
                   shell: 'rgba(255,255,255,0.06)',
                   border: 'rgba(255,255,255,0.12)',
@@ -216,7 +222,7 @@ export default function MedalShareDialog({
                   variant: 'twitter' as ImageVariant,
                 },
                 {
-                  label: 'Share to Telegram',
+                  label: t('actions.shareToTelegram'),
                   onClick: handleShareToTelegram,
                   shell: 'rgba(78,205,196,0.12)',
                   border: 'rgba(78,205,196,0.24)',
@@ -224,7 +230,7 @@ export default function MedalShareDialog({
                   variant: 'opengraph' as ImageVariant,
                 },
                 {
-                  label: 'Share to Discord',
+                  label: t('actions.shareToDiscord'),
                   onClick: () => void handleShareToDiscord(),
                   shell: 'rgba(142,161,173,0.12)',
                   border: 'rgba(142,161,173,0.24)',
@@ -256,9 +262,7 @@ export default function MedalShareDialog({
                 background: 'rgba(255,255,255,0.03)',
               }}
             >
-              Scan the QR code on the card to reopen the live medal verification
-              page. The page recalculates Chronicle evidence and current medal
-              state instead of showing a static screenshot.
+              {t('notes.qr')}
             </div>
 
             <div
@@ -268,8 +272,7 @@ export default function MedalShareDialog({
                 background: 'rgba(255,255,255,0.03)',
               }}
             >
-              Discord uses a safe fallback: the dialog copies the medal link
-              first, then opens Discord so you can paste it directly into chat.
+              {t('notes.discord')}
             </div>
 
             <div
@@ -281,13 +284,13 @@ export default function MedalShareDialog({
               }}
             >
               <div className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-[#f0642f]">
-                share launch links
+                {t('shareLinks')}
               </div>
               <div className="mt-4 grid gap-3">
                 {[
-                  ['X Intent', xShareUrl],
-                  ['Telegram Share', telegramShareUrl],
-                  ['Discord Paste Flow', discordShareUrl],
+                  [t('launchLinks.xIntent'), xShareUrl],
+                  [t('launchLinks.telegramShare'), telegramShareUrl],
+                  [t('launchLinks.discordPasteFlow'), discordShareUrl],
                 ].map(([label, href]) => (
                   <a
                     key={label}
@@ -332,7 +335,10 @@ export default function MedalShareDialog({
             </div>
             <img
               src={imageUrl}
-              alt={`${medal.subtitle} share card preview — ${VARIANT_LABELS[previewVariant]}`}
+              alt={t('previewAlt', {
+                subtitle: medal.subtitle,
+                variant: VARIANT_LABELS[previewVariant],
+              })}
               className="block h-auto w-full rounded-[1rem]"
             />
           </section>

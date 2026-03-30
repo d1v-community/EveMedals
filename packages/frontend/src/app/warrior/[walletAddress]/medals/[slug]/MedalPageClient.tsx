@@ -1,9 +1,11 @@
 'use client'
 
+import { useLocale, useTranslations } from 'next-intl'
 import { useState } from 'react'
 import type { ChronicleMedalState, ChronicleSnapshot } from '~~/chronicle/types'
 import type { MedalDefinition } from '~~/chronicle/config/medals'
 import { getSuiExplorerUrl } from '~~/chronicle/helpers/sui'
+import { withLocale } from '~~/i18n/pathnames'
 import type { ENetwork } from '~~/types/ENetwork'
 import MedalShareDialog from '../../components/MedalShareDialog'
 
@@ -31,6 +33,10 @@ export default function MedalPageClient({
   status,
 }: MedalPageClientProps) {
   const [showShareDialog, setShowShareDialog] = useState(false)
+  const locale = useLocale()
+  const t = useTranslations('medalPage')
+  const homeHref = withLocale(locale, '/')
+  const warriorHref = withLocale(locale, `/warrior/${walletAddress}?network=${network}`)
 
   return (
     <>
@@ -43,15 +49,15 @@ export default function MedalPageClient({
       >
         <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
           <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.24em] text-white/45">
-            <a href="/" className="transition-opacity hover:opacity-60">
-              Frontier Chronicle
+            <a href={homeHref} className="transition-opacity hover:opacity-60">
+              {t('breadcrumb.home')}
             </a>
             <span>•</span>
             <a
-              href={`/warrior/${walletAddress}?network=${network}`}
+              href={warriorHref}
               className="transition-opacity hover:opacity-60"
             >
-              Warrior Profile
+              {t('breadcrumb.warrior')}
             </a>
           </div>
 
@@ -59,7 +65,7 @@ export default function MedalPageClient({
             <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-2xl">
                 <div className="font-mono text-[0.68rem] uppercase tracking-[0.34em] text-[#f0642f]">
-                  medal verification record
+                  {t('eyebrow')}
                 </div>
                 <h1 className="mt-4 font-display text-4xl uppercase tracking-[0.08em] text-[#f4efe2] sm:text-5xl">
                   {definition.subtitle}
@@ -68,8 +74,7 @@ export default function MedalPageClient({
                   {definition.title}
                 </p>
                 <p className="mt-5 max-w-2xl text-base leading-8 text-white/70">
-                  {status.summary} This page reloads the latest Chronicle snapshot and
-                  Sui ownership state for the target wallet each time it opens.
+                  {status.summary} {t('summarySuffix')}
                 </p>
               </div>
 
@@ -87,9 +92,9 @@ export default function MedalPageClient({
 
             <div className="mt-8 grid gap-4 md:grid-cols-3">
               {[
-                ['Wallet', snapshot.profile.walletAddress],
-                ['Network', network.toUpperCase()],
-                ['Character', snapshot.profile.characterId || 'Unavailable'],
+                [t('stats.wallet'), snapshot.profile.walletAddress],
+                [t('stats.network'), network.toUpperCase()],
+                [t('stats.character'), snapshot.profile.characterId || t('stats.unavailable')],
               ].map(([label, value]) => (
                 <div
                   key={label}
@@ -113,14 +118,14 @@ export default function MedalPageClient({
           <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
             <article className="sds-panel rounded-[1.8rem] border px-6 py-6">
               <div className="font-mono text-[0.62rem] uppercase tracking-[0.28em] text-white/42">
-                indexed evidence
+                {t('evidenceTitle')}
               </div>
               <div className="mt-4 text-base leading-8 text-[#f4efe2]/76">
-                {medal.proof || 'Chronicle has not published an evidence string for this medal yet.'}
+                {medal.proof || t('evidenceFallback')}
               </div>
 
               <div className="mt-8 font-mono text-[0.62rem] uppercase tracking-[0.28em] text-white/42">
-                requirement
+                {t('requirementTitle')}
               </div>
               <div className="mt-4 text-base leading-8 text-[#f4efe2]/76">
                 {definition.requirement}
@@ -129,12 +134,12 @@ export default function MedalPageClient({
 
             <article className="sds-panel rounded-[1.8rem] border px-6 py-6">
               <div className="font-mono text-[0.62rem] uppercase tracking-[0.28em] text-white/42">
-                medal state
+                {t('stateTitle')}
               </div>
               <div className="mt-4 flex flex-wrap gap-3">
                 {[
-                  `${definition.rarity} Medal`,
-                  medal.claimed ? 'Bound' : medal.unlocked ? 'Verified' : 'Locked',
+                  t('chips.rarity', { rarity: definition.rarity }),
+                  medal.claimed ? t('chips.bound') : medal.unlocked ? t('chips.verified') : t('chips.locked'),
                   `${medal.progressCurrent} / ${medal.progressTarget}`,
                 ].map((label) => (
                   <span
@@ -152,19 +157,19 @@ export default function MedalPageClient({
               </div>
 
               <div className="mt-8 text-sm leading-7 text-white/62">
-                如果这个链接来自社交平台预览图，落地到这里以后看到的不是静态截图，而是重新计算过的 Chronicle 快照与链上归属状态。
+                {t('liveNote')}
               </div>
 
               <div className="mt-8 flex flex-wrap gap-3">
                 <a
-                  href={`/warrior/${walletAddress}?network=${network}`}
+                  href={warriorHref}
                   className="rounded-full border px-4 py-2 font-mono text-[0.68rem] uppercase tracking-[0.22em] text-[#f4efe2] transition-opacity hover:opacity-70"
                   style={{
                     borderColor: 'rgba(255,255,255,0.12)',
                     background: 'rgba(255,255,255,0.04)',
                   }}
                 >
-                  Open Warrior Profile
+                  {t('actions.openWarrior')}
                 </a>
                 <button
                   type="button"
@@ -176,7 +181,7 @@ export default function MedalPageClient({
                     background: 'rgba(240,100,47,0.12)',
                   }}
                 >
-                  Share Medal
+                  {t('actions.shareMedal')}
                 </button>
                 {medal.claimed && (
                   <a
@@ -190,7 +195,7 @@ export default function MedalPageClient({
                       background: 'rgba(105,184,247,0.12)',
                     }}
                   >
-                    View on Sui Explorer ↗
+                    {t('actions.viewExplorer')}
                   </a>
                 )}
               </div>

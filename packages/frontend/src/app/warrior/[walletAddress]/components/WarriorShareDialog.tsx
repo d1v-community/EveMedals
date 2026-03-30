@@ -1,9 +1,14 @@
 'use client'
 
+import { useLocale, useTranslations } from 'next-intl'
 import { useEffect, useMemo, useState } from 'react'
 import { notification } from '~~/helpers/notification'
 import type { ENetwork } from '~~/types/ENetwork'
-import { buildWarriorImagePath, buildWarriorSharePath } from '~~/warrior/share'
+import {
+  buildWarriorImagePath,
+  buildWarriorSharePath,
+  generateWarriorShareText,
+} from '~~/warrior/share'
 import {
   copyShareValue,
   downloadShareAsset,
@@ -34,6 +39,8 @@ export default function WarriorShareDialog({
   onClose,
 }: WarriorShareDialogProps) {
   const [variant, setVariant] = useState<PreviewVariant>('opengraph')
+  const locale = useLocale()
+  const t = useTranslations('warriorShareDialog')
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow
@@ -54,15 +61,33 @@ export default function WarriorShareDialog({
   }, [onClose])
 
   const origin = typeof window === 'undefined' ? '' : window.location.origin
-  const sharePath = buildWarriorSharePath(walletAddress, network)
-  const imagePath = buildWarriorImagePath(walletAddress, network, variant)
+  const sharePath = buildWarriorSharePath(walletAddress, network, { locale })
+  const imagePath = buildWarriorImagePath(walletAddress, network, variant, {
+    locale,
+  })
   const shareUrl = `${origin}${sharePath}`
   const imageUrl = `${origin}${imagePath}`
 
   const shareText = useMemo(
     () =>
-      `${rankTitle} (${rankTitleZh}) · Combat Score ${score.toLocaleString()} · ${claimedMedalCount}/${totalMedalCount} medals bound in Frontier Chronicle on Sui ${network.toUpperCase()}.`,
-    [claimedMedalCount, network, rankTitle, rankTitleZh, score, totalMedalCount]
+      generateWarriorShareText({
+        locale,
+        rankTitle,
+        rankTitleZh,
+        score,
+        claimedMedalCount,
+        totalMedalCount,
+        network,
+      }),
+    [
+      claimedMedalCount,
+      locale,
+      network,
+      rankTitle,
+      rankTitleZh,
+      score,
+      totalMedalCount,
+    ]
   )
 
   const handleCopy = async ({
@@ -73,12 +98,12 @@ export default function WarriorShareDialog({
     const copied = await copyShareValue(shareUrl)
 
     if (!copied) {
-      notification.error(null, 'Failed to copy the warrior link')
+      notification.error(null, t('toast.copyFailed'))
       return false
     }
 
     if (!quiet) {
-      notification.success('Warrior link copied to clipboard')
+      notification.success(t('toast.copied'))
     }
 
     return true
@@ -109,7 +134,7 @@ export default function WarriorShareDialog({
     }
 
     openShareWindow('https://discord.com/channels/@me')
-    notification.success('Warrior link copied. Paste it into Discord.')
+    notification.success(t('toast.discordCopied'))
   }
 
   return (
@@ -128,7 +153,7 @@ export default function WarriorShareDialog({
       >
         <button
           type="button"
-          aria-label="Close warrior share dialog"
+          aria-label={t('closeAria')}
           onClick={onClose}
           className="text-white/62 absolute right-4 top-4 rounded-full border px-3 py-2 font-mono text-[0.62rem] uppercase tracking-[0.2em] transition-opacity hover:opacity-70"
           style={{
@@ -136,14 +161,14 @@ export default function WarriorShareDialog({
             background: 'rgba(255,255,255,0.04)',
           }}
         >
-          Close
+          {t('close')}
         </button>
 
         <div className="grid gap-6 p-6 lg:grid-cols-[0.92fr_1.08fr] lg:p-8">
           <section className="flex flex-col justify-between gap-6">
             <div>
               <div className="font-mono text-[0.68rem] uppercase tracking-[0.34em] text-[#f0642f]">
-                warrior social capsule
+                {t('eyebrow')}
               </div>
               <h2 className="mt-4 font-display text-4xl uppercase tracking-[0.08em] text-[#f4efe2] sm:text-5xl">
                 {rankTitle}
@@ -152,9 +177,7 @@ export default function WarriorShareDialog({
                 {rankTitleZh}
               </p>
               <p className="text-white/68 mt-5 max-w-xl text-sm leading-7">
-                This profile card carries the warrior summary, medal highlights,
-                and an embedded QR code that sends viewers straight back to the
-                live warrior page.
+                {t('body')}
               </p>
             </div>
 
@@ -166,19 +189,19 @@ export default function WarriorShareDialog({
               }}
             >
               <div className="text-white/42 font-mono text-[0.62rem] uppercase tracking-[0.28em]">
-                preview format
+                {t('previewFormat')}
               </div>
               <div className="mt-4 flex flex-wrap gap-3">
                 {[
                   {
-                    label: 'OG 1200×630',
+                    label: t('variants.opengraph.label'),
                     value: 'opengraph' as const,
-                    hint: 'Discord / Telegram / preview bots',
+                    hint: t('variants.opengraph.hint'),
                   },
                   {
-                    label: 'X 1200×600',
+                    label: t('variants.twitter.label'),
                     value: 'twitter' as const,
-                    hint: 'Twitter summary large image',
+                    hint: t('variants.twitter.hint'),
                   },
                 ].map((option) => {
                   const active = variant === option.value
@@ -217,35 +240,35 @@ export default function WarriorShareDialog({
             <div className="grid gap-3 sm:grid-cols-2">
               {[
                 {
-                  label: 'Copy Link',
+                  label: t('actions.copyLink'),
                   onClick: () => void handleCopy(),
                   shell: 'rgba(240,100,47,0.12)',
                   border: 'rgba(240,100,47,0.3)',
                   color: '#f0642f',
                 },
                 {
-                  label: 'Download Card',
+                  label: t('actions.downloadCard'),
                   onClick: handleDownload,
                   shell: 'rgba(124,145,157,0.12)',
                   border: 'rgba(124,145,157,0.24)',
                   color: '#d7e0e5',
                 },
                 {
-                  label: 'Share to X',
+                  label: t('actions.shareToX'),
                   onClick: handleShareToX,
                   shell: 'rgba(255,255,255,0.06)',
                   border: 'rgba(255,255,255,0.12)',
                   color: '#f4efe2',
                 },
                 {
-                  label: 'Share to Telegram',
+                  label: t('actions.shareToTelegram'),
                   onClick: handleShareToTelegram,
                   shell: 'rgba(78,205,196,0.12)',
                   border: 'rgba(78,205,196,0.24)',
                   color: '#4ecdc4',
                 },
                 {
-                  label: 'Share to Discord',
+                  label: t('actions.shareToDiscord'),
                   onClick: () => void handleShareToDiscord(),
                   shell: 'rgba(142,161,173,0.12)',
                   border: 'rgba(142,161,173,0.24)',
@@ -275,9 +298,7 @@ export default function WarriorShareDialog({
                 background: 'rgba(255,255,255,0.03)',
               }}
             >
-              Scan the QR code on the card to reopen the live warrior page with the
-              selected network in the URL, then continue into medal verification
-              from there.
+              {t('notes.qr')}
             </div>
 
             <div
@@ -287,9 +308,7 @@ export default function WarriorShareDialog({
                 background: 'rgba(255,255,255,0.03)',
               }}
             >
-              Discord still uses the safe fallback: copy first, then open the
-              chat surface so the link can be pasted without relying on
-              unsupported deep share APIs.
+              {t('notes.discord')}
             </div>
           </section>
 
@@ -299,7 +318,7 @@ export default function WarriorShareDialog({
           >
             <img
               src={imageUrl}
-              alt={`${rankTitle} warrior share card preview`}
+              alt={t('previewAlt', { rankTitle })}
               className="block h-auto w-full rounded-[1rem]"
             />
           </section>

@@ -2,6 +2,7 @@
 
 import { useCurrentAccount } from '@mysten/dapp-kit'
 import Link from 'next/link'
+import {useTranslations} from 'next-intl'
 
 const MOCK_MEDALS = [
   { label: 'Bloodlust Butcher', tone: '#e63946', claimed: true },
@@ -14,31 +15,32 @@ const MOCK_MEDALS = [
   { label: 'Fuel Feeder', tone: '#8ea1ad', claimed: false },
 ]
 
-const USE_CASES = [
-  {
-    icon: '🛡',
-    title: 'Alliance Recruitment',
-    desc: 'Share your card with fleet commanders to prove cross-domain capability.',
-  },
-  {
-    icon: '📋',
-    title: 'Employer Verification',
-    desc: 'Let corps verify your record without trusting self-reported stats.',
-  },
-  {
-    icon: '📊',
-    title: 'Community Standing',
-    desc: 'Your score is persistent, public, and tamper-proof on-chain.',
-  },
-]
-
 export default function WarriorCallout() {
   const account = useCurrentAccount()
+  const t = useTranslations('warrior')
+
+  const useCases = [
+    {
+      icon: '🛡',
+      title: t('useCases.allianceTitle'),
+      desc: t('useCases.allianceBody'),
+    },
+    {
+      icon: '📋',
+      title: t('useCases.employerTitle'),
+      desc: t('useCases.employerBody'),
+    },
+    {
+      icon: '📊',
+      title: t('useCases.communityTitle'),
+      desc: t('useCases.communityBody'),
+    },
+  ]
 
   return (
     <section
       id="warrior-card"
-      className="relative py-24 px-4 sm:px-8"
+      className="relative px-4 py-24 sm:px-8"
       style={{ background: 'var(--sds-dark)' }}
     >
       <div
@@ -46,32 +48,29 @@ export default function WarriorCallout() {
         style={{ opacity: 0.03 }}
       />
 
-      <div className="max-w-5xl mx-auto">
-        {/* Section header */}
+      <div className="mx-auto max-w-5xl">
         <div className="mb-14 sds-reveal">
           <p
-            className="text-xs uppercase tracking-widest mb-3"
+            className="mb-3 text-xs uppercase tracking-widest"
             style={{ color: '#f0642f', fontFamily: 'var(--sds-font-mono)' }}
           >
-            Warrior Profile Card
+            {t('eyebrow')}
           </p>
           <h2
-            className="text-2xl sm:text-3xl font-bold uppercase tracking-wide leading-tight mb-4"
-            style={{ color: '#f3ede2', fontFamily: 'var(--sds-font-display)', maxWidth: 520 }}
+            className="mb-4 text-2xl font-bold uppercase tracking-wide leading-tight sm:text-3xl"
+            style={{ color: '#f3ede2', fontFamily: 'var(--sds-font-display)', maxWidth: 620 }}
           >
-            可分享的边境身份：让对方看到的是链上验证的实力。
+            {t('title')}
           </h2>
           <p
-            className="text-sm max-w-lg"
+            className="max-w-2xl text-sm"
             style={{ color: 'rgba(255,255,255,0.45)', fontFamily: 'var(--sds-font-mono)', lineHeight: 1.75 }}
           >
-            每位玩家都拥有一张专属档案卡，包含战力评分、军衔称号和所有勋章记录。
-            复制链接，发到 Discord，任何人都能即时验证你的 Frontier 资历。
+            {t('body')}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-          {/* Mock card preview */}
+        <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-2">
           <div
             className="sds-panel relative overflow-hidden sds-reveal"
             style={{
@@ -82,10 +81,9 @@ export default function WarriorCallout() {
           >
             <div className="sds-scanline pointer-events-none" />
 
-            {/* Header */}
             <div className="mb-5">
               <p
-                className="text-xs uppercase tracking-widest mb-1"
+                className="mb-1 text-xs uppercase tracking-widest"
                 style={{ color: 'rgba(255,255,255,0.3)', fontFamily: 'var(--sds-font-mono)' }}
               >
                 Frontier Chronicle · Warrior Profile
@@ -97,12 +95,11 @@ export default function WarriorCallout() {
                 Frontier Marshal
               </p>
               <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)', fontFamily: 'var(--sds-font-mono)' }}>
-                边境元帅 · Tier 6
+                Tier 6 · Command Rank
               </p>
             </div>
 
-            {/* Mock score */}
-            <div className="flex items-center gap-4 mb-5">
+            <div className="mb-5 flex items-center gap-4">
               <div
                 className="flex flex-col items-center justify-center rounded"
                 style={{
@@ -129,58 +126,56 @@ export default function WarriorCallout() {
                 className="flex-1 rounded p-3"
                 style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', fontFamily: 'var(--sds-font-mono)' }}
               >
-                <div className="flex justify-between mb-1">
-                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>WALLET</span>
+                <div className="mb-1 flex justify-between">
+                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>{t('wallet')}</span>
                   <span className="text-xs" style={{ color: '#f3ede2' }}>0x1a2b...ef90</span>
                 </div>
-                <div className="flex justify-between mb-1">
-                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>NETWORK</span>
+                <div className="mb-1 flex justify-between">
+                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>{t('network')}</span>
                   <span className="text-xs" style={{ color: '#f3ede2' }}>TESTNET</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>MEDALS BOUND</span>
+                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>{t('medalsBound')}</span>
                   <span className="text-xs" style={{ color: '#f0642f' }}>2 / 8</span>
                 </div>
               </div>
             </div>
 
-            {/* Mock medals */}
-            <div className="flex gap-3 mb-5">
-              {MOCK_MEDALS.map((m) => (
+            <div className="mb-5 flex gap-3">
+              {MOCK_MEDALS.map((medal) => (
                 <div
-                  key={m.label}
+                  key={medal.label}
                   className="flex flex-col items-center gap-1"
-                  title={m.label}
+                  title={medal.label}
                 >
                   <div
                     style={{
                       width: 40,
                       height: 40,
                       borderRadius: 6,
-                      background: m.claimed ? `rgba(${hexToRgb(m.tone)}, 0.12)` : 'rgba(255,255,255,0.04)',
-                      border: `1px solid ${m.claimed ? `rgba(${hexToRgb(m.tone)}, 0.4)` : 'rgba(255,255,255,0.08)'}`,
+                      background: medal.claimed ? `rgba(${hexToRgb(medal.tone)}, 0.12)` : 'rgba(255,255,255,0.04)',
+                      border: `1px solid ${medal.claimed ? `rgba(${hexToRgb(medal.tone)}, 0.4)` : 'rgba(255,255,255,0.08)'}`,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      opacity: m.claimed ? 1 : 0.4,
+                      opacity: medal.claimed ? 1 : 0.4,
                     }}
                   >
-                    <span style={{ fontSize: 10, color: m.tone }}>◈</span>
+                    <span style={{ fontSize: 10, color: medal.tone }}>◈</span>
                   </div>
-                  <span style={{ fontSize: 8, color: m.claimed ? '#7ec38f' : 'rgba(255,255,255,0.2)', fontFamily: 'var(--sds-font-mono)' }}>
-                    {m.claimed ? 'BOUND' : 'LOCKED'}
+                  <span style={{ fontSize: 8, color: medal.claimed ? '#7ec38f' : 'rgba(255,255,255,0.2)', fontFamily: 'var(--sds-font-mono)' }}>
+                    {medal.claimed ? 'BOUND' : 'LOCKED'}
                   </span>
                 </div>
               ))}
             </div>
 
-            {/* Footer */}
             <div
-              className="pt-3 flex items-center justify-between"
+              className="flex items-center justify-between pt-3"
               style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
             >
               <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.2)', fontFamily: 'var(--sds-font-mono)' }}>
-                Frontier Chronicle · Verified on Sui
+                Frontier Chronicle · {t('verified')}
               </span>
               <span
                 className="sds-system-chip text-xs px-2 py-0.5"
@@ -190,9 +185,8 @@ export default function WarriorCallout() {
               </span>
             </div>
 
-            {/* Preview label */}
             <div
-              className="absolute top-3 right-3 text-xs px-2 py-0.5 rounded"
+              className="absolute right-3 top-3 rounded px-2 py-0.5 text-xs"
               style={{
                 background: 'rgba(255,255,255,0.06)',
                 color: 'rgba(255,255,255,0.3)',
@@ -201,47 +195,45 @@ export default function WarriorCallout() {
                 letterSpacing: '0.1em',
               }}
             >
-              PREVIEW
+              {t('preview')}
             </div>
           </div>
 
-          {/* Use cases + CTA */}
           <div className="flex flex-col gap-6 sds-reveal" style={{ animationDelay: '120ms' }}>
             <div className="flex flex-col gap-4">
-              {USE_CASES.map((uc) => (
+              {useCases.map((item) => (
                 <div
-                  key={uc.title}
-                  className="flex items-start gap-4 p-4 rounded"
+                  key={item.title}
+                  className="flex items-start gap-4 rounded p-4"
                   style={{
                     background: 'rgba(255,255,255,0.03)',
                     border: '1px solid rgba(255,255,255,0.07)',
                   }}
                 >
-                  <span className="text-2xl flex-shrink-0">{uc.icon}</span>
+                  <span className="text-2xl flex-shrink-0">{item.icon}</span>
                   <div>
                     <p
-                      className="text-sm font-bold mb-1"
+                      className="mb-1 text-sm font-bold"
                       style={{ color: '#f3ede2', fontFamily: 'var(--sds-font-mono)' }}
                     >
-                      {uc.title}
+                      {item.title}
                     </p>
                     <p
                       className="text-xs"
                       style={{ color: 'rgba(255,255,255,0.45)', fontFamily: 'var(--sds-font-mono)', lineHeight: 1.6 }}
                     >
-                      {uc.desc}
+                      {item.desc}
                     </p>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* CTA */}
             <div className="flex flex-col gap-3">
               {account ? (
                 <Link
                   href={`/warrior/${account.address}`}
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 text-sm uppercase tracking-widest font-bold transition-all hover:opacity-85 active:scale-95"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-bold uppercase tracking-widest transition-all hover:opacity-85 active:scale-95"
                   style={{
                     background: '#f0642f',
                     color: '#111315',
@@ -250,7 +242,7 @@ export default function WarriorCallout() {
                     textDecoration: 'none',
                   }}
                 >
-                  Generate My Card →
+                  {t('generate')}
                 </Link>
               ) : (
                 <div className="flex flex-col gap-2">
@@ -258,29 +250,10 @@ export default function WarriorCallout() {
                     className="text-xs"
                     style={{ color: 'rgba(255,255,255,0.4)', fontFamily: 'var(--sds-font-mono)' }}
                   >
-                    Connect your wallet to generate your warrior card.
+                    {t('connectHint')}
                   </p>
-                  <a
-                    href="#chronicle-command"
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3 text-sm uppercase tracking-widest font-bold transition-all hover:opacity-85"
-                    style={{
-                      border: '1px solid rgba(240,100,47,0.45)',
-                      color: '#f0642f',
-                      fontFamily: 'var(--sds-font-mono)',
-                      borderRadius: 4,
-                      textDecoration: 'none',
-                    }}
-                  >
-                    Connect Wallet →
-                  </a>
                 </div>
               )}
-              <p
-                className="text-xs"
-                style={{ color: 'rgba(255,255,255,0.25)', fontFamily: 'var(--sds-font-mono)' }}
-              >
-                Your card URL: frontier-chronicle.xyz/warrior/0x...
-              </p>
             </div>
           </div>
         </div>

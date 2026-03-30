@@ -1,14 +1,19 @@
 'use client'
 
+import { useLocale, useTranslations } from 'next-intl'
 import { useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import type { ChronicleMedalState } from '~~/chronicle/types'
+import { withLocale } from '~~/i18n/pathnames'
 import type { ENetwork } from '~~/types/ENetwork'
+import { resolveMockClaimedSlugs } from '~~/warrior/share'
 import MedalShareDialog from './MedalShareDialog'
 
 interface MedalRosterProps {
   medals: ChronicleMedalState[]
   walletAddress: string
   network: ENetwork
+  isMockMode?: boolean
 }
 
 const TONE_COLORS: Record<string, { active: string; glow: string }> = {
@@ -60,14 +65,63 @@ const MedalIcon = ({ slug, active }: { slug: string; active: boolean }) => {
   )
 }
 
+// Spinning ring for minting animation
+const MintingSpinner = ({ color }: { color: string }) => (
+  <svg viewBox="0 0 24 24" width="36" height="36" fill="none">
+    <circle
+      cx="12"
+      cy="12"
+      r="9"
+      stroke={color}
+      strokeWidth="1.5"
+      strokeDasharray="28 14"
+      strokeLinecap="round"
+      style={{
+        animation: 'spin 0.9s linear infinite',
+        transformOrigin: '12px 12px',
+        opacity: 0.8,
+      }}
+    />
+    <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+  </svg>
+)
+
 export default function MedalRoster({
   medals,
   walletAddress,
   network,
+  isMockMode = false,
 }: MedalRosterProps) {
-  const [selectedMedal, setSelectedMedal] = useState<ChronicleMedalState | null>(
-    null
-  )
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const locale = useLocale()
+  const t = useTranslations('medalRoster')
+  const [selectedMedal, setSelectedMedal] = useState<ChronicleMedalState | null>(null)
+  const [mintingSlug, setMintingSlug] = useState<string | null>(null)
+  const [localClaimedSlugs, setLocalClaimedSlugs] = useState<Set<string>>(new Set())
+
+  const isEffectivelyClaimed = (medal: ChronicleMedalState) =>
+    medal.claimed || localClaimedSlugs.has(medal.slug)
+
+  const getAllClaimedSlugs = (): string[] => {
+    const fromUrl = resolveMockClaimedSlugs(searchParams.get('claimed') ?? undefined)
+    return [...new Set([...fromUrl, ...Array.from(localClaimedSlugs)])]
+  }
+
+  const runMockMint = (medal: ChronicleMedalState) => {
+    setMintingSlug(medal.slug)
+    setTimeout(() => {
+      setMintingSlug(null)
+      setLocalClaimedSlugs((prev) => new Set([...prev, medal.slug]))
+      // Persist to URL so the state survives a refresh
+      const claimed = resolveMockClaimedSlugs(searchParams.get('claimed') ?? undefined)
+      const next = new URLSearchParams(searchParams.toString())
+      next.set('claimed', [...new Set([...claimed, medal.slug])].join(','))
+      router.replace(withLocale(locale, `/warrior/${walletAddress}?${next.toString()}`))
+      // Open share dialog with the medal marked as claimed
+      setSelectedMedal({ ...medal, claimed: true })
+    }, 1500)
+  }
 
   return (
     <>
@@ -76,11 +130,14 @@ export default function MedalRoster({
           className="text-xs uppercase tracking-widest"
           style={{ color: 'rgba(255,255,255,0.4)', fontFamily: 'var(--sds-font-mono)' }}
         >
-          Medal Record
+          {t('title')}
         </p>
         <div className="flex flex-wrap items-center gap-4">
           {medals.map((medal) => {
-            const active = medal.claimed || medal.unlocked
+            const effectivelyClaimed = isEffectivelyClaimed(medal)
+            const isMinting = mintingSlug === medal.slug
+            const canMockMint = isMockMode && medal.unlocked && !effectivelyClaimed && !isMinting
+            const active = effectivelyClaimed || medal.unlocked
             const tone = MEDAL_TONE_MAP[medal.slug] || 'steel'
             const { active: color } = TONE_COLORS[tone]
 
@@ -89,34 +146,46 @@ export default function MedalRoster({
                 key={medal.slug}
                 type="button"
                 className="flex flex-col items-center gap-1.5 bg-transparent p-0 text-left"
-                title={`${medal.title} — ${medal.claimed ? 'Bound' : medal.unlocked ? 'Verified' : 'Locked'}`}
-                disabled={!medal.claimed}
-                onClick={() => medal.claimed && setSelectedMedal(medal)}
+                title={`${medal.title} — ${effectivelyClaimed ? t('status.bound') : medal.unlocked ? t('status.verified') : t('status.locked')}`}
+                disabled={!effectivelyClaimed && !canMockMint}
+                onClick={() => {
+                  if (effectivelyClaimed) {
+                    setSelectedMedal({ ...medal, claimed: true })
+                  } else if (canMockMint) {
+                    runMockMint(medal)
+                  }
+                }}
                 style={{
-                  cursor: medal.claimed ? 'pointer' : 'default',
+                  cursor: (effectivelyClaimed || canMockMint) ? 'pointer' : 'default',
                 }}
               >
                 <div
                   style={{
                     padding: '10px',
                     borderRadius: '8px',
-                    background: medal.claimed
+                    background: effectivelyClaimed
                       ? `rgba(${hexToRgb(color)}, 0.1)`
-                      : 'rgba(255,255,255,0.04)',
-                    border: `1px solid ${medal.claimed ? `rgba(${hexToRgb(color)}, 0.35)` : 'rgba(255,255,255,0.08)'}`,
+                      : isMinting
+                        ? `rgba(${hexToRgb(color)}, 0.06)`
+                        : 'rgba(255,255,255,0.04)',
+                    border: `1px solid ${effectivelyClaimed ? `rgba(${hexToRgb(color)}, 0.35)` : isMinting ? `rgba(${hexToRgb(color)}, 0.2)` : 'rgba(255,255,255,0.08)'}`,
                     opacity: active ? 1 : 0.4,
                     transition: 'all 0.3s',
-                    boxShadow: medal.claimed
+                    boxShadow: effectivelyClaimed
                       ? `0 0 0 1px rgba(${hexToRgb(color)}, 0.08), 0 10px 24px rgba(${hexToRgb(color)}, 0.16)`
                       : 'none',
                   }}
                 >
-                  <MedalIcon slug={medal.slug} active={medal.claimed} />
+                  {isMinting ? (
+                    <MintingSpinner color={color} />
+                  ) : (
+                    <MedalIcon slug={medal.slug} active={effectivelyClaimed} />
+                  )}
                 </div>
                 <span
                   className="max-w-[64px] text-center text-xs"
                   style={{
-                    color: medal.claimed ? color : 'rgba(255,255,255,0.3)',
+                    color: effectivelyClaimed ? color : 'rgba(255,255,255,0.3)',
                     fontFamily: 'var(--sds-font-mono)',
                     fontSize: '9px',
                     lineHeight: 1.3,
@@ -128,27 +197,43 @@ export default function MedalRoster({
                   style={{
                     fontSize: '8px',
                     fontFamily: 'var(--sds-font-mono)',
-                    color: medal.claimed
+                    color: effectivelyClaimed
                       ? '#7ec38f'
-                      : medal.unlocked
-                        ? '#d9a441'
-                        : 'rgba(255,255,255,0.2)',
+                      : isMinting
+                        ? color
+                        : medal.unlocked
+                          ? '#d9a441'
+                          : 'rgba(255,255,255,0.2)',
                     textTransform: 'uppercase',
                     letterSpacing: '0.1em',
                   }}
                 >
-                  {medal.claimed ? 'BOUND' : medal.unlocked ? 'VERIFIED' : 'LOCKED'}
+                  {isMinting
+                    ? t('status.minting')
+                    : effectivelyClaimed
+                      ? t('status.bound')
+                      : medal.unlocked
+                        ? t('status.verified')
+                        : t('status.locked')}
                 </span>
                 <span
                   style={{
                     fontSize: '8px',
                     fontFamily: 'var(--sds-font-mono)',
-                    color: medal.claimed ? 'rgba(240,100,47,0.72)' : 'transparent',
+                    color: effectivelyClaimed
+                      ? 'rgba(240,100,47,0.72)'
+                      : canMockMint
+                        ? 'rgba(240,100,47,0.55)'
+                        : 'transparent',
                     letterSpacing: '0.16em',
                     textTransform: 'uppercase',
                   }}
                 >
-                  {medal.claimed ? 'Tap to share' : 'No share'}
+                  {effectivelyClaimed
+                    ? t('action.tapToShare')
+                    : canMockMint
+                      ? t('action.tapToMint')
+                      : t('action.noShare')}
                 </span>
               </button>
             )
@@ -160,6 +245,8 @@ export default function MedalRoster({
           medal={selectedMedal}
           walletAddress={walletAddress}
           network={network}
+          isMockMode={isMockMode}
+          mockClaimedSlugs={getAllClaimedSlugs()}
           onClose={() => setSelectedMedal(null)}
         />
       ) : null}

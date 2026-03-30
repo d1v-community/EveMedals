@@ -25,6 +25,16 @@ export interface MedalShareCardModel {
   rarity: string
   requirement: string
   proofLabel: string
+  labels: {
+    eyebrow: string
+    evidence: string
+    rarity: string
+    requirement: string
+    wallet: string
+    character: string
+    qrAlt: string
+    qrHint: string
+  }
   walletAddressShort: string
   characterId: string | null
   network: string
@@ -33,6 +43,119 @@ export interface MedalShareCardModel {
   shareUrl: string
   qrCodeDataUrl: string
   tone: MedalShareCardTone
+}
+
+const resolveLocale = (locale?: string) =>
+  locale === 'zh-CN' || locale === 'is' ? locale : 'en'
+
+const getMedalShareCopy = (locale?: string) => {
+  switch (resolveLocale(locale)) {
+    case 'zh-CN':
+      return {
+        fallbackTitle: '勋章快照',
+        fallbackTitleZh: '勋章快照',
+        unavailable: '暂不可用',
+        fallbackRequirement: '当前无法提供这枚勋章快照。',
+        fallbackProof:
+          '当前无法加载这枚勋章的快照数据。',
+        fallbackStatus: '快照不可用',
+        fallbackSummary: 'Frontier Chronicle 现在无法验证这枚勋章快照。',
+        statuses: {
+          bound: {
+            label: '链上绑定',
+            summary: '这枚勋章当前已经绑定到该钱包的 Sui 地址上。',
+          },
+          verified: {
+            label: '索引已验证',
+            summary: 'Chronicle 已验证行为，但它还没有上链绑定。',
+          },
+          locked: {
+            label: '未解锁',
+            summary: 'Chronicle 还没有为这枚勋章索引到足够的边境证据。',
+          },
+        },
+        labels: {
+          eyebrow: 'Frontier Chronicle · 勋章验证',
+          evidence: 'Chronicle 证据',
+          rarity: '稀有度',
+          requirement: '达成条件',
+          wallet: '钱包',
+          character: '角色',
+          qrAlt: '勋章验证二维码',
+          qrHint: '扫码打开勋章验证页',
+        },
+      }
+    case 'is':
+      return {
+        fallbackTitle: 'Medal Snapshot',
+        fallbackTitleZh: 'Medal Snapshot',
+        unavailable: 'Ófáanlegt',
+        fallbackRequirement: 'Þessi medalíumynd er ekki tiltæk í augnablikinu.',
+        fallbackProof: 'Ekki tókst að hlaða snapshot gögnum fyrir þessa medalíu núna.',
+        fallbackStatus: 'Snapshot ófáanlegt',
+        fallbackSummary: 'Frontier Chronicle gat ekki staðfest þessa medalíumynd í augnablikinu.',
+        statuses: {
+          bound: {
+            label: 'BUNDIÐ Á KEÐJU',
+            summary: 'Þessi medalía er nú bundin við veskið á Sui.',
+          },
+          verified: {
+            label: 'VIRKNI STAÐFEST',
+            summary: 'Chronicle hefur staðfest virknina, en hún er ekki enn bundin á keðju.',
+          },
+          locked: {
+            label: 'LÆST',
+            summary: 'Chronicle hefur ekki enn skráð nægilega Frontier sönnun fyrir þessa medalíu.',
+          },
+        },
+        labels: {
+          eyebrow: 'Frontier Chronicle · Medal Verification',
+          evidence: 'Chronicle Evidence',
+          rarity: 'Rarity',
+          requirement: 'Requirement',
+          wallet: 'Wallet',
+          character: 'Character',
+          qrAlt: 'Medal verification QR code',
+          qrHint: 'Scan to open the medal verification page',
+        },
+      }
+    default:
+      return {
+        fallbackTitle: 'Medal Snapshot',
+        fallbackTitleZh: 'Medal Snapshot',
+        unavailable: 'Unavailable',
+        fallbackRequirement: 'This medal snapshot is not currently available.',
+        fallbackProof: 'Snapshot data could not be loaded for this medal right now.',
+        fallbackStatus: 'SNAPSHOT UNAVAILABLE',
+        fallbackSummary: 'Frontier Chronicle could not verify this medal snapshot right now.',
+        statuses: {
+          bound: {
+            label: 'CHAIN BOUND',
+            summary: 'This medal is currently bound to the wallet on Sui.',
+          },
+          verified: {
+            label: 'INDEX VERIFIED',
+            summary:
+              'Chronicle has verified the activity, but it is not bound on-chain yet.',
+          },
+          locked: {
+            label: 'LOCKED',
+            summary:
+              'Chronicle has not indexed enough frontier evidence for this medal yet.',
+          },
+        },
+        labels: {
+          eyebrow: 'Frontier Chronicle · Medal Verification',
+          evidence: 'Chronicle Evidence',
+          rarity: 'Rarity',
+          requirement: 'Requirement',
+          wallet: 'Wallet',
+          character: 'Character',
+          qrAlt: 'Medal verification QR code',
+          qrHint: 'Scan to open the medal verification page',
+        },
+      }
+  }
 }
 
 export const MEDAL_OG_IMAGE_SIZE = {
@@ -96,32 +219,24 @@ const formatWalletAddress = (walletAddress: string | null) => {
   return `${walletAddress.slice(0, 8)}...${walletAddress.slice(-6)}`
 }
 
-const getMedalStatus = (medal: ChronicleMedalState) => {
+const getMedalStatus = (medal: ChronicleMedalState, locale?: string) => {
+  const copy = getMedalShareCopy(locale)
+
   if (medal.claimed) {
-    return {
-      label: 'CHAIN BOUND',
-      summary: 'This medal is currently bound to the wallet on Sui.',
-    }
+    return copy.statuses.bound
   }
 
   if (medal.unlocked) {
-    return {
-      label: 'INDEX VERIFIED',
-      summary:
-        'Chronicle has verified the activity, but it is not bound on-chain yet.',
-    }
+    return copy.statuses.verified
   }
 
-  return {
-    label: 'LOCKED',
-    summary:
-      'Chronicle has not indexed enough frontier evidence for this medal yet.',
-  }
+  return copy.statuses.locked
 }
 
-const truncateProof = (proof: string | null) => {
+const truncateProof = (proof: string | null, locale?: string) => {
+  const copy = getMedalShareCopy(locale)
   if (!proof || proof.trim().length === 0) {
-    return 'On-chain ownership verification is unavailable for this medal snapshot.'
+    return copy.fallbackProof
   }
 
   return proof.length > 132 ? `${proof.slice(0, 129)}...` : proof
@@ -137,12 +252,15 @@ export const buildMedalShareCardModel = async ({
   walletAddress,
   network,
   slug,
+  locale,
 }: {
   snapshot: ChronicleSnapshot
   walletAddress: string
   network: ENetwork
   slug: MedalSlug
+  locale?: string
 }): Promise<MedalShareCardModel> => {
+  const copy = getMedalShareCopy(locale)
   const medal = getSnapshotMedal(snapshot, slug)
   const definition = getMedalDefinitionBySlug(slug)
 
@@ -150,9 +268,9 @@ export const buildMedalShareCardModel = async ({
     throw new Error('Medal snapshot could not be resolved')
   }
 
-  const status = getMedalStatus(medal)
+  const status = getMedalStatus(medal, locale)
   const shareUrl = toAbsoluteSiteUrl(
-    buildMedalSharePath(walletAddress, slug, network)
+    buildMedalSharePath(walletAddress, slug, network, { locale })
   )
   const qrCodeDataUrl = await buildShareQrCodeDataUrl(shareUrl)
 
@@ -161,7 +279,8 @@ export const buildMedalShareCardModel = async ({
     titleZh: definition.title,
     rarity: definition.rarity,
     requirement: definition.requirement,
-    proofLabel: truncateProof(medal.proof),
+    proofLabel: truncateProof(medal.proof, locale),
+    labels: copy.labels,
     walletAddressShort: formatWalletAddress(walletAddress),
     characterId: snapshot.profile.characterId,
     network: network.toUpperCase(),
@@ -177,34 +296,36 @@ export const buildFallbackMedalShareCardModel = async ({
   walletAddress,
   network,
   slug,
+  locale,
 }: {
   walletAddress: string | null
   network: ENetwork
   slug: string
+  locale?: string
 }): Promise<MedalShareCardModel> => {
+  const copy = getMedalShareCopy(locale)
   const definition = getMedalDefinitionBySlug(slug)
   const shareUrl = toAbsoluteSiteUrl(
     walletAddress && definition
-      ? buildMedalSharePath(walletAddress, definition.slug, network)
+      ? buildMedalSharePath(walletAddress, definition.slug, network, { locale })
       : '/'
   )
   const qrCodeDataUrl = await buildShareQrCodeDataUrl(shareUrl)
   const tone = definition ? TONE_MAP[definition.tone] : TONE_MAP.steel
 
   return {
-    title: definition?.subtitle || 'Medal Snapshot',
-    titleZh: definition?.title || '勋章快照',
-    rarity: definition?.rarity || 'Unavailable',
+    title: definition?.subtitle || copy.fallbackTitle,
+    titleZh: definition?.title || copy.fallbackTitleZh,
+    rarity: definition?.rarity || copy.unavailable,
     requirement:
-      definition?.requirement ||
-      'This medal snapshot is not currently available.',
-    proofLabel: 'Snapshot data could not be loaded for this medal right now.',
+      definition?.requirement || copy.fallbackRequirement,
+    proofLabel: copy.fallbackProof,
+    labels: copy.labels,
     walletAddressShort: formatWalletAddress(walletAddress),
     characterId: null,
     network: network.toUpperCase(),
-    statusLabel: 'SNAPSHOT UNAVAILABLE',
-    statusSummary:
-      'Frontier Chronicle could not verify this medal snapshot right now.',
+    statusLabel: copy.fallbackStatus,
+    statusSummary: copy.fallbackSummary,
     shareUrl,
     qrCodeDataUrl,
     tone,
@@ -216,12 +337,15 @@ export const buildMedalPageMetadata = ({
   walletAddress,
   network,
   slug,
+  locale,
 }: {
   snapshot: ChronicleSnapshot
   walletAddress: string
   network: ENetwork
   slug: MedalSlug
+  locale?: string
 }): Metadata => {
+  const resolvedLocale = resolveLocale(locale)
   const medal = getSnapshotMedal(snapshot, slug)
   const definition = getMedalDefinitionBySlug(slug)
 
@@ -232,18 +356,27 @@ export const buildMedalPageMetadata = ({
     }
   }
 
-  const status = getMedalStatus(medal)
+  const status = getMedalStatus(medal, resolvedLocale)
   const canonicalUrl = toAbsoluteSiteUrl(
-    buildMedalSharePath(walletAddress, slug, network)
+    buildMedalSharePath(walletAddress, slug, network, { locale: resolvedLocale })
   )
   const ogImageUrl = toAbsoluteSiteUrl(
-    buildMedalImagePath(walletAddress, slug, network, 'opengraph')
+    buildMedalImagePath(walletAddress, slug, network, 'opengraph', {
+      locale: resolvedLocale,
+    })
   )
   const twitterImageUrl = toAbsoluteSiteUrl(
-    buildMedalImagePath(walletAddress, slug, network, 'twitter')
+    buildMedalImagePath(walletAddress, slug, network, 'twitter', {
+      locale: resolvedLocale,
+    })
   )
   const shortWallet = formatWalletAddress(walletAddress)
-  const description = `${definition.subtitle} · ${status.label} · ${shortWallet} · Sui ${network.toUpperCase()}`
+  const description =
+    resolvedLocale === 'zh-CN'
+      ? `${definition.subtitle} · ${status.label} · ${shortWallet} · Sui ${network.toUpperCase()}`
+      : resolvedLocale === 'is'
+        ? `${definition.subtitle} · ${status.label} · ${shortWallet} · Sui ${network.toUpperCase()}`
+        : `${definition.subtitle} · ${status.label} · ${shortWallet} · Sui ${network.toUpperCase()}`
 
   return {
     title: `${definition.subtitle} — ${APP_NAME}`,

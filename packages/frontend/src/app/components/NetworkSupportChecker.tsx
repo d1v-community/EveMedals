@@ -4,11 +4,13 @@ import AlertAsset from '@eveworld/ui-components/assets/alert.svg'
 import { useCurrentAccount } from '@mysten/dapp-kit'
 import useNetworkType from '@suiware/kit/useNetworkType'
 import Image from 'next/image'
+import {useTranslations} from 'next-intl'
 import { isNetworkSupported, supportedNetworks } from '../helpers/network'
 
 const NetworkSupportChecker = () => {
   const { networkType } = useNetworkType()
   const currentAccount = useCurrentAccount()
+  const t = useTranslations('networkSupport')
 
   const okNetworks = supportedNetworks()
 
@@ -33,14 +35,13 @@ const NetworkSupportChecker = () => {
             height={16}
             className="h-4 w-4"
           />
-          <span>network mismatch</span>
+          <span>{t('label')}</span>
         </div>
         <div className="mt-2 text-base font-semibold">
-          当前钱包网络 <span className="font-mono">{networkType}</span>{' '}
-          不在 Chronicle 支持列表里
+          {t('title', {network: networkType})}
         </div>
         <div className="mt-2 text-sm leading-7">
-          请在钱包里切到以下网络之一：
+          {t('body')}
           <span className="ml-2 font-mono uppercase tracking-[0.18em]">
             {okNetworks.join(', ')}
           </span>

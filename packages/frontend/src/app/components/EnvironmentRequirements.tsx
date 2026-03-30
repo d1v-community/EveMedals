@@ -1,5 +1,6 @@
 import AlertAsset from '@eveworld/ui-components/assets/alert.svg'
 import Image from 'next/image'
+import {getTranslations} from 'next-intl/server'
 import { hasDatabaseUrl } from '~~/server/db/client.mjs'
 
 const CONTRACT_ENV_VARS = [
@@ -21,7 +22,8 @@ function getConfiguredContractEnvVars() {
   })
 }
 
-const EnvironmentRequirements = () => {
+const EnvironmentRequirements = async () => {
+  const t = await getTranslations('environment')
   const configuredContractEnvVars = getConfiguredContractEnvVars()
   const databaseEnabled = hasDatabaseUrl()
 
@@ -41,13 +43,13 @@ const EnvironmentRequirements = () => {
               height={16}
               className="h-4 w-4"
             />
-            <span>config notice</span>
+            <span>{t('configNotice')}</span>
           </div>
           <div className="mt-2 text-base font-semibold text-[#f4efe2]">
-            当前网络没有公开的 medals package 也没关系
+            {t('missingPackageTitle')}
           </div>
           <div className="mt-2 leading-7 text-[#f4efe2]/68">
-            页面依旧能扫描玩家行为，只是链上 Claim 会保持关闭。只要后面补上这些环境变量，领取链路就会自动接回去：
+            {t('missingPackageBody')}
           </div>
           <div className="mt-3 font-mono text-xs leading-6 text-[#f4efe2]/74">
             {CONTRACT_ENV_VARS.join('\n')}
@@ -65,14 +67,13 @@ const EnvironmentRequirements = () => {
               height={16}
               className="h-4 w-4"
             />
-            <span>runtime notice</span>
+            <span>{t('runtimeNotice')}</span>
           </div>
           <div className="mt-2 text-base font-semibold text-[#f4efe2]">
-            数据库同步当前关闭
+            {t('databaseTitle')}
           </div>
           <div className="mt-2 leading-7 text-[#f4efe2]/68">
-            <code>DATABASE_URL</code> 为空，所以钱包连接后不会同步用户档案到 SQL。
-            扫描和前端显示不受影响。
+            {t('databaseBody')}
           </div>
         </div>
       ) : null}
@@ -87,14 +88,13 @@ const EnvironmentRequirements = () => {
               height={16}
               className="h-4 w-4"
             />
-            <span>eve eyes preview mode</span>
+            <span>{t('previewNotice')}</span>
           </div>
           <div className="mt-2 text-base font-semibold">
-            当前只在公开窗口里取样
+            {t('previewTitle')}
           </div>
           <div className="mt-2 leading-7">
-            <code>EVE_EYES_API_KEY</code> 为空，所以 Dashboard
-            只会扫描公开页的行为窗口。Claim 判定仍然可用，但深历史数据可能不完整。
+            {t('previewBody')}
           </div>
         </div>
       ) : null}

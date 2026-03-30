@@ -1,4 +1,8 @@
+import { useTranslations } from 'next-intl'
+
 export default function WarriorLoading() {
+  const t = useTranslations('warriorLoading')
+
   return (
     <main
       className="min-h-screen flex items-center justify-center px-4 py-16"
@@ -45,7 +49,7 @@ export default function WarriorLoading() {
             className="mt-6 text-xs uppercase tracking-widest text-center"
             style={{ color: 'rgba(255,255,255,0.2)', fontFamily: 'var(--sds-font-mono)' }}
           >
-            Syncing chronicle data…
+            {t('label')}
           </p>
         </div>
       </div>

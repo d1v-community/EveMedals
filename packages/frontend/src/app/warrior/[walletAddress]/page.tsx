@@ -1,6 +1,8 @@
 import { isValidSuiAddress } from '@mysten/sui/utils'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { getLocale, getTranslations } from 'next-intl/server'
+import { withLocale } from '~~/i18n/pathnames'
 import { getChronicleSnapshot } from '~~/server/chronicle/getSnapshot'
 import { getMockRouteSnapshot } from '~~/server/chronicle/mockRouteSnapshot'
 import { buildWarriorPageMetadata } from '~~/server/warrior/share'
@@ -21,12 +23,14 @@ export async function generateMetadata({
   params,
   searchParams,
 }: PageProps): Promise<Metadata> {
+  const locale = await getLocale()
+  const t = await getTranslations({ locale, namespace: 'warriorPage' })
   const { walletAddress } = await params
   const { network: rawNetwork, m: rawMock, claimed: rawClaimed } =
     await searchParams
 
   if (!isValidSuiAddress(walletAddress)) {
-    return { title: 'Warrior Not Found — Frontier Chronicle' }
+    return { title: t('meta.notFound') }
   }
 
   try {
@@ -38,13 +42,15 @@ export async function generateMetadata({
           resolveMockClaimedSlugs(rawClaimed)
         )
       : await getChronicleSnapshot(walletAddress, network)
-    return buildWarriorPageMetadata({ snapshot, walletAddress, network })
+    return buildWarriorPageMetadata({ snapshot, walletAddress, network, locale })
   } catch {
-    return { title: 'Warrior Profile — Frontier Chronicle' }
+    return { title: t('meta.fallback') }
   }
 }
 
 export default async function WarriorPage({ params, searchParams }: PageProps) {
+  const locale = await getLocale()
+  const t = await getTranslations({ locale, namespace: 'warriorPage' })
   const { walletAddress } = await params
   const { network: rawNetwork, m: rawMock, claimed: rawClaimed } =
     await searchParams
@@ -68,6 +74,8 @@ export default async function WarriorPage({ params, searchParams }: PageProps) {
     notFound()
   }
 
+  const isMockMode = isMockWarriorRoute(rawMock)
+
   return (
     <main
       className="flex min-h-screen items-center justify-center px-4 py-16"
@@ -76,17 +84,17 @@ export default async function WarriorPage({ params, searchParams }: PageProps) {
       <div className="w-full max-w-2xl">
         {/* Back link */}
         <a
-          href="/"
+          href={withLocale(locale, '/')}
           className="mb-6 inline-flex items-center gap-2 text-xs uppercase tracking-widest transition-opacity hover:opacity-60"
           style={{
             color: 'rgba(255,255,255,0.35)',
             fontFamily: 'var(--sds-font-mono)',
           }}
         >
-          ← Frontier Chronicle
+          {t('backLink')}
         </a>
 
-        <WarriorCard snapshot={snapshot} />
+        <WarriorCard snapshot={snapshot} isMockMode={isMockMode} />
       </div>
     </main>
   )

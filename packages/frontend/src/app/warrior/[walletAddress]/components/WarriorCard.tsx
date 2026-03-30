@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import type { ChronicleSnapshot } from '~~/chronicle/types'
 import MedalRoster from './MedalRoster'
 import ScoreMeter from './ScoreMeter'
@@ -5,6 +6,7 @@ import ShareButton from './ShareButton'
 
 interface WarriorCardProps {
   snapshot: ChronicleSnapshot
+  isMockMode?: boolean
 }
 
 const RANK_TONE_MAP: Record<
@@ -43,10 +45,11 @@ const truncateAddress = (address: string) =>
     ? `${address.slice(0, 8)}...${address.slice(-6)}`
     : address
 
-export default function WarriorCard({ snapshot }: WarriorCardProps) {
+export default function WarriorCard({ snapshot, isMockMode = false }: WarriorCardProps) {
   const { profile, medals, warriorScore } = snapshot
   const rank = warriorScore.rank
   const colors = RANK_TONE_MAP[rank.tone] || RANK_TONE_MAP.steel
+  const t = useTranslations('warriorCard')
 
   return (
     <div
@@ -72,7 +75,7 @@ export default function WarriorCard({ snapshot }: WarriorCardProps) {
               fontFamily: 'var(--sds-font-mono)',
             }}
           >
-            Frontier Chronicle · Warrior Profile
+            {t('eyebrow')}
           </div>
           <h1
             className="text-3xl font-bold uppercase leading-tight tracking-wider"
@@ -122,9 +125,9 @@ export default function WarriorCard({ snapshot }: WarriorCardProps) {
               <span
                 className="text-xs"
                 style={{ color: 'rgba(255,255,255,0.4)' }}
-              >
-                WALLET
-              </span>
+                >
+                  {t('wallet')}
+                </span>
               <span className="text-xs" style={{ color: '#f3ede2' }}>
                 {truncateAddress(profile.walletAddress)}
               </span>
@@ -135,7 +138,7 @@ export default function WarriorCard({ snapshot }: WarriorCardProps) {
                   className="text-xs"
                   style={{ color: 'rgba(255,255,255,0.4)' }}
                 >
-                  CHARACTER
+                  {t('character')}
                 </span>
                 <span className="text-xs" style={{ color: '#f3ede2' }}>
                   {profile.characterId}
@@ -146,9 +149,9 @@ export default function WarriorCard({ snapshot }: WarriorCardProps) {
               <span
                 className="text-xs"
                 style={{ color: 'rgba(255,255,255,0.4)' }}
-              >
-                NETWORK
-              </span>
+                >
+                  {t('network')}
+                </span>
               <span className="text-xs uppercase" style={{ color: '#f3ede2' }}>
                 {profile.observedNetwork || profile.requestedNetwork}
               </span>
@@ -157,14 +160,14 @@ export default function WarriorCard({ snapshot }: WarriorCardProps) {
               <span
                 className="text-xs"
                 style={{ color: 'rgba(255,255,255,0.4)' }}
-              >
-                MEDALS BOUND
-              </span>
+                >
+                  {t('medalsBound')}
+                </span>
               <span className="text-xs" style={{ color: colors.primary }}>
                 {warriorScore.claimedMedalCount} / {medals.length}
                 {warriorScore.hasFullSet && (
                   <span className="ml-2" style={{ color: '#7ec38f' }}>
-                    ✦ FULL SET
+                    {t('fullSet')}
                   </span>
                 )}
               </span>
@@ -190,6 +193,7 @@ export default function WarriorCard({ snapshot }: WarriorCardProps) {
         medals={medals}
         walletAddress={profile.walletAddress}
         network={profile.requestedNetwork}
+        isMockMode={isMockMode}
       />
 
       {/* Footer watermark */}
@@ -204,13 +208,13 @@ export default function WarriorCard({ snapshot }: WarriorCardProps) {
             fontFamily: 'var(--sds-font-mono)',
           }}
         >
-          Frontier Chronicle · Verified on Sui
+          {t('footer')}
         </span>
         <span
           className="sds-system-chip px-2 py-0.5 text-xs"
           style={{ color: colors.primary, borderColor: colors.border }}
         >
-          {profile.scanMode === 'authenticated' ? 'Deep Scan' : 'Preview Scan'}
+          {profile.scanMode === 'authenticated' ? t('deepScan') : t('previewScan')}
         </span>
       </div>
     </div>

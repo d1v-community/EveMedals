@@ -75,7 +75,7 @@ export const WarriorShareImage = ({
                 marginBottom: 22 * scale,
               }}
             >
-              Frontier Chronicle · Warrior Profile
+              {model.labels.eyebrow}
             </div>
 
             <div
@@ -89,7 +89,7 @@ export const WarriorShareImage = ({
                 marginBottom: 14 * scale,
               }}
             >
-              Verified on Sui {model.network}
+              {model.labels.verified} {model.network}
             </div>
 
             <div
@@ -160,7 +160,7 @@ export const WarriorShareImage = ({
             >
               {model.walletAddress
                 ? `Wallet ${model.walletAddressShort}`
-                : 'Wallet unavailable'}
+                : model.labels.walletUnavailable}
             </div>
             <div
               style={{
@@ -211,7 +211,7 @@ export const WarriorShareImage = ({
                 marginBottom: 12 * scale,
               }}
             >
-              Combat Score
+              {model.labels.combatScore}
             </div>
             <div
               style={{
@@ -260,7 +260,7 @@ export const WarriorShareImage = ({
               <span
                 style={{ display: 'flex', color: 'rgba(244,239,226,0.42)' }}
               >
-                Network
+                {model.labels.network}
               </span>
               <span style={{ display: 'flex', color: '#f4efe2' }}>
                 {model.network}
@@ -278,7 +278,7 @@ export const WarriorShareImage = ({
               <span
                 style={{ display: 'flex', color: 'rgba(244,239,226,0.42)' }}
               >
-                Medals Bound
+                {model.labels.medalsBound}
               </span>
               <span style={{ display: 'flex', color: model.tone.primary }}>
                 {model.medalsLabel}
@@ -296,7 +296,7 @@ export const WarriorShareImage = ({
                 <span
                   style={{ display: 'flex', color: 'rgba(244,239,226,0.42)' }}
                 >
-                  Character
+                  {model.labels.character}
                 </span>
                 <span style={{ display: 'flex', color: '#f4efe2' }}>
                   {model.characterId}

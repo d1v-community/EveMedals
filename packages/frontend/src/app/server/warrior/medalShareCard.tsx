@@ -74,7 +74,7 @@ export const MedalShareImage = ({
                 marginBottom: 18 * scale,
               }}
             >
-              Frontier Chronicle · Medal Verification
+              {model.labels.eyebrow}
             </div>
 
             <div
@@ -151,7 +151,7 @@ export const MedalShareImage = ({
                   marginBottom: 10 * scale,
                 }}
               >
-                Chronicle Evidence
+                {model.labels.evidence}
               </div>
               <div
                 style={{
@@ -196,7 +196,7 @@ export const MedalShareImage = ({
                 marginBottom: 8 * scale,
               }}
             >
-              <span>Wallet {model.walletAddressShort}</span>
+              <span>{model.labels.wallet} {model.walletAddressShort}</span>
               <span>Sui {model.network}</span>
             </div>
             {model.characterId ? (
@@ -208,7 +208,7 @@ export const MedalShareImage = ({
                   color: 'rgba(244,239,226,0.52)',
                 }}
               >
-                Character {model.characterId}
+                {model.labels.character} {model.characterId}
               </div>
             ) : null}
           </div>
@@ -243,7 +243,7 @@ export const MedalShareImage = ({
                 marginBottom: 8 * scale,
               }}
             >
-              Rarity
+              {model.labels.rarity}
             </div>
             <div
               style={{
@@ -268,7 +268,7 @@ export const MedalShareImage = ({
                 marginBottom: 8 * scale,
               }}
             >
-              Requirement
+              {model.labels.requirement}
             </div>
             <div
               style={{
@@ -294,7 +294,7 @@ export const MedalShareImage = ({
           >
             <img
               src={model.qrCodeDataUrl}
-              alt="Medal verification QR code"
+              alt={model.labels.qrAlt}
               width={200 * scale}
               height={200 * scale}
               style={{
@@ -313,7 +313,7 @@ export const MedalShareImage = ({
                 color: 'rgba(244,239,226,0.48)',
               }}
             >
-              Scan to open the medal verification page
+              {model.labels.qrHint}
             </div>
           </div>
         </div>

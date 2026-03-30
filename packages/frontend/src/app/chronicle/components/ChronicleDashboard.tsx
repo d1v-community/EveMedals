@@ -16,6 +16,7 @@ import {
   WaypointsIcon,
 } from 'lucide-react'
 import Image from 'next/image'
+import { useLocale, useTranslations } from 'next-intl'
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import CustomConnectButton from '~~/components/CustomConnectButton'
 import Loading from '~~/components/Loading'
@@ -35,7 +36,7 @@ import {
   prepareMintMedalNftTransaction,
 } from '../helpers/transactions'
 import { buildMockSnapshot } from '../mock/mockSnapshot'
-import type { ENetwork } from '~~/types/ENetwork'
+import { ENetwork } from '~~/types/ENetwork'
 import MedalCard from './MedalCard'
 import MedalShareDialog from '~~/warrior/[walletAddress]/components/MedalShareDialog'
 
@@ -52,12 +53,16 @@ const DEMO_SPOTLIGHT_SLUG = 'galactic-courier'
 const truncateMiddle = (value: string, prefix = 8, suffix = 6) =>
   `${value.slice(0, prefix)}...${value.slice(-suffix)}`
 
-const formatTimestamp = (value: string | null) => {
+const formatTimestamp = (
+  value: string | null,
+  locale: string,
+  emptyLabel: string
+) => {
   if (!value) {
-    return '暂时还没有被索引到的边境行为'
+    return emptyLabel
   }
 
-  return new Intl.DateTimeFormat('zh-CN', {
+  return new Intl.DateTimeFormat(locale, {
     dateStyle: 'medium',
     timeStyle: 'short',
   }).format(new Date(value))
@@ -72,19 +77,24 @@ const sortMedals = (medals: ChronicleMedalState[]) =>
     return left.kind - right.kind
   })
 
-const getMedalActionLabel = (medal: ChronicleMedalState) => {
+const getMedalActionLabel = (
+  medal: ChronicleMedalState,
+  t: ReturnType<typeof useTranslations<'chronicleDashboard'>>
+) => {
   if (medal.claimTicket) {
-    return 'Claim Medal'
+    return t('actions.claimMedal')
   }
 
   if (!medal.claimed && medal.unlocked && medal.templateObjectId) {
-    return 'Mint Medal'
+    return t('actions.mintMedal')
   }
 
   return null
 }
 
 const ChronicleDashboard = ({ isMockMode = false }: { isMockMode?: boolean }) => {
+  const locale = useLocale()
+  const t = useTranslations('chronicleDashboard')
   const currentAccount = useCurrentAccount()
   const { currentWallet } = useCurrentWallet()
   const { networkType } = useNetworkType()
@@ -157,9 +167,9 @@ const ChronicleDashboard = ({ isMockMode = false }: { isMockMode?: boolean }) =>
       return
     }
 
-    notification.success('发现新的链上成就，可以立即 Claim。')
+    notification.success(t('toast.newClaimable'))
     announcedClaimablesRef.current = claimableKey
-  }, [data, isMockMode])
+  }, [data, isMockMode, t])
 
   // Simulates the on-chain claim flow with a fake 1.5s "transaction" delay.
   const runMockClaim = (slug: string) => {
@@ -174,7 +184,7 @@ const ChronicleDashboard = ({ isMockMode = false }: { isMockMode?: boolean }) =>
       setClaimingSlug(null)
       setLocalClaimedSlugs((prev) => new Set([...prev, slug]))
       if (slug === DEMO_SPOTLIGHT_SLUG) {
-        notification.success('星门拓荒者已完成 mock mint，下一步直接点 Share。')
+        notification.success(t('toast.mockMintReady'))
       }
     }, 1500)
   }
@@ -192,14 +202,14 @@ const ChronicleDashboard = ({ isMockMode = false }: { isMockMode?: boolean }) =>
     const medal = data.medals.find((item) => item.slug === slug)
 
     if (!medal) {
-      notification.error(null, 'Medal configuration is missing')
+      notification.error(null, t('errors.missingMedalConfig'))
       return
     }
 
     if (!isPackageConfigured) {
       notification.error(
         null,
-        'Current network has no medals package configured'
+        t('errors.packageMissing')
       )
       return
     }
@@ -207,13 +217,13 @@ const ChronicleDashboard = ({ isMockMode = false }: { isMockMode?: boolean }) =>
     if (!data.profile.registryObjectId) {
       notification.error(
         null,
-        'Shared medal registry has not been discovered yet'
+        t('errors.registryMissing')
       )
       return
     }
 
     if (!medal.claimTicket) {
-      notification.error(null, 'This achievement does not have a valid claim ticket')
+      notification.error(null, t('errors.claimTicketMissing'))
       return
     }
 
@@ -242,14 +252,14 @@ const ChronicleDashboard = ({ isMockMode = false }: { isMockMode?: boolean }) =>
     const medal = data.medals.find((item) => item.slug === slug)
 
     if (!medal) {
-      notification.error(null, 'Medal configuration is missing')
+      notification.error(null, t('errors.missingMedalConfig'))
       return
     }
 
     if (!isPackageConfigured) {
       notification.error(
         null,
-        'Current network has no medals package configured'
+        t('errors.packageMissing')
       )
       return
     }
@@ -257,13 +267,13 @@ const ChronicleDashboard = ({ isMockMode = false }: { isMockMode?: boolean }) =>
     if (!data.profile.registryObjectId) {
       notification.error(
         null,
-        'Shared medal registry has not been discovered yet'
+        t('errors.registryMissing')
       )
       return
     }
 
     if (!medal.templateObjectId) {
-      notification.error(null, 'This medal has no active on-chain template')
+      notification.error(null, t('errors.templateMissing'))
       return
     }
 
@@ -286,21 +296,20 @@ const ChronicleDashboard = ({ isMockMode = false }: { isMockMode?: boolean }) =>
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl">
               <div className="font-mono text-[0.68rem] uppercase tracking-[0.34em] text-[#f0642f]">
-                chronicle command deck
+                {t('connect.eyebrow')}
               </div>
               <h2 className="mt-4 font-display text-4xl uppercase tracking-[0.08em] text-[#f4efe2] sm:text-5xl">
-                接上钱包，系统才知道该替谁写编年史。
+                {t('connect.title')}
               </h2>
               <p className="mt-4 max-w-2xl text-base leading-7 text-[#f4efe2]/72 sm:text-lg">
-                钱包一连上，Chronicle 就会按当前网络拉取玩家快照，检查 Eve Eyes
-                索引、链上 registry 和可 Claim 的 medals 状态。
+                {t('connect.body')}
               </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-4">
               <CustomConnectButton />
               <span className="border border-white/10 bg-black/16 px-4 py-3 font-mono text-[0.68rem] uppercase tracking-[0.22em] text-[#f4efe2]/68">
-                wallet in // proof out
+                {t('connect.chip')}
               </span>
             </div>
           </div>
@@ -321,12 +330,12 @@ const ChronicleDashboard = ({ isMockMode = false }: { isMockMode?: boolean }) =>
     return (
       <div className="mx-auto w-full max-w-4xl px-4">
         <div className="rounded-[1.8rem] border border-[#f04e3e]/32 bg-[#241211]/82 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.2)]">
-          <div className="font-mono text-[0.62rem] uppercase tracking-[0.32em] text-[#ffb2a6]">
-            chronicle failure
-          </div>
-          <div className="mt-3 font-display text-3xl uppercase tracking-[0.08em] text-[#ffe3df]">
-            扫描失败
-          </div>
+            <div className="font-mono text-[0.62rem] uppercase tracking-[0.32em] text-[#ffb2a6]">
+            {t('error.eyebrow')}
+            </div>
+            <div className="mt-3 font-display text-3xl uppercase tracking-[0.08em] text-[#ffe3df]">
+            {t('error.title')}
+            </div>
           <p className="mt-3 text-sm leading-7 text-[#ffd2cb]">
             {error.message}
           </p>
@@ -336,7 +345,7 @@ const ChronicleDashboard = ({ isMockMode = false }: { isMockMode?: boolean }) =>
               className="!self-auto"
               onClick={() => refetch()}
             >
-              Retry Scan
+              {t('error.retry')}
             </EveButton>
           </div>
         </div>
@@ -359,21 +368,21 @@ const ChronicleDashboard = ({ isMockMode = false }: { isMockMode?: boolean }) =>
   const medalGroups: MedalGroup[] = [
     {
       title: 'Ready To Claim',
-      description: '这些奖章已经满足门槛，链上领取通道现在是亮的。',
+      description: t('groups.ready.description'),
       medals: claimableMedals,
-      emptyText: '当前没有可立即领取的奖章。',
+      emptyText: t('groups.ready.empty'),
     },
     {
-      title: 'In Progress',
-      description: '门槛还没满，但系统已经在持续记录你的玩家轨迹。',
+      title: t('groups.progress.title'),
+      description: t('groups.progress.description'),
       medals: inProgressMedals,
-      emptyText: '没有待推进的奖章，说明当前奖章要么已领，要么尚未初始化。',
+      emptyText: t('groups.progress.empty'),
     },
     {
-      title: 'Already Bound',
-      description: '这些资历已经绑定到当前钱包，不再只是页面状态。',
+      title: t('groups.bound.title'),
+      description: t('groups.bound.description'),
       medals: claimedMedals,
-      emptyText: '当前钱包还没有已绑定的奖章。',
+      emptyText: t('groups.bound.empty'),
     },
   ]
 
@@ -391,22 +400,22 @@ const ChronicleDashboard = ({ isMockMode = false }: { isMockMode?: boolean }) =>
               <FlaskConicalIcon className="mt-1 h-5 w-5 shrink-0 text-[#d9a441]" />
               <div>
                 <div className="font-mono text-[0.62rem] uppercase tracking-[0.32em] text-[#f7d58a]">
-                  mock mode active
+                  {t('mock.eyebrow')}
                 </div>
                 <div className="mt-3 font-display text-3xl uppercase tracking-[0.08em] text-[#f4efe2]">
-                  三步把演示打穿
+                  {t('mock.title')}
                 </div>
                 <p className="mt-3 max-w-xl text-sm leading-7 text-[#f4efe2]/68">
-                  所有链上动作都被 mock 掉了，但视觉反馈、分享卡片和社交平台跳转都会真实发生，够你把整段产品叙事讲完。
+                  {t('mock.body')}
                 </p>
               </div>
             </div>
 
             <div className="grid gap-3 md:grid-cols-3">
               {[
-                ['20s', '点击 Mint Medal', '先点“星门拓荒者”卡片，把勋章铸出来。'],
-                ['30s', '点击 Share Card', '弹出高冲击分享卡，切换 X / OG / Discord 尺寸。'],
-                ['40s', '点击平台按钮', '直接打开 X、Telegram、Discord 的分享链接。'],
+                [t('mock.steps.one.time'), t('mock.steps.one.title'), t('mock.steps.one.detail')],
+                [t('mock.steps.two.time'), t('mock.steps.two.title'), t('mock.steps.two.detail')],
+                [t('mock.steps.three.time'), t('mock.steps.three.title'), t('mock.steps.three.detail')],
               ].map(([time, title, detail]) => (
                 <div
                   key={title}
@@ -431,55 +440,59 @@ const ChronicleDashboard = ({ isMockMode = false }: { isMockMode?: boolean }) =>
         <div className="sds-panel rounded-[2rem] px-6 py-7 sm:px-8">
           <div className="flex flex-wrap items-center gap-3">
             {isMockMode && (
-              <StatusPill tone="amber">Mock Mode</StatusPill>
+              <StatusPill tone="amber">{t('status.mockMode')}</StatusPill>
             )}
             <StatusPill tone={data.profile.scanMode === 'authenticated' ? 'success' : 'amber'}>
               {data.profile.scanMode === 'authenticated'
-                ? 'Deep Scan'
-                : 'Preview Scan'}
+                ? t('status.deepScan')
+                : t('status.previewScan')}
             </StatusPill>
             <StatusPill tone="steel">{(network ?? '…').toUpperCase()}</StatusPill>
             <StatusPill tone={claimableMedals.length > 0 ? 'martian' : 'steel'}>
               {claimableMedals.length > 0
-                ? `${claimableMedals.length} Ready Now`
-                : 'No Active Claim'}
+                ? t('status.readyNow', { count: claimableMedals.length })
+                : t('status.noActiveClaim')}
             </StatusPill>
           </div>
 
           <h1 className="mt-6 font-display text-5xl uppercase tracking-[0.08em] text-[#f4efe2] sm:text-6xl">
-            pilot chronicle
+            {t('hero.title')}
           </h1>
 
           <p className="mt-5 max-w-3xl text-lg leading-8 text-[#f4efe2]/72">
-            这里不只是列出 medals，而是把玩家在 Frontier 里的真实行为翻译成可解释的门槛、证据与链上领取状态。
+            {t('hero.body')}
           </p>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             <SignalMetric
               icon={<BadgeCheckIcon className="h-4 w-4" />}
-              label="Claim Ready"
+              label={t('metrics.claimReady.label')}
               value={claimableMedals.length > 0 ? `${claimableMedals.length}` : '0'}
               detail={
                 claimableMedals.length > 0
-                  ? '有奖章已经达到链上领取条件'
-                  : '暂无新奖章可领取'
+                  ? t('metrics.claimReady.ready')
+                  : t('metrics.claimReady.empty')
               }
             />
             <SignalMetric
               icon={<RadarIcon className="h-4 w-4" />}
-              label="Indexed Pages"
+              label={t('metrics.indexedPages.label')}
               value={String(data.profile.scannedPages)}
               detail={
                 data.profile.scanLimitReached
-                  ? '索引页数已触碰当前扫描上限'
-                  : '当前扫描范围内已完成索引'
+                  ? t('metrics.indexedPages.limited')
+                  : t('metrics.indexedPages.complete')
               }
             />
             <SignalMetric
               icon={<WaypointsIcon className="h-4 w-4" />}
-              label="Last Frontier Trace"
-              value={formatTimestamp(data.profile.lastActivityAt)}
-              detail="最近一次被 Chronicle 捕获到的 Frontier 行为"
+              label={t('metrics.lastTrace.label')}
+              value={formatTimestamp(
+                data.profile.lastActivityAt,
+                locale,
+                t('metrics.lastTrace.emptyValue')
+              )}
+              detail={t('metrics.lastTrace.detail')}
             />
           </div>
 
@@ -488,10 +501,10 @@ const ChronicleDashboard = ({ isMockMode = false }: { isMockMode?: boolean }) =>
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                   <div className="font-mono text-[0.62rem] uppercase tracking-[0.32em] text-[#ffcfbf]">
-                    active recommendation
+                    {t('recommendation.eyebrow')}
                   </div>
                   <div className="mt-3 text-base font-semibold text-[#fef0ea]">
-                    先去看 Ready To Claim 区域，别让已经达标的奖章躺着发霉。
+                    {t('recommendation.body')}
                   </div>
                 </div>
                 <OfficialActionButton
@@ -499,7 +512,7 @@ const ChronicleDashboard = ({ isMockMode = false }: { isMockMode?: boolean }) =>
                   targetId="ready-to-claim"
                   typeClass="primary"
                 >
-                  Open Claim Queue
+                  {t('recommendation.cta')}
                 </OfficialActionButton>
               </div>
             </div>
@@ -507,46 +520,46 @@ const ChronicleDashboard = ({ isMockMode = false }: { isMockMode?: boolean }) =>
         </div>
 
         <aside className="sds-panel rounded-[2rem] px-6 py-6">
-          <div className="font-mono text-[0.62rem] uppercase tracking-[0.32em] text-[#f0642f]">
-            pilot manifest
+            <div className="font-mono text-[0.62rem] uppercase tracking-[0.32em] text-[#f0642f]">
+            {t('manifest.eyebrow')}
           </div>
 
           <div className="mt-5 space-y-3">
-            <ManifestRow label="Wallet">
+            <ManifestRow label={t('manifest.wallet')}>
               {truncateMiddle(currentAccount.address)}
             </ManifestRow>
-            <ManifestRow label="Wallet Name">
-              {currentWallet?.name || 'Unknown Wallet'}
+            <ManifestRow label={t('manifest.walletName')}>
+              {currentWallet?.name || t('manifest.unknownWallet')}
             </ManifestRow>
-            <ManifestRow label="Character ID">
+            <ManifestRow label={t('manifest.characterId')}>
               {data.profile.characterId
                 ? truncateMiddle(data.profile.characterId, 10, 8)
-                : '暂时还没有角色映射'}
+                : t('manifest.noCharacter')}
             </ManifestRow>
-            <ManifestRow label="Observed Network">
-              {data.profile.observedNetwork || '还没有被索引到的链路'}
+            <ManifestRow label={t('manifest.observedNetwork')}>
+              {data.profile.observedNetwork || t('manifest.noObservedNetwork')}
             </ManifestRow>
-            <ManifestRow label="World Package">
+            <ManifestRow label={t('manifest.worldPackage')}>
               {data.profile.evePackageId
                 ? truncateMiddle(data.profile.evePackageId, 10, 8)
-                : '未发现世界包地址'}
+                : t('manifest.noWorldPackage')}
             </ManifestRow>
           </div>
 
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
             <CompactMetric
-              label="Killmail"
+              label={t('compact.killmail')}
               value={data.metrics.killmailAttacks}
             />
             <CompactMetric
-              label="Node Anchors"
+              label={t('compact.nodeAnchors')}
               value={data.metrics.networkNodeAnchors}
             />
             <CompactMetric
-              label="Storage Anchors"
+              label={t('compact.storageAnchors')}
               value={data.metrics.storageUnitAnchors}
             />
-            <CompactMetric label="Gate Jumps" value={data.metrics.gateJumps} />
+            <CompactMetric label={t('compact.gateJumps')} value={data.metrics.gateJumps} />
           </div>
 
           {isPackageConfigured ? (
@@ -557,7 +570,7 @@ const ChronicleDashboard = ({ isMockMode = false }: { isMockMode?: boolean }) =>
                 icon="external"
                 typeClass="ghost"
               >
-                Open Package Explorer
+                {t('manifest.packageExplorer')}
               </OfficialActionButton>
             </div>
           ) : null}
@@ -576,14 +589,14 @@ const ChronicleDashboard = ({ isMockMode = false }: { isMockMode?: boolean }) =>
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
             <div className="font-mono text-[0.62rem] uppercase tracking-[0.32em] text-[#f0642f]">
-              indexed evidence
+              {t('evidence.eyebrow')}
             </div>
             <h2 className="mt-4 font-display text-4xl uppercase tracking-[0.08em] text-[#f4efe2] sm:text-5xl">
-              行为证据先展示，奖章状态后展示。
+              {t('evidence.title')}
             </h2>
           </div>
           <p className="max-w-xl text-sm leading-7 text-[#f4efe2]/68">
-            玩家先看懂系统到底抓到了哪些 Frontier 轨迹，再去决定要不要继续冲门槛，逻辑才顺。
+            {t('evidence.body')}
           </p>
         </div>
 
@@ -591,27 +604,37 @@ const ChronicleDashboard = ({ isMockMode = false }: { isMockMode?: boolean }) =>
           <EvidenceTrack
             tone="martian"
             icon={<BadgeCheckIcon className="h-5 w-5" />}
-            label="Combat Trace"
+            label={t('tracks.combat.label')}
             current={data.metrics.killmailAttacks}
             target={5}
-            progressLabel={`${data.metrics.killmailAttacks} / 5 confirmed attacker records`}
-            detail="击杀成就只认被索引器确认的 killmail attacker。"
+            progressLabel={t('tracks.combat.progress', { current: data.metrics.killmailAttacks })}
+            detail={t('tracks.combat.detail')}
+            verifiedLabel={t('tracks.verified')}
+            trackingLabel={t('tracks.tracking')}
           />
 
           <InfrastructureTrack
             networkNodeAnchors={data.metrics.networkNodeAnchors}
             storageUnitAnchors={data.metrics.storageUnitAnchors}
             complete={infrastructureComplete}
+            title={t('tracks.infrastructure.label')}
+            verifiedLabel={t('tracks.verified')}
+            trackingLabel={t('tracks.tracking')}
+            nodeLabel={t('tracks.infrastructure.nodeLabel')}
+            storageLabel={t('tracks.infrastructure.storageLabel')}
+            detail={t('tracks.infrastructure.detail')}
           />
 
           <EvidenceTrack
             tone="steel"
             icon={<WaypointsIcon className="h-5 w-5" />}
-            label="Transit Ledger"
+            label={t('tracks.transit.label')}
             current={data.metrics.gateJumps}
             target={10}
-            progressLabel={`${data.metrics.gateJumps} / 10 verified gate jumps`}
-            detail="跃迁次数是物流与航线活跃度最直观的 Frontier 信号。"
+            progressLabel={t('tracks.transit.progress', { current: data.metrics.gateJumps })}
+            detail={t('tracks.transit.detail')}
+            verifiedLabel={t('tracks.verified')}
+            trackingLabel={t('tracks.tracking')}
           />
         </div>
       </div>
@@ -619,7 +642,7 @@ const ChronicleDashboard = ({ isMockMode = false }: { isMockMode?: boolean }) =>
       {medalGroups.map((group) => (
         <section
           key={group.title}
-          id={group.title === 'Ready To Claim' ? 'ready-to-claim' : undefined}
+          id={group.title === t('groups.ready.title') ? 'ready-to-claim' : undefined}
           className="flex flex-col gap-4"
         >
           <div className="flex flex-col gap-2">
@@ -634,7 +657,7 @@ const ChronicleDashboard = ({ isMockMode = false }: { isMockMode?: boolean }) =>
           {group.medals.length > 0 ? (
             <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
               {group.medals.map((medal) => {
-                const actionLabel = getMedalActionLabel(medal)
+                const actionLabel = getMedalActionLabel(medal, t)
 
                 return (
                   <MedalCard
@@ -648,7 +671,7 @@ const ChronicleDashboard = ({ isMockMode = false }: { isMockMode?: boolean }) =>
                         : null
                     }
                     onAction={() =>
-                      actionLabel === 'Claim Medal'
+                      actionLabel === t('actions.claimMedal')
                         ? handleClaim(medal.slug)
                         : handleMint(medal.slug)
                     }
@@ -777,6 +800,8 @@ const EvidenceTrack = ({
   target,
   progressLabel,
   detail,
+  verifiedLabel,
+  trackingLabel,
 }: {
   tone: EvidenceTone
   icon: ReactNode
@@ -785,6 +810,8 @@ const EvidenceTrack = ({
   target: number
   progressLabel: string
   detail: string
+  verifiedLabel: string
+  trackingLabel: string
 }) => {
   const progressPercent = Math.max(
     0,
@@ -821,7 +848,7 @@ const EvidenceTrack = ({
           <span>{label}</span>
         </div>
         <div className={`text-sm font-semibold ${toneClassName.status}`}>
-          {current >= target ? 'Verified' : 'Tracking'}
+          {current >= target ? verifiedLabel : trackingLabel}
         </div>
       </div>
       <div className="mt-5 font-display text-4xl uppercase tracking-[0.06em] text-[#f4efe2]">
@@ -843,19 +870,31 @@ const InfrastructureTrack = ({
   networkNodeAnchors,
   storageUnitAnchors,
   complete,
+  title,
+  verifiedLabel,
+  trackingLabel,
+  nodeLabel,
+  storageLabel,
+  detail,
 }: {
   networkNodeAnchors: number
   storageUnitAnchors: number
   complete: boolean
+  title: string
+  verifiedLabel: string
+  trackingLabel: string
+  nodeLabel: string
+  storageLabel: string
+  detail: string
 }) => (
   <article className="overflow-hidden border border-[#d9a441]/28 bg-[linear-gradient(180deg,rgba(217,164,65,0.12),rgba(10,10,11,0.96))] px-5 py-5 shadow-[0_20px_60px_rgba(0,0,0,0.18)]">
     <div className="flex items-center justify-between gap-3">
       <div className="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.24em] text-[#f4efe2]/52">
         <DatabaseIcon className="h-5 w-5" />
-        <span>Infrastructure Trace</span>
+        <span>{title}</span>
       </div>
       <div className="text-sm font-semibold text-[#f5dfae]">
-        {complete ? 'Verified' : 'Tracking'}
+        {complete ? verifiedLabel : trackingLabel}
       </div>
     </div>
 
@@ -869,7 +908,7 @@ const InfrastructureTrack = ({
           <EveLinearBar nominator={networkNodeAnchors} denominator={1} />
         </div>
         <div className="mt-3 font-mono text-[0.62rem] uppercase tracking-[0.2em] text-[#f4efe2]/44">
-          network node anchors
+          {nodeLabel}
         </div>
       </div>
 
@@ -882,13 +921,13 @@ const InfrastructureTrack = ({
           <EveLinearBar nominator={storageUnitAnchors} denominator={3} />
         </div>
         <div className="mt-3 font-mono text-[0.62rem] uppercase tracking-[0.2em] text-[#f4efe2]/44">
-          storage unit anchors
+          {storageLabel}
         </div>
       </div>
     </div>
 
     <p className="mt-4 text-sm leading-7 text-[#f4efe2]/72">
-      建设类奖章按“1 个 network node 或 3 个 storage unit”判定，满足任一条都算建设痕迹成立。
+      {detail}
     </p>
   </article>
 )

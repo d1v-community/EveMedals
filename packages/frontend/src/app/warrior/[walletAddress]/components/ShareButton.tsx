@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import type { ENetwork } from '~~/types/ENetwork'
 import WarriorShareDialog from './WarriorShareDialog'
 
@@ -24,6 +25,7 @@ export default function ShareButton({
   totalMedalCount,
 }: ShareButtonProps) {
   const [open, setOpen] = useState(false)
+  const t = useTranslations('warriorCard')
 
   return (
     <>
@@ -38,7 +40,7 @@ export default function ShareButton({
           fontFamily: 'var(--sds-font-mono)',
           cursor: 'pointer',
         }}
-      >
+        >
         <span
           style={{
             display: 'inline-block',
@@ -49,7 +51,7 @@ export default function ShareButton({
             transition: 'background 0.3s',
           }}
         />
-        Share Card
+        {t('shareCard')}
       </button>
       {open ? (
         <WarriorShareDialog
