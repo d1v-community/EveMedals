@@ -326,9 +326,9 @@ export const WarriorShareImage = ({
                     color: 'rgba(244,239,226,0.42)',
                     marginBottom: 12 * scale,
                   }}
-                >
-                  Medal Preview
-                </div>
+              >
+                {model.labels.medalPreview}
+              </div>
 
                 {model.previewMedals.length > 0 ? (
                   model.previewMedals.map((medal, index) => (
@@ -401,7 +401,7 @@ export const WarriorShareImage = ({
                       color: 'rgba(244,239,226,0.48)',
                     }}
                   >
-                    No medal snapshot is available yet.
+                    {model.labels.noMedals}
                   </div>
                 )}
               </div>
@@ -420,7 +420,7 @@ export const WarriorShareImage = ({
               >
                 <img
                   src={model.qrCodeDataUrl}
-                  alt="Warrior profile QR code"
+                  alt={model.labels.qrAlt}
                   width={120 * scale}
                   height={120 * scale}
                   style={{
@@ -439,7 +439,7 @@ export const WarriorShareImage = ({
                     color: 'rgba(244,239,226,0.48)',
                   }}
                 >
-                  Scan to open the warrior profile
+                  {model.labels.qrHint}
                 </div>
               </div>
             </div>

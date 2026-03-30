@@ -21,7 +21,7 @@ export interface WarriorShareMedalPreview {
   slug: string
   title: string
   subtitle: string
-  status: 'BOUND' | 'VERIFIED' | 'LOCKED'
+  status: string
   color: string
 }
 
@@ -33,10 +33,15 @@ export interface WarriorShareCardModel {
     eyebrow: string
     verified: string
     walletUnavailable: string
+    unknownWallet: string
     combatScore: string
     network: string
     medalsBound: string
     character: string
+    medalPreview: string
+    noMedals: string
+    qrAlt: string
+    qrHint: string
   }
   shareUrl: string
   qrCodeDataUrl: string
@@ -118,14 +123,28 @@ const getWarriorShareCopy = (locale?: string) => {
         fallbackTitleZh: '边境战士档案',
         fallbackDescription: '链上验证的 Frontier 身份正在加载或暂不可用。',
         snapshotUnavailable: '快照暂不可用',
+        metaAlt: 'Warrior 档案分享卡',
+        deepScan: '深度扫描',
+        previewScan: '预览扫描',
+        fullSet: '全套达成',
+        medalStatus: {
+          BOUND: '已绑定',
+          VERIFIED: '已验证',
+          LOCKED: '未解锁',
+        },
         labels: {
           eyebrow: 'Frontier Chronicle · Warrior 档案',
           verified: '已在 Sui 验证',
           walletUnavailable: '钱包不可用',
+          unknownWallet: '未知钱包',
           combatScore: '战斗分数',
           network: '网络',
           medalsBound: '已绑定勋章',
           character: '角色',
+          medalPreview: '勋章预览',
+          noMedals: '当前还没有可用的勋章快照。',
+          qrAlt: 'Warrior 档案二维码',
+          qrHint: '扫码打开 Warrior 档案',
         },
       }
     case 'is':
@@ -134,14 +153,28 @@ const getWarriorShareCopy = (locale?: string) => {
         fallbackTitleZh: 'Warrior prófíll',
         fallbackDescription: 'Keðjustaðfest Frontier auðkenni er að hlaðast eða ekki tiltækt.',
         snapshotUnavailable: 'Snapshot ófáanlegt',
+        metaAlt: 'Warrior profile share card',
+        deepScan: 'Djúp skönnun',
+        previewScan: 'Forskoðunarskönnun',
+        fullSet: 'FULLT SETT',
+        medalStatus: {
+          BOUND: 'BUNDIÐ',
+          VERIFIED: 'STAÐFEST',
+          LOCKED: 'LÆST',
+        },
         labels: {
           eyebrow: 'Frontier Chronicle · Warrior prófíll',
           verified: 'Staðfest á Sui',
           walletUnavailable: 'Veski ófáanlegt',
+          unknownWallet: 'Óþekkt veski',
           combatScore: 'Combat Score',
           network: 'Network',
           medalsBound: 'Medals Bound',
           character: 'Character',
+          medalPreview: 'Medal Preview',
+          noMedals: 'No medal snapshot is available yet.',
+          qrAlt: 'Warrior profile QR code',
+          qrHint: 'Scan to open the warrior profile',
         },
       }
     default:
@@ -150,28 +183,44 @@ const getWarriorShareCopy = (locale?: string) => {
         fallbackTitleZh: 'Warrior Profile',
         fallbackDescription: 'Chain-verified Frontier identity is loading or unavailable.',
         snapshotUnavailable: 'Snapshot Unavailable',
+        metaAlt: 'Warrior profile share card',
+        deepScan: 'Deep Scan',
+        previewScan: 'Preview Scan',
+        fullSet: 'FULL SET',
+        medalStatus: {
+          BOUND: 'BOUND',
+          VERIFIED: 'VERIFIED',
+          LOCKED: 'LOCKED',
+        },
         labels: {
           eyebrow: 'Frontier Chronicle · Warrior Profile',
           verified: 'Verified on Sui',
           walletUnavailable: 'Wallet unavailable',
+          unknownWallet: 'Unknown Wallet',
           combatScore: 'Combat Score',
           network: 'Network',
           medalsBound: 'Medals Bound',
           character: 'Character',
+          medalPreview: 'Medal Preview',
+          noMedals: 'No medal snapshot is available yet.',
+          qrAlt: 'Warrior profile QR code',
+          qrHint: 'Scan to open the warrior profile',
         },
       }
   }
 }
 
-const formatWalletAddress = (walletAddress: string | null) => {
+const formatWalletAddress = (walletAddress: string | null, fallback: string) => {
   if (!walletAddress || walletAddress.length < 14)
-    return walletAddress || 'Unknown Wallet'
+    return walletAddress || fallback
   return `${walletAddress.slice(0, 8)}...${walletAddress.slice(-6)}`
 }
 
 const getPreviewMedals = (
-  medals: ChronicleMedalState[]
+  medals: ChronicleMedalState[],
+  locale?: string
 ): WarriorShareMedalPreview[] => {
+  const copy = getWarriorShareCopy(locale)
   const rankedMedals = [...medals].sort((left, right) => {
     const leftScore = Number(left.claimed) * 2 + Number(left.unlocked)
     const rightScore = Number(right.claimed) * 2 + Number(right.unlocked)
@@ -182,7 +231,11 @@ const getPreviewMedals = (
     slug: medal.slug,
     title: medal.title,
     subtitle: medal.subtitle,
-    status: medal.claimed ? 'BOUND' : medal.unlocked ? 'VERIFIED' : 'LOCKED',
+    status: medal.claimed
+      ? copy.medalStatus.BOUND
+      : medal.unlocked
+        ? copy.medalStatus.VERIFIED
+        : copy.medalStatus.LOCKED,
     color: MEDAL_COLOR_MAP[medal.slug] || '#8ea1ad',
   }))
 }
@@ -210,16 +263,19 @@ export const buildWarriorShareCardModel = async (
     qrCodeDataUrl,
     network: network.toUpperCase(),
     walletAddress: profile.walletAddress,
-    walletAddressShort: formatWalletAddress(profile.walletAddress),
+    walletAddressShort: formatWalletAddress(
+      profile.walletAddress,
+      copy.labels.unknownWallet
+    ),
     characterId: profile.characterId,
     score: warriorScore.displayScore,
     scoreLabel: `${warriorScore.displayScore.toLocaleString()} / 10,000`,
     medalsLabel: warriorScore.hasFullSet
-      ? `${medalCount} · FULL SET`
+      ? `${medalCount} · ${copy.fullSet}`
       : medalCount,
     scanLabel:
-      profile.scanMode === 'authenticated' ? 'Deep Scan' : 'Preview Scan',
-    previewMedals: getPreviewMedals(medals),
+      profile.scanMode === 'authenticated' ? copy.deepScan : copy.previewScan,
+    previewMedals: getPreviewMedals(medals, locale),
     hasFullSet: warriorScore.hasFullSet,
     tone: RANK_TONE_MAP[rank.tone] || RANK_TONE_MAP.steel,
   }
@@ -245,7 +301,7 @@ export const buildFallbackWarriorShareCardModel = async (
     qrCodeDataUrl,
     network: network.toUpperCase(),
     walletAddress,
-    walletAddressShort: formatWalletAddress(walletAddress),
+    walletAddressShort: formatWalletAddress(walletAddress, copy.labels.unknownWallet),
     characterId: null,
     score: 0,
     scoreLabel: '0 / 10,000',
@@ -269,8 +325,12 @@ export const buildWarriorPageMetadata = ({
   locale?: string
 }): Metadata => {
   const resolvedLocale = resolveLocale(locale)
+  const copy = getWarriorShareCopy(resolvedLocale)
   const { rank, displayScore, claimedMedalCount } = snapshot.warriorScore
-  const shortWallet = formatWalletAddress(walletAddress)
+  const shortWallet = formatWalletAddress(
+    walletAddress,
+    copy.labels.unknownWallet
+  )
   const canonicalPath = buildWarriorSharePath(walletAddress, network, {
     locale: resolvedLocale,
   })
@@ -315,7 +375,10 @@ export const buildWarriorPageMetadata = ({
           url: ogImageUrl,
           width: OG_IMAGE_SIZE.width,
           height: OG_IMAGE_SIZE.height,
-          alt: `${rank.title} warrior profile card`,
+          alt:
+            resolvedLocale === 'zh-CN'
+              ? `${rank.title} Warrior 档案分享卡`
+              : `${rank.title} ${copy.metaAlt}`,
         },
       ],
     },

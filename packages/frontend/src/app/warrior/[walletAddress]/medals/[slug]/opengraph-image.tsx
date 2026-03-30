@@ -1,5 +1,6 @@
 import { isValidSuiAddress } from '@mysten/sui/utils'
 import { ImageResponse } from 'next/og'
+import { getLocale } from 'next-intl/server'
 import { getMedalDefinitionBySlug } from '~~/chronicle/config/medals'
 import { getChronicleSnapshot } from '~~/server/chronicle/getSnapshot'
 import { getMockRouteSnapshot } from '~~/server/chronicle/mockRouteSnapshot'
@@ -27,6 +28,7 @@ interface ImageProps {
 }
 
 export default async function Image({ params, searchParams }: ImageProps) {
+  const locale = await getLocale()
   const { walletAddress, slug } = await params
   const { network: rawNetwork, m: rawMock, claimed: rawClaimed } =
     await searchParams
@@ -38,6 +40,7 @@ export default async function Image({ params, searchParams }: ImageProps) {
       walletAddress: isValidSuiAddress(walletAddress) ? walletAddress : null,
       network,
       slug,
+      locale,
     })
 
     return new ImageResponse(
@@ -59,6 +62,7 @@ export default async function Image({ params, searchParams }: ImageProps) {
       walletAddress,
       network,
       slug: definition.slug,
+      locale,
     })
 
     return new ImageResponse(
@@ -70,6 +74,7 @@ export default async function Image({ params, searchParams }: ImageProps) {
       walletAddress,
       network,
       slug: definition.slug,
+      locale,
     })
 
     return new ImageResponse(
