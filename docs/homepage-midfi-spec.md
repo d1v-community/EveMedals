@@ -33,7 +33,7 @@
 
 ### 沿用现有设计语言
 
-基于当前 `packages/frontend/src/app/styles/index.css` 的变量体系：
+基于当前 `packages/nextjs/src/app/styles/index.css` 的变量体系：
 
 - 主色：`--sds-martian`
 - 深底：`--sds-ink-0 ~ --sds-ink-3`

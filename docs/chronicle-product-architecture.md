@@ -26,9 +26,9 @@ Chronicle 当前建议保持这四层：
 
 当前对应：
 
-- `packages/frontend/src/app/chronicle/config/medals.ts`
-- `packages/frontend/src/app/chronicle/types.ts`
-- `packages/backend/move/greeting/sources/medals.move`
+- `packages/nextjs/src/app/chronicle/config/medals.ts`
+- `packages/nextjs/src/app/chronicle/types.ts`
+- `packages/contract/move/medals/sources/medals.move`
 
 边界要求：
 
@@ -41,7 +41,7 @@ Chronicle 当前建议保持这四层：
 
 当前对应：
 
-- `packages/frontend/src/app/server/chronicle/eveEyes.ts`
+- `packages/nextjs/src/app/server/chronicle/eveEyes.ts`
 
 边界要求：
 
@@ -55,10 +55,10 @@ Chronicle 当前建议保持这四层：
 
 当前对应：
 
-- `packages/frontend/src/app/server/chronicle/getSnapshot.ts`
-- `packages/frontend/src/app/server/chronicle/snapshot.ts`
-- `packages/frontend/src/app/server/chronicle/contractState.ts`
-- `packages/frontend/src/app/server/chronicle/chronicleArchitecture.ts`
+- `packages/nextjs/src/app/server/chronicle/getSnapshot.ts`
+- `packages/nextjs/src/app/server/chronicle/snapshot.ts`
+- `packages/nextjs/src/app/server/chronicle/contractState.ts`
+- `packages/nextjs/src/app/server/chronicle/chronicleArchitecture.ts`
 
 边界要求：
 
@@ -72,10 +72,10 @@ Chronicle 当前建议保持这四层：
 
 当前对应：
 
-- `packages/frontend/src/app/api/chronicle/route.ts`
-- `packages/frontend/src/app/chronicle/hooks/useChronicleSnapshot.ts`
-- `packages/frontend/src/app/chronicle/components/ChronicleDashboard.tsx`
-- `packages/frontend/src/app/warrior/[walletAddress]/page.tsx`
+- `packages/nextjs/src/app/api/chronicle/route.ts`
+- `packages/nextjs/src/app/chronicle/hooks/useChronicleSnapshot.ts`
+- `packages/nextjs/src/app/chronicle/components/ChronicleDashboard.tsx`
+- `packages/nextjs/src/app/warrior/[walletAddress]/page.tsx`
 
 边界要求：
 

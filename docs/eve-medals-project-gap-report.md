@@ -67,12 +67,13 @@
    - 链上更多承担的是结算与持有证明
 
 2. 当前不是“真正自动铸造”。
-   - 更准确是：玩家行为先被验证，再由用户发起 `claim` 或 `mint`
+   - 更准确是：玩家行为先被验证，再由用户发起签名 `claim`
    - 不是后台自动空投到玩家钱包
 
-3. 当前合约还有一个公开 `mint_medal_nft` 路径。
-   - 这和“只有成就验证后才铸造”存在语义偏差
-   - 前端虽然只在已解锁时展示这个入口，但从产品叙事上看，会削弱“成就真实性完全由验证驱动”的说法
+3. 当前合约入口已经收敛为 claim-only。
+   - 公开 `mint_medal_nft` 路径已经移除
+   - `claim_medal` 增加了正确 TTL 校验，`admin_mint` 也补了重复发放防护
+   - 现在“只有验证后才能领取”的产品叙事，已经能和链上约束基本对齐
 
 4. 你已经明确说明：**还没真正对接最终 testnet 合约**。
    - 这意味着“testnet 上真实可验证、真实可传播”的产品口径现在还不能说满
@@ -251,14 +252,14 @@
 
 没有这些数据，你就很难把“增长引擎”讲成可量化产品。
 
-### 4.6 “成就即铸造”这层约束还不够硬
+### 4.6 “成就即领取”这层约束已经基本收紧
 
 从产品叙事上，最理想的口径应该是：
 
 > 玩家只有满足成就条件，才能得到这枚荣誉勋章。
 
-但当前实现里，公开 `mint_medal_nft` 入口会让这个口径变松。  
-即便前端已经尽量把入口藏在“已解锁”条件下，产品表达上仍然不如“只允许签名 claim”来得硬。
+当前实现已经移除公开 `mint_medal_nft` 入口，改成 claim-only + 正确 TTL 校验 + admin 补发防重复。  
+所以“满足成就条件后才可领取荣誉勋章”的产品表达，现在已经能和实现保持一致。
 
 ## 5. 当前最准确的产品定位建议
 
@@ -312,16 +313,16 @@
 - `docs/chronicle-product-architecture.md`
 - `docs/demo-day-v2-share-status.md`
 - `docs/chronicle-contract-capability-summary.md`
-- `packages/frontend/src/app/api/chronicle/route.ts`
-- `packages/frontend/src/app/server/chronicle/getSnapshot.ts`
-- `packages/frontend/src/app/server/chronicle/snapshot.ts`
-- `packages/frontend/src/app/server/chronicle/eveEyes.ts`
-- `packages/frontend/src/app/server/chronicle/contractState.ts`
-- `packages/frontend/src/app/server/chronicle/claimTickets.ts`
-- `packages/frontend/src/app/server/warrior/share.ts`
-- `packages/frontend/src/app/server/warrior/medalShare.ts`
-- `packages/frontend/src/app/server/warrior/qr.ts`
-- `packages/frontend/src/app/warrior/[walletAddress]/components/MedalShareDialog.tsx`
-- `packages/frontend/src/app/api/share-stats/route.ts`
-- `packages/frontend/src/app/api/users/route.ts`
-- `packages/backend/move/greeting/sources/medals.move`
+- `packages/nextjs/src/app/api/chronicle/route.ts`
+- `packages/nextjs/src/app/server/chronicle/getSnapshot.ts`
+- `packages/nextjs/src/app/server/chronicle/snapshot.ts`
+- `packages/nextjs/src/app/server/chronicle/eveEyes.ts`
+- `packages/nextjs/src/app/server/chronicle/contractState.ts`
+- `packages/nextjs/src/app/server/chronicle/claimTickets.ts`
+- `packages/nextjs/src/app/server/warrior/share.ts`
+- `packages/nextjs/src/app/server/warrior/medalShare.ts`
+- `packages/nextjs/src/app/server/warrior/qr.ts`
+- `packages/nextjs/src/app/warrior/[walletAddress]/components/MedalShareDialog.tsx`
+- `packages/nextjs/src/app/api/share-stats/route.ts`
+- `packages/nextjs/src/app/api/users/route.ts`
+- `packages/contract/move/medals/sources/medals.move`

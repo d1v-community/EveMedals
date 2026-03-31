@@ -60,12 +60,12 @@
 
 对应代码：
 
-- `packages/frontend/src/app/warrior/[walletAddress]/page.tsx`
-- `packages/frontend/src/app/warrior/[walletAddress]/opengraph-image.tsx`
-- `packages/frontend/src/app/warrior/[walletAddress]/twitter-image.tsx`
-- `packages/frontend/src/app/server/warrior/share.ts`
-- `packages/frontend/src/app/server/warrior/shareCard.tsx`
-- `packages/frontend/src/app/warrior/[walletAddress]/components/ShareButton.tsx`
+- `packages/nextjs/src/app/warrior/[walletAddress]/page.tsx`
+- `packages/nextjs/src/app/warrior/[walletAddress]/opengraph-image.tsx`
+- `packages/nextjs/src/app/warrior/[walletAddress]/twitter-image.tsx`
+- `packages/nextjs/src/app/server/warrior/share.ts`
+- `packages/nextjs/src/app/server/warrior/shareCard.tsx`
+- `packages/nextjs/src/app/warrior/[walletAddress]/components/ShareButton.tsx`
 
 当前不足：
 
@@ -90,13 +90,13 @@
 
 对应代码：
 
-- `packages/frontend/src/app/warrior/[walletAddress]/components/MedalRoster.tsx`
-- `packages/frontend/src/app/warrior/[walletAddress]/components/MedalShareDialog.tsx`
-- `packages/frontend/src/app/server/warrior/medalShare.ts`
-- `packages/frontend/src/app/server/warrior/medalShareCard.tsx`
-- `packages/frontend/src/app/warrior/[walletAddress]/medals/[slug]/page.tsx`
-- `packages/frontend/src/app/warrior/[walletAddress]/medals/[slug]/opengraph-image.tsx`
-- `packages/frontend/src/app/warrior/[walletAddress]/medals/[slug]/twitter-image.tsx`
+- `packages/nextjs/src/app/warrior/[walletAddress]/components/MedalRoster.tsx`
+- `packages/nextjs/src/app/warrior/[walletAddress]/components/MedalShareDialog.tsx`
+- `packages/nextjs/src/app/server/warrior/medalShare.ts`
+- `packages/nextjs/src/app/server/warrior/medalShareCard.tsx`
+- `packages/nextjs/src/app/warrior/[walletAddress]/medals/[slug]/page.tsx`
+- `packages/nextjs/src/app/warrior/[walletAddress]/medals/[slug]/opengraph-image.tsx`
+- `packages/nextjs/src/app/warrior/[walletAddress]/medals/[slug]/twitter-image.tsx`
 
 这条链路基本已经是你讲稿里最像样、最能打的一部分。
 
@@ -243,13 +243,13 @@
 
 已知通过：
 
-- `pnpm --filter frontend lint`
-- `pnpm --filter frontend exec tsc --noEmit`
-- `pnpm --filter frontend test`
+- `pnpm --filter nextjs lint`
+- `pnpm --filter nextjs exec tsc --noEmit`
+- `pnpm --filter nextjs test`
 
 未完全确认：
 
-- `pnpm --filter frontend build`
+- `pnpm --filter nextjs build`
 
 当前观察是生产构建在沙箱里会卡在 `Creating an optimized production build ...`，还没有明确定位完是不是这次分享改动导致。
 

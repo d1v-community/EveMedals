@@ -17,10 +17,10 @@
 - [`docs/eve-medals-1min-defense.md`](./docs/eve-medals-1min-defense.md)
 - [`docs/eve-medals-demo-5min-script.md`](./docs/eve-medals-demo-5min-script.md)
 
-使用 pnpm workspace 管理前后端代码：
+使用 pnpm workspace 管理 Next.js 应用与合约代码：
 
-- `packages/frontend`：Next.js 前端
-- `packages/backend`：Move 合约 + 部署脚本
+- `packages/nextjs`：Next.js 全栈应用（UI + BFF）
+- `packages/contract`：Move 合约 + 部署脚本
 
 ## 当前产品能力
 
@@ -53,7 +53,7 @@ pnpm install
 
 - [`docs/codexfly-setup.md`](./docs/codexfly-setup.md)
 
-## 本地开发（从根目录启动前端）
+## 本地开发（从根目录启动 Next.js 应用）
 
 在仓库根目录执行：
 
@@ -61,11 +61,11 @@ pnpm install
 pnpm dev
 ```
 
-该命令会启动 `packages/frontend` 的 Next.js 开发服务器。
+该命令会启动 `packages/nextjs` 的 Next.js 开发服务器。
 
-## 后端（Move 合约）如何部署
+## 合约（Move 包）如何部署
 
-这里的“后端”指的是 Move 合约包。部署合约后，会自动把最新的 `packageId` 写入前端的 `packages/frontend/.env.local`，供前端调用。
+这里的 `packages/contract` 指的是 Move 合约包。部署合约后，会自动把最新的 `packageId` 写入 `packages/nextjs/.env.local`，供 Next.js 应用调用。
 
 ### Localnet（推荐用于开发）
 
@@ -83,7 +83,7 @@ pnpm localnet:deploy
 
 部署成功后会自动创建/更新：
 
-- `packages/frontend/.env.local`
+- `packages/nextjs/.env.local`
 - 写入 `NEXT_PUBLIC_LOCALNET_CONTRACT_PACKAGE_ID=...`
 
 ### Devnet / Testnet / Mainnet
@@ -104,7 +104,7 @@ pnpm devnet:deploy
 # 或：pnpm mainnet:deploy
 ```
 
-部署成功后会自动写入（在 `packages/frontend/.env.local`）：
+部署成功后会自动写入（在 `packages/nextjs/.env.local`）：
 
 - `NEXT_PUBLIC_DEVNET_CONTRACT_PACKAGE_ID=...`
 - `NEXT_PUBLIC_TESTNET_CONTRACT_PACKAGE_ID=...`
@@ -137,9 +137,9 @@ pnpm localnet:stop
 pnpm localnet:faucet 0xYOURADDRESS
 ```
 
-## 部署前端到 Vercel（从根目录）
+## 部署 Next.js 应用到 Vercel（从根目录）
 
-推荐用根目录脚本直接部署 `packages/frontend`：
+推荐用根目录脚本直接部署 `packages/nextjs`：
 
 ```bash
 pnpm vercel:prod
@@ -151,16 +151,16 @@ pnpm vercel:prod
 vercel --prod
 ```
 
-根目录新增了 [`vercel.json`](/Users/apple/project/sui-nextjs-auth-template/vercel.json)，Vercel 会：
+根目录提供了 [`vercel.json`](./vercel.json)，Vercel 会：
 
-- 构建 `packages/frontend` 这个 Next.js 应用
+- 构建 `packages/nextjs` 这个 Next.js 应用
 - 以 Next.js 应用方式部署，而不是纯静态导出
 
 因此，不管是本地直接跑 `vercel --prod`，还是在 Vercel Dashboard 导入仓库，都建议把 **Root Directory** 保持在仓库根目录，让这份配置生效。
 
 ## 数据库与 SQL 迁移
 
-前端现在已经支持通过 Next.js 服务端路由直接访问数据库。
+`packages/nextjs` 现在本身就是 Next.js 全栈应用，已通过服务端路由直接访问数据库。
 
 必需环境变量：
 
@@ -168,31 +168,36 @@ vercel --prod
 
 目前已经包含：
 
-- 钱包登录后自动同步用户：钱包连接成功时，前端会调用 `packages/frontend/src/app/api/users/route.ts`，把用户 upsert 到数据库
+- 钱包登录后自动同步用户：钱包连接成功时，Next.js 应用会调用 `packages/nextjs/src/app/api/users/route.ts`，把用户 upsert 到数据库
 - SQL 迁移执行器：按顺序执行 `.sql` 文件，并记录到 `schema_migrations`
 - SQL 迁移生成器：可以连续生成 `00001_init.sql`、`00002_xxx.sql` 这种文件
 
 常用命令：
 
 ```bash
-pnpm --filter frontend db:create-migration add_profiles
-pnpm --filter frontend db:migrate
-pnpm --filter frontend test
+pnpm --filter nextjs db:create-migration add_profiles
+pnpm --filter nextjs db:migrate
+pnpm --filter nextjs test
 ```
 
 迁移文件目录：
 
-- `packages/frontend/db/migrations`
+- `packages/nextjs/db/migrations`
 
 `00001_init.sql` 已经帮你生成好了，位置在：
 
-- `packages/frontend/db/migrations/00001_init.sql`
+- `packages/nextjs/db/migrations/00001_init.sql`
 
 当前数据库行为：
 
 - 迁移会在现有 `users` 表上补齐钱包相关字段
 - 钱包连接后会按 `wallet_address` 创建或更新用户
 - 当前会写入 `wallet_address`、`wallet_name`、`chain`、`last_seen_at`
+
+补充说明：
+
+- `CHRONICLE_CLAIM_SIGNER_PRIVATE_KEY` 是 Next.js 服务端签发 claim ticket 的私钥，只能放在服务端环境变量里，绝不能做成 `NEXT_PUBLIC_*`
+- `CHRONICLE_CLAIM_TICKET_TTL_MS` 用于控制 claim ticket 的有效期
 
 ## 其他命令
 

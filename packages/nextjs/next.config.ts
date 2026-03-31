@@ -1,0 +1,27 @@
+import type { NextConfig } from 'next'
+import createNextIntlPlugin from 'next-intl/plugin'
+
+const nextConfig: NextConfig = {
+  reactStrictMode: true,
+  transpilePackages: [
+    '@eveworld/ui-components',
+    '@mysten/dapp-kit',
+    '@mysten/sui.js',
+    '@mysten/wallet-standard',
+    '@suiware/kit',
+    '@radix-ui/themes',
+    '@radix-ui/react-select',
+    '@radix-ui/react-toggle',
+  ],
+  turbopack: {
+    resolveExtensions: ['.mdx', '.tsx', '.ts', '.jsx', '.js', '.mjs', '.json'],
+  },
+  webpack: (config) => {
+    config.externals = [...(config.externals || []), 'encoding']
+    return config
+  },
+}
+
+const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
+
+export default withNextIntl(nextConfig)

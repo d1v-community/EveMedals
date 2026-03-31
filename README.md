@@ -1,5 +1,4 @@
 # EVE Medals
-[![Build and Lint (frontend)](https://github.com/suiware/sui-dapp-starter/actions/workflows/build_and_lint.yaml/badge.svg)](https://github.com/suiware/sui-dapp-starter/actions/workflows/build_and_lint.yaml)
 [![Discord chat](https://img.shields.io/discord/1237259509366521866.svg?logo=discord&style=flat-square)](https://discord.com/invite/HuDPpXz4Hx)
 
 [中文文档](./README.zh-CN.md)
@@ -24,8 +23,8 @@ Core product loop:
 
 Core packages:
 
-- `packages/frontend`: Chronicle dashboard, Warrior pages, API routes, DB sync, share surfaces
-- `packages/backend`: Sui Move medals contract and deployment helpers
+- `packages/nextjs`: Chronicle dashboard, Warrior pages, API routes, DB sync, share surfaces
+- `packages/contract`: Sui Move medals contract and deployment helpers
 
 Judge-facing docs:
 
@@ -67,29 +66,13 @@ Before you begin, install the following:
 
 ## Installation
 
-### Option 1. Use the Github template
-
-1. [Create a new project from the template](https://github.com/new?template_name=sui-dapp-starter&template_owner=suiware&name=my-sui-dapp).
-
-2. Clone the resulting repo locally.
-
-3. Choose a template by running the corresponding init command:
-
-| Template | Init command |
-| --- | --- |
-| Greeting (React) | `pnpm init:template:greeting-react` |
-| Greeting (Next.js) | `pnpm init:template:greeting-next` |
-| Counter (React) | `pnpm init:template:counter-react` |
-
-[Template Guide](https://sui-dapp-starter.dev/docs/templates)
-
-### Option 2. Use CLI
+### Repository Setup
 
 ```bash
-pnpm create sui-dapp@latest
+pnpm install
 ```
 
-This way you'll be able to configure the project step-by-step.
+This repository is already the product codebase. Clone it directly and use the workspace scripts below instead of starter-template init commands.
 
 ## Usage
 
@@ -130,11 +113,11 @@ c) Run the app and use the Faucet button in the footer.
 ```bash
 pnpm start
 ```
-Find all commands in the [documentation](https://sui-dapp-starter.dev/docs/misc/commands/).
+Additional commands live in the root and package-level `package.json` files.
 
 ## Test
 
-#### Backend
+#### Contract
 
 ```bash
 pnpm test
@@ -142,8 +125,8 @@ pnpm test
 
 ## Docs & Support
 
-- [Sui dApp Starter Docs](https://sui-dapp-starter.dev/docs)
-- [Available PNPM Commands](https://sui-dapp-starter.dev/docs/misc/commands/)
+- [Judge Notes](./docs/eve-medals-judge-guide.md)
+- [Product Architecture](./docs/chronicle-product-architecture.md)
 - [@suiware/kit Docs](https://www.npmjs.com/package/@suiware/kit)
 - [Discord Support](https://discord.com/invite/HuDPpXz4Hx)  
 
@@ -160,22 +143,18 @@ pnpm test
 
 Copyright (c) 2024 Konstantin Komelin and other contributors
 
-Code is licensed under [MIT](https://github.com/suiware/sui-dapp-starter?tab=MIT-1-ov-file)
+Code is licensed under [MIT](./LICENSE)
 
-SVG Graphics used for NFTs is licensed under [CC-BY 4.0](https://github.com/suiware/sui-dapp-starter?tab=CC-BY-4.0-2-ov-file)
+SVG Graphics used for NFTs is licensed under [CC-BY 4.0](./LICENSE-GRAPHICS)
 
-## Legacy Repository Context
+## Current Repository Notes
 
-This repository originated from `sui-dapp-starter`, so some metadata, scripts, and historical sections still reflect that heritage.
-
-When making product decisions, treat the current `EVE Medals` / `Frontier Chronicle` flow as the source of truth, not the starter-era naming.
-
-## sui-nextjs-auth-template
+This repository should now be treated as the living `EVE Medals` / `Frontier Chronicle` product codebase. Product behavior is defined by the Chronicle scan flow, the claim-only medals contract, wallet sync, and Warrior share surfaces.
 
 This repo is a pnpm monorepo:
 
-- `packages/frontend`: Next.js app
-- `packages/backend`: Move package + Suibase helpers
+- `packages/nextjs`: Next.js app
+- `packages/contract`: Move package + Suibase helpers
 
 ## Frontier Chronicle Demo
 
@@ -183,7 +162,7 @@ This repository now ships a hackathon-ready `Frontier Chronicle` flow for EVE Fr
 
 - Eve Eyes-backed activity scan via `app/api/chronicle`
 - Non-transferable `medals::medals` SBT contract
-- Public `mint_medal_nft` entrypoint for direct minting of the eight medal NFTs
+- Claim-only `claim_medal` entrypoint with signed claim tickets, TTL checks, and duplicate-safe admin reissue
 - Wallet dashboard for scan -> claim -> showcase
 
 Recommended environment:
@@ -191,6 +170,8 @@ Recommended environment:
 ```bash
 NEXT_PUBLIC_TESTNET_CONTRACT_PACKAGE_ID=0x...
 EVE_EYES_API_KEY=...
+CHRONICLE_CLAIM_SIGNER_PRIVATE_KEY=suiprivkey...
+CHRONICLE_CLAIM_TICKET_TTL_MS=600000
 NEXT_PUBLIC_SITE_URL=https://frontier-chronicle.xyz
 # optional override
 EVE_EYES_BASE_URL=https://eve-eyes.d0v.xyz
@@ -200,6 +181,7 @@ Notes:
 
 - If `EVE_EYES_API_KEY` is missing, the dashboard still works in preview mode, but only scans the public page window from Eve Eyes.
 - Claiming requires a configured `NEXT_PUBLIC_*_CONTRACT_PACKAGE_ID` for the wallet network.
+- `CHRONICLE_CLAIM_SIGNER_PRIVATE_KEY` is a server-side key used by the Next.js BFF to sign claim tickets. It must never be exposed through `NEXT_PUBLIC_*`.
 - The default wallet network in the app is now `testnet`, because the Eve Eyes index currently tracks frontier activity there.
 
 ### Develop (from repo root)
@@ -208,7 +190,7 @@ Notes:
 pnpm dev
 ```
 
-### Deploy frontend to Vercel (from repo root)
+### Deploy the Next.js app to Vercel (from repo root)
 
 ```bash
 pnpm vercel:prod
@@ -216,13 +198,13 @@ pnpm vercel:prod
 
 Notes:
 
-- The repo root now includes [`vercel.json`](/Users/apple/project/sui-nextjs-auth-template/vercel.json), so `vercel` / `vercel --prod` run from the root will build the Next.js app in `packages/frontend`.
+- The repo root now includes [`vercel.json`](./vercel.json), so `vercel` / `vercel --prod` run from the root will build the Next.js app in `packages/nextjs`.
 - `pnpm vercel:prod` is now just a thin wrapper around `vercel --prod`.
 - If you deploy in Vercel Dashboard, keep the project root at the repository root so this config is picked up.
 
 ### Database and migrations
 
-The frontend now supports server-side database access through Next.js route handlers.
+The `packages/nextjs` app now includes both the UI and the server-side BFF logic through Next.js route handlers.
 
 Required env:
 
@@ -230,25 +212,25 @@ Required env:
 
 What is included:
 
-- Wallet login auto-sync: when a user connects a wallet, the frontend calls [`/api/users`](/Users/apple/project/sui-nextjs-auth-template/packages/frontend/src/app/api/users/route.ts) and upserts the user into the database.
+- Wallet login auto-sync: when a user connects a wallet, the Next.js app calls [`/api/users`](./packages/nextjs/src/app/api/users/route.ts) and upserts the user into the database.
 - SQL migration runner: execute `.sql` files in order and track them in `schema_migrations`.
 - Migration generator: create sequential files like `00001_init.sql`, `00002_add_profiles.sql`.
 
 Commands:
 
 ```bash
-pnpm --filter frontend db:create-migration add_profiles
-pnpm --filter frontend db:migrate
-pnpm --filter frontend test
+pnpm --filter nextjs db:create-migration add_profiles
+pnpm --filter nextjs db:migrate
+pnpm --filter nextjs test
 ```
 
 Migration files live in:
 
-- [`packages/frontend/db/migrations`](/Users/apple/project/sui-nextjs-auth-template/packages/frontend/db/migrations)
+- [`packages/nextjs/db/migrations`](./packages/nextjs/db/migrations)
 
 The initial migration has already been created here:
 
-- [`packages/frontend/db/migrations/00001_init.sql`](/Users/apple/project/sui-nextjs-auth-template/packages/frontend/db/migrations/00001_init.sql)
+- [`packages/nextjs/db/migrations/00001_init.sql`](./packages/nextjs/db/migrations/00001_init.sql)
 
 Current database behavior:
 
@@ -256,9 +238,9 @@ Current database behavior:
 - Wallet connect will create or update a user by `wallet_address`.
 - The API stores `wallet_address`, `wallet_name`, `chain`, and `last_seen_at`.
 
-### Backend (Move) deployment
+### Contract (Move) deployment
 
-The backend here is a Move package. Deploying it will also write the deployed package id into `packages/frontend/.env.local` so the frontend can call it.
+The `packages/contract` workspace is the Move package. Deploying it will also write the deployed package id into `packages/nextjs/.env.local` so the Next.js app can call it.
 
 #### Localnet (recommended for development)
 
@@ -274,7 +256,7 @@ pnpm localnet:start
 pnpm localnet:deploy
 ```
 
-After a successful deploy, `packages/frontend/.env.local` will be created/updated with:
+After a successful deploy, `packages/nextjs/.env.local` will be created/updated with:
 
 - `NEXT_PUBLIC_LOCALNET_CONTRACT_PACKAGE_ID=...`
 
@@ -296,7 +278,7 @@ pnpm devnet:deploy
 # or: pnpm mainnet:deploy
 ```
 
-This will create/update `packages/frontend/.env.local` with:
+This will create/update `packages/nextjs/.env.local` with:
 
 - `NEXT_PUBLIC_DEVNET_CONTRACT_PACKAGE_ID=...`
 - `NEXT_PUBLIC_TESTNET_CONTRACT_PACKAGE_ID=...`

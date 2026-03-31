@@ -7,27 +7,27 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Frontier Chronicle** — EVE Frontier 成就系统，基于 Sui 区块链构建。核心流程：Eve Eyes 扫描玩家行为 → 前端解释进度门槛 → 玩家达标后在 Sui 上领取灵魂绑定勋章（Soulbound Medal）。
 
 Monorepo 结构（pnpm workspaces）：
-- `packages/frontend` — Next.js 16 App Router 前端
-- `packages/backend` — Sui Move 合约包 + Suibase 部署脚本
+- `packages/nextjs` — Next.js 16 App Router 全栈应用（UI + BFF）
+- `packages/contract` — Sui Move 合约包 + Suibase 部署脚本
 
 ## Commands
 
 ```bash
 # 开发
 pnpm dev                        # 启动前端开发服务器
-pnpm build                      # 构建 Move 合约 + 前端
+pnpm build                      # 构建 Move 合约 + Next.js 应用
 
 # 测试
 pnpm test                       # Move 合约测试
-pnpm --filter frontend test     # 前端集成测试（需要 DATABASE_URL）
+pnpm --filter nextjs test       # Next.js 集成测试（需要 DATABASE_URL）
 
 # 代码质量
-pnpm lint                       # 前端 ESLint
-pnpm format                     # 前端格式化
+pnpm lint                       # Next.js ESLint
+pnpm format                     # Next.js 格式化
 
 # 数据库
-pnpm --filter frontend db:create-migration <name>   # 生成 SQL 迁移文件
-pnpm --filter frontend db:migrate                   # 应用迁移
+pnpm --filter nextjs db:create-migration <name>   # 生成 SQL 迁移文件
+pnpm --filter nextjs db:migrate                   # 应用迁移
 
 # 本地网络（开发用）
 pnpm localnet:start             # 启动 Suibase localnet + 本地浏览器
@@ -75,7 +75,7 @@ claim_medal() Move 交易          — 前端通过 chronicle/helpers/transactio
 | `src/app/components/WalletUserSync.tsx` | 钱包连接时自动同步用户到数据库 |
 | `src/app/api/users/route.ts` | 钱包用户 upsert 接口 |
 | `src/app/server/db/` | SQL 迁移执行器与数据库访问 |
-| `packages/backend/move/greeting/sources/medals.move` | Move 合约：Medal SBT + MedalRegistry |
+| `packages/contract/move/medals/sources/medals.move` | Move 合约：Medal SBT + MedalRegistry |
 
 ### Move 合约
 
@@ -88,7 +88,7 @@ claim_medal() Move 交易          — 前端通过 chronicle/helpers/transactio
 
 ## Environment Variables
 
-前端需要以下环境变量（`packages/frontend/.env.local` 或部署平台）：
+Next.js 应用需要以下环境变量（`packages/nextjs/.env.local` 或部署平台）：
 
 ```
 # Move 合约包 ID（localnet:deploy / testnet:deploy 等会自动写入）
@@ -100,8 +100,10 @@ NEXT_PUBLIC_MAINNET_CONTRACT_PACKAGE_ID=
 # Eve Eyes 活动索引 API（缺失时退回 preview 模式，只扫公开首页）
 EVE_EYES_API_KEY=
 EVE_EYES_BASE_URL=https://eve-eyes.d0v.xyz   # 可选覆盖
+CHRONICLE_CLAIM_SIGNER_PRIVATE_KEY=          # 仅服务端可见，用于签发 claim ticket
+CHRONICLE_CLAIM_TICKET_TTL_MS=600000         # claim ticket TTL（毫秒）
 
-# 数据库（缺失时钱包同步功能禁用，前端其他功能仍正常）
+# 数据库（缺失时钱包同步功能禁用，Next.js 其他功能仍正常）
 DATABASE_URL=
 ```
 
@@ -110,7 +112,7 @@ DATABASE_URL=
 ## Code Conventions
 
 - TypeScript，2 空格缩进，单引号，无分号
-- `~~/*` 是 `packages/frontend/src/app/*` 的路径别名
+- `~~/*` 是 `packages/nextjs/src/app/*` 的路径别名
 - 新增勋章类型：先改 `chronicle/config/medals.ts`，再改 `api/chronicle/route.ts` 中的 `buildMedalStates`，最后改 Move 合约
 - server-only 逻辑（DB、Eve Eyes 调用）放 `src/app/server/`，不能在客户端组件中直接使用
 - 扩展现有模块（chronicle / medals / db）而不是创建平行抽象

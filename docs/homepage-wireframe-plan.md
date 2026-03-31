@@ -339,7 +339,7 @@
 
 如果下一步要正式改代码，建议按这个顺序做：
 
-1. 重排 `packages/frontend/src/app/page.tsx` 的 section 顺序
+1. 重排 `packages/nextjs/src/app/page.tsx` 的 section 顺序
 2. 把首屏 Hero 改成“结果导向”的双栏结构
 3. 把 `ChronicleDashboard` 上移到首页中上部
 4. 合并 `ScoreShowcase` 与 `Proof Classes` 的表达

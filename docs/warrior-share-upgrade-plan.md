@@ -67,22 +67,22 @@
 
 ## 涉及文件
 
-- `packages/frontend/src/app/server/warrior/qr.ts`
-- `packages/frontend/src/app/server/warrior/share.ts`
-- `packages/frontend/src/app/server/warrior/shareCard.tsx`
-- `packages/frontend/src/app/server/warrior/medalShare.ts`
-- `packages/frontend/src/app/warrior/shareClient.ts`
-- `packages/frontend/src/app/warrior/[walletAddress]/components/ShareButton.tsx`
-- `packages/frontend/src/app/warrior/[walletAddress]/components/WarriorShareDialog.tsx`
-- `packages/frontend/src/app/warrior/[walletAddress]/components/WarriorCard.tsx`
-- `packages/frontend/src/app/warrior/[walletAddress]/opengraph-image.tsx`
-- `packages/frontend/src/app/warrior/[walletAddress]/twitter-image.tsx`
+- `packages/nextjs/src/app/server/warrior/qr.ts`
+- `packages/nextjs/src/app/server/warrior/share.ts`
+- `packages/nextjs/src/app/server/warrior/shareCard.tsx`
+- `packages/nextjs/src/app/server/warrior/medalShare.ts`
+- `packages/nextjs/src/app/warrior/shareClient.ts`
+- `packages/nextjs/src/app/warrior/[walletAddress]/components/ShareButton.tsx`
+- `packages/nextjs/src/app/warrior/[walletAddress]/components/WarriorShareDialog.tsx`
+- `packages/nextjs/src/app/warrior/[walletAddress]/components/WarriorCard.tsx`
+- `packages/nextjs/src/app/warrior/[walletAddress]/opengraph-image.tsx`
+- `packages/nextjs/src/app/warrior/[walletAddress]/twitter-image.tsx`
 
 ## 验证清单
 
-- `pnpm --filter frontend lint`
-- `pnpm --filter frontend exec tsc --noEmit`
-- `pnpm --filter frontend test`
+- `pnpm --filter nextjs lint`
+- `pnpm --filter nextjs exec tsc --noEmit`
+- `pnpm --filter nextjs test`
 
 ## 结果口径
 
