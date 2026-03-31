@@ -9,7 +9,7 @@
     "build": "next build",
     "start": "next start",
     "preview": "next start",
-    "test": "node --test ./tests/**/*.test.mjs",
+    "test": "node --test --experimental-transform-types --import ./tests/register-alias.mjs ./tests/**/*.test.mjs ./tests/**/*.test.ts",
     "db:create-migration": "node ./scripts/create-migration.mjs",
     "db:migrate": "node ./scripts/run-migrations.mjs",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
