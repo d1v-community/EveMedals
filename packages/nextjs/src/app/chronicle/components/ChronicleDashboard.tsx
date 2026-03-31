@@ -5,7 +5,7 @@ import EveButton from '@eveworld/ui-components/components/EveButton'
 import EveLinearBar from '@eveworld/ui-components/components/EveLinearBar'
 import { useCurrentAccount, useCurrentWallet } from '@mysten/dapp-kit'
 import { isValidSuiObjectId } from '@mysten/sui/utils'
-import { SuiSignAndExecuteTransactionOutput } from '@mysten/wallet-standard'
+import type { SuiSignAndExecuteTransactionOutput } from '@mysten/wallet-standard'
 import useNetworkType from '@suiware/kit/useNetworkType'
 import useTransact from '@suiware/kit/useTransact'
 import {

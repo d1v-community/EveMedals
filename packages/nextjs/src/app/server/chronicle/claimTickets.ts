@@ -95,6 +95,16 @@ const loadClaimSignerConfig = (): ClaimSignerConfig | null => {
   }
 }
 
+export const getConfiguredClaimSignerPublicKeyBase64 = () => {
+  const signer = loadClaimSignerConfig()
+
+  if (!signer) {
+    return null
+  }
+
+  return Buffer.from(signer.publicKeyBytes).toString('base64')
+}
+
 const resolveTicketTtlMs = () => {
   const raw = Number(process.env.CHRONICLE_CLAIM_TICKET_TTL_MS || DEFAULT_TICKET_TTL_MS)
 

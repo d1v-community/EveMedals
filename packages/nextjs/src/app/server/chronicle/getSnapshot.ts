@@ -10,8 +10,9 @@ import type {
 import {
   type ActiveMedalTemplate,
   buildClaimTickets,
-  isClaimSigningConfigured,
+  getConfiguredClaimSignerPublicKeyBase64,
 } from '~~/server/chronicle/claimTickets'
+import { resolveClaimSignerRegistrationState } from '~~/server/chronicle/claimSignerRuntime'
 import { buildChronicleWarnings } from '~~/server/chronicle/chronicleArchitecture'
 import {
   isContractConfigured,
@@ -33,7 +34,8 @@ export const getChronicleSnapshot = async (
   let claimedSlugs = new Set<string>()
   let registryObjectId: string | null = null
   let activeTemplates = new Map<number, ActiveMedalTemplate>()
-  const claimSigningConfigured = isClaimSigningConfigured()
+  let registeredSignerPublicKeys = new Set<string>()
+  const configuredClaimSignerPublicKeyBase64 = getConfiguredClaimSignerPublicKeyBase64()
 
   if (contractConfigured) {
     const contractState = await loadChronicleContractState(
@@ -44,7 +46,14 @@ export const getChronicleSnapshot = async (
     claimedSlugs = contractState.claimedSlugs
     registryObjectId = contractState.registryObjectId
     activeTemplates = contractState.activeTemplates
+    registeredSignerPublicKeys = contractState.registeredSignerPublicKeys
   }
+
+  const { claimSigningConfigured, claimSignerRegistered } =
+    resolveClaimSignerRegistrationState(
+      configuredClaimSignerPublicKeyBase64,
+      registeredSignerPublicKeys
+    )
 
   const baseMedals = buildMedalStates(
     activitySnapshot.counts,
@@ -65,12 +74,13 @@ export const getChronicleSnapshot = async (
       contractConfigured,
       registryObjectId,
       claimSigningConfigured,
+      claimSignerRegistered,
       activeTemplates,
     },
     locale
   )
 
-  if (contractConfigured && registryObjectId && claimSigningConfigured) {
+  if (contractConfigured && registryObjectId && claimSignerRegistered) {
     try {
       claimTicketsByKind = await buildClaimTickets(
         walletAddress,

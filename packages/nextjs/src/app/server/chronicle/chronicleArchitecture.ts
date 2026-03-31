@@ -1,5 +1,6 @@
 import type { ActiveMedalTemplate } from '~~/server/chronicle/claimTickets'
 import {
+  getClaimSignerRegistrationWarning,
   getClaimSigningWarning,
   getContractPackageWarning,
   getMissingTemplateWarning,
@@ -10,6 +11,7 @@ export interface ChronicleRuntimeFlags {
   contractConfigured: boolean
   registryObjectId: string | null
   claimSigningConfigured: boolean
+  claimSignerRegistered: boolean
   activeTemplates: Map<number, ActiveMedalTemplate>
 }
 
@@ -35,6 +37,14 @@ export const buildChronicleWarnings = (
 
   if (runtime.registryObjectId && !runtime.claimSigningConfigured) {
     warnings.push(getClaimSigningWarning(locale))
+  }
+
+  if (
+    runtime.registryObjectId &&
+    runtime.claimSigningConfigured &&
+    !runtime.claimSignerRegistered
+  ) {
+    warnings.push(getClaimSignerRegistrationWarning(locale))
   }
 
   if (runtime.activeTemplates.size === 0) {

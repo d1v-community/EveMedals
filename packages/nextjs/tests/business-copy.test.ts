@@ -6,6 +6,7 @@ import {
   buildStandardProof,
   buildVoidPioneerProgressLabel,
   buildVoidPioneerProof,
+  getClaimSignerRegistrationWarning,
   getInsufficientEvidenceLabel,
 } from '../src/app/chronicle/config/businessCopy.ts'
 
@@ -100,6 +101,19 @@ test('warnings and insufficient evidence copy stay localized', () => {
       locale: 'is',
     }),
     'Eve Eyes preview mode skannar aðeins fyrstu síðurnar. Stilltu EVE_EYES_API_KEY fyrir dýpri sögu.'
+  )
+
+  assert.equal(
+    getClaimSignerRegistrationWarning('en'),
+    'Claim signing is configured on the server, but that signer public key is not registered in the current medals registry yet. Run testnet:register-signer before attempting a live claim.'
+  )
+  assert.equal(
+    getClaimSignerRegistrationWarning('zh-CN'),
+    '服务端领取签名已经配置，但对应公钥还没有注册到当前勋章注册表。先执行 testnet:register-signer，再让前端发起 claim。'
+  )
+  assert.equal(
+    getClaimSignerRegistrationWarning('is'),
+    'Undirritunarlykill innlausnar er stilltur á þjóninum, en opinberi lykillinn hefur ekki verið skráður í núverandi medalíuskrá enn. Keyrðu testnet:register-signer áður en framendinn reynir að innleysa.'
   )
 })
 

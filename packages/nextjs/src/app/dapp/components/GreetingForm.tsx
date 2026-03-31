@@ -2,7 +2,7 @@
 
 import { useCurrentAccount } from '@mysten/dapp-kit'
 import { isValidSuiObjectId } from '@mysten/sui/utils'
-import { SuiSignAndExecuteTransactionOutput } from '@mysten/wallet-standard'
+import type { SuiSignAndExecuteTransactionOutput } from '@mysten/wallet-standard'
 import { Button, TextField } from '@radix-ui/themes'
 import useTransact from '@suiware/kit/useTransact'
 import Image from 'next/image'

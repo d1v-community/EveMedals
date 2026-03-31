@@ -16,6 +16,7 @@ export interface ChronicleContractState {
   claimedSlugs: Set<string>
   registryObjectId: string | null
   activeTemplates: Map<number, ActiveMedalTemplate>
+  registeredSignerPublicKeys: Set<string>
 }
 
 export const resolveContractPackageId = (network: ENetwork) => {
@@ -43,6 +44,31 @@ const getClaimedSlugs = (objects: SuiObjectResponse[]) => {
   return slugs
 }
 
+const queryAllEvents = async (
+  client: SuiClient,
+  moveEventType: `${string}::${string}::${string}`
+) => {
+  const events = []
+  let cursor: Awaited<ReturnType<SuiClient['queryEvents']>>['nextCursor'] = null
+
+  while (true) {
+    const page = await client.queryEvents({
+      query: { MoveEventType: moveEventType },
+      cursor,
+      limit: 100,
+      order: 'descending',
+    })
+
+    events.push(...page.data)
+
+    if (!page.hasNextPage || page.nextCursor == null) {
+      return events
+    }
+
+    cursor = page.nextCursor
+  }
+}
+
 const getRegistryObjectId = async (client: SuiClient, packageId: string) => {
   const events = await client.queryEvents({
     query: { MoveEventType: fullStructName(packageId, 'EventRegistryCreated') },
@@ -64,15 +90,14 @@ const getRegistryObjectId = async (client: SuiClient, packageId: string) => {
 }
 
 const getActiveTemplates = async (client: SuiClient, packageId: string) => {
-  const events = await client.queryEvents({
-    query: { MoveEventType: fullStructName(packageId, 'EventMedalTemplateAdded') },
-    limit: 100,
-    order: 'descending',
-  })
+  const events = await queryAllEvents(
+    client,
+    fullStructName(packageId, 'EventMedalTemplateAdded')
+  )
 
   const templateIds = [
     ...new Set(
-      events.data
+      events
         .map((event) => {
           const parsedJson = event.parsedJson
 
@@ -136,6 +161,55 @@ const getActiveTemplates = async (client: SuiClient, packageId: string) => {
   return templates
 }
 
+const getRegisteredSignerPublicKeys = async (
+  client: SuiClient,
+  packageId: string
+) => {
+  const events = await queryAllEvents(
+    client,
+    fullStructName(packageId, 'EventSignerRotated')
+  )
+  const signerStates = new Map<string, boolean>()
+
+  events.forEach((event) => {
+    const parsedJson = event.parsedJson
+
+    if (
+      !parsedJson ||
+      typeof parsedJson !== 'object' ||
+      !('public_key' in parsedJson) ||
+      !('enabled' in parsedJson) ||
+      !Array.isArray(parsedJson.public_key) ||
+      typeof parsedJson.enabled !== 'boolean'
+    ) {
+      return
+    }
+
+    const publicKey = parsedJson.public_key
+
+    if (
+      !publicKey.every(
+        (entry) =>
+          typeof entry === 'number' && Number.isInteger(entry) && entry >= 0 && entry <= 255
+      )
+    ) {
+      return
+    }
+
+    const encoded = Buffer.from(Uint8Array.from(publicKey)).toString('base64')
+
+    if (!signerStates.has(encoded)) {
+      signerStates.set(encoded, parsedJson.enabled)
+    }
+  })
+
+  return new Set(
+    [...signerStates.entries()]
+      .filter(([, enabled]) => enabled)
+      .map(([publicKey]) => publicKey)
+  )
+}
+
 const getOwnedMedals = async (client: SuiClient, owner: string, packageId: string) => {
   const response = await client.getOwnedObjects({
     owner,
@@ -153,15 +227,17 @@ export const loadChronicleContractState = async (
   packageId: string
 ): Promise<ChronicleContractState> => {
   const client = new SuiClient({ url: getFullnodeUrl(network) })
-  const [ownedMedals, registryObjectId, activeTemplates] = await Promise.all([
+  const [ownedMedals, registryObjectId, activeTemplates, registeredSignerPublicKeys] = await Promise.all([
     getOwnedMedals(client, walletAddress, packageId),
     getRegistryObjectId(client, packageId),
     getActiveTemplates(client, packageId),
+    getRegisteredSignerPublicKeys(client, packageId),
   ])
 
   return {
     claimedSlugs: getClaimedSlugs(ownedMedals),
     registryObjectId,
     activeTemplates,
+    registeredSignerPublicKeys,
   }
 }
