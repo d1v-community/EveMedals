@@ -171,6 +171,24 @@ Useful helpers:
 - `pnpm testnet:links`
 - `pnpm mainnet:links`
 
+### Testnet Claim Signer And Vercel Minting
+
+To keep Chronicle medal minting live on both local Next.js and a future Vercel deployment, keep these rules aligned:
+
+- `pnpm testnet:probe`: inspect the current testnet package, registry, template count, signer count, and whether your configured signer is already registered
+- `pnpm testnet:register-signer`: register the public key derived from `CHRONICLE_CLAIM_SIGNER_PRIVATE_KEY` into the current testnet `MedalRegistry`
+- local `.env.local` should include:
+  - `NEXT_PUBLIC_TESTNET_CONTRACT_PACKAGE_ID=0x4de6789f05183cdfbc7756ee7d30e34996ad7ff506142c86146012aaa371fc60`
+  - `NEXT_PUBLIC_SITE_URL=http://localhost:3000`
+  - `CHRONICLE_CLAIM_SIGNER_PRIVATE_KEY=<server-side signer secret>`
+- Vercel must mirror the same signer and package settings:
+  - `NEXT_PUBLIC_TESTNET_CONTRACT_PACKAGE_ID`
+  - `NEXT_PUBLIC_SITE_URL=https://<your-vercel-domain>`
+  - `CHRONICLE_CLAIM_SIGNER_PRIVATE_KEY`
+  - optional: `CHRONICLE_CLAIM_TICKET_TTL_MS`
+- the frontend can only mint when that server-side signer public key is already registered on-chain for the same package and registry; setting env vars without `pnpm testnet:register-signer` will still leave claim disabled
+- if you rotate `CHRONICLE_CLAIM_SIGNER_PRIVATE_KEY`, register the new public key before deploying the new server env to Vercel, or claim tickets will stop minting
+
 ## Testing
 
 Contract tests:
