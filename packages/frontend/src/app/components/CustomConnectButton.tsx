@@ -51,6 +51,7 @@ const CustomConnectButton = () => {
   return (
     <div className="flex flex-wrap items-stretch gap-2">
       <ConnectModal
+        key={connectionStatus}
         open={isConnected ? false : isConnectModalOpen}
         onOpenChange={setConnectModalOpen}
         trigger={

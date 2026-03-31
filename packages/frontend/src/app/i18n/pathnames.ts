@@ -1,1 +1,6 @@
-export { localizeHref, withLocale } from '../../i18n/pathnames'
+export {
+  localizeHref,
+  localizePathname,
+  stripLocalePrefix,
+  withLocale,
+} from '../../i18n/pathnames'
