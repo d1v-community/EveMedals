@@ -1,204 +1,208 @@
-# Frontier Chronicle（pnpm Monorepo）
+# EVE Medals
+[![Discord chat](https://img.shields.io/discord/1237259509366521866.svg?logo=discord&style=flat-square)](https://discord.com/invite/HuDPpXz4Hx)
 
-这个仓库当前的产品主线是 **EVE Frontier Chronicle 奖章产品**，不是通用 starter 模板。
+[English](./README.md) | [简体中文](./README.zh-CN.md) | [Íslenska](./README.is-IS.md)
 
-## 一句话
+![EVE Medals](./docs/assets/EveMedals.png)
 
-`EVE Medals` 把 `EVE Frontier` 玩家真实发生过的行为，变成可验证的勋章、Warrior 档案和可分享卡片。
+[在 Sui Overflow 2024 黑客松 Randomness 赛道获得第一名](https://blog.sui.io/2024-sui-overflow-hackathon-winners/)
 
-当前更准确的定位是：
+`EVE Medals` 是一个构建在 Sui 上的 `EVE Frontier` 成就产品。它会扫描玩家活动，把可验证进度转成奖章可领取状态，发放钱包绑定奖章，并通过公开的 Warrior 页面展示和分享证明。
 
-> 一个面向 `EVE Frontier` 的成就验证与分享产品。
+这个仓库是当前线上 `Frontier Chronicle -> Medal Claim -> Warrior Share` 产品流程的 `pnpm` monorepo。仓库里仍然残留少量 starter 时期的命名和目录，但真正的业务事实来源是 Chronicle、奖章、钱包同步和 Warrior 页面。
 
-面向评审的材料：
+## 产品主流程
 
-- [`docs/eve-medals-hackathon-one-pager.md`](./docs/eve-medals-hackathon-one-pager.md)
-- [`docs/chronicle-product-architecture.md`](./docs/chronicle-product-architecture.md)
-- [`docs/eve-medals-1min-defense.md`](./docs/eve-medals-1min-defense.md)
-- [`docs/eve-medals-demo-5min-script.md`](./docs/eve-medals-demo-5min-script.md)
+1. 玩家连接 Sui 钱包
+2. 应用基于已索引的 `EVE Frontier` 活动和链上奖章状态构建 Chronicle 快照
+3. 达标奖章进入可领取状态
+4. BFF 生成签名 claim ticket，Move 合约铸造钱包绑定奖章
+5. 已领取奖章展示在 Warrior 页面和分享入口中
 
-使用 pnpm workspace 管理 Next.js 应用与合约代码：
+## 仓库结构
 
-- `packages/nextjs`：Next.js 全栈应用（UI + BFF）
-- `packages/contract`：Move 合约 + 部署脚本
+- `packages/nextjs`：Next.js 16 应用，包含 Chronicle 面板、API 路由、钱包同步、Warrior 页面和分享能力
+- `packages/contract`：位于 `move/medals` 的 Sui Move 包和网络部署辅助脚本
+- `docs`：产品、架构、演示和评审资料
 
-## 当前产品能力
+关键业务路径：
 
-- Chronicle 面板：扫描玩家活动、展示奖章进度、发起链上领取
-- Warrior 页面：展示玩家资历卡和奖章分享页
-- Move 奖章合约：承载奖章模板、领取结果和链上持久化
-- 钱包用户同步：钱包连接后可同步到 SQL 数据库
+- `packages/nextjs/src/app/chronicle`
+- `packages/nextjs/src/app/api/chronicle/route.ts`
+- `packages/nextjs/src/app/api/users/route.ts`
+- `packages/nextjs/src/app/server/chronicle`
+- `packages/nextjs/src/app/server/db`
+- `packages/contract/move/medals/sources/medals.move`
 
-架构说明见：
+## 当前已实现能力
 
-- [`docs/chronicle-product-architecture.md`](./docs/chronicle-product-architecture.md)
+- 基于 Eve Eyes 的 Chronicle 活动扫描
+- 可解释的奖章门槛和领取准备状态
+- 带 TTL 校验的签名 claim ticket
+- Sui 上的钱包绑定奖章铸造
+- 在配置 `DATABASE_URL` 时自动执行钱包到数据库的用户同步
+- Warrior 公开页面和分享追踪能力
 
 ## 环境要求
 
-- Node.js >= 20
-- pnpm（建议使用项目声明的版本）
-- Suibase（用于本地链/网络工具）
+- [Node.js 20+](https://nodejs.org/en/download/)
+- [pnpm](https://pnpm.io/installation)
+- [Suibase](https://suibase.io/how-to/install.html)
 
-## 安装依赖
+## 快速开始
 
-在仓库根目录执行：
+### 1. 安装依赖
 
 ```bash
 pnpm install
 ```
 
-## 团队工具配置
+### 2. 配置环境变量
 
-如果团队需要统一配置高权限 Codex 启动别名 `codexfly`，可参考：
+按需创建 `packages/nextjs/.env.local`：
 
-- [`docs/codexfly-setup.md`](./docs/codexfly-setup.md)
+```bash
+DATABASE_URL=postgres://...
+EVE_EYES_API_KEY=...
+CHRONICLE_CLAIM_SIGNER_PRIVATE_KEY=suiprivkey...
+CHRONICLE_CLAIM_TICKET_TTL_MS=600000
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_TESTNET_CONTRACT_PACKAGE_ID=0x...
+```
 
-## 本地开发（从根目录启动 Next.js 应用）
+如果你使用下面的工作区脚本部署 Move 合约，对应网络的 `NEXT_PUBLIC_*_CONTRACT_PACKAGE_ID` 会自动写入 `packages/nextjs/.env.local`。
 
-在仓库根目录执行：
+### 3. 启动应用
 
 ```bash
 pnpm dev
 ```
 
-该命令会启动 `packages/nextjs` 的 Next.js 开发服务器。
+打开 [http://localhost:3000](http://localhost:3000)。
 
-## 合约（Move 包）如何部署
+如果没有额外指定网络，应用默认按 `testnet` 的钱包和网络行为运行。
 
-这里的 `packages/contract` 指的是 Move 合约包。部署合约后，会自动把最新的 `packageId` 写入 `packages/nextjs/.env.local`，供 Next.js 应用调用。
+## 带合约的本地开发
 
-### Localnet（推荐用于开发）
-
-1) 启动本地网络（会同时启动本地 Explorer）：
+先启动本地 Sui 基础设施：
 
 ```bash
 pnpm localnet:start
 ```
 
-2) 部署合约到 localnet：
+然后把奖章合约部署到 localnet：
 
 ```bash
 pnpm localnet:deploy
 ```
 
-部署成功后会自动创建/更新：
+接下来：
 
-- `packages/nextjs/.env.local`
-- 写入 `NEXT_PUBLIC_LOCALNET_CONTRACT_PACKAGE_ID=...`
-
-### Devnet / Testnet / Mainnet
-
-1) 确保对应网络环境已准备好：
-
-```bash
-pnpm devnet:start
-# 或：pnpm testnet:start
-# 或：pnpm mainnet:start
-```
-
-2) 部署合约：
-
-```bash
-pnpm devnet:deploy
-# 或：pnpm testnet:deploy
-# 或：pnpm mainnet:deploy
-```
-
-部署成功后会自动写入（在 `packages/nextjs/.env.local`）：
-
-- `NEXT_PUBLIC_DEVNET_CONTRACT_PACKAGE_ID=...`
-- `NEXT_PUBLIC_TESTNET_CONTRACT_PACKAGE_ID=...`
-- `NEXT_PUBLIC_MAINNET_CONTRACT_PACKAGE_ID=...`
-
-注意：
-
-- Mainnet 没有水龙头，需要你自己的地址里有足够的 SUI 作为 gas。
-- 常用辅助命令：`pnpm devnet:address` / `pnpm testnet:address` / `pnpm mainnet:address` 以及 `pnpm devnet:links` / `pnpm testnet:links` / `pnpm mainnet:links`。
-- 如果遇到依赖校验/版本不匹配问题，可以使用 `*:deploy:no-dependency-check` 相关脚本（谨慎使用）。
-- `.env.local` 是本地文件（默认不会提交到 Git）。如果你在 CI/云端部署前端（例如 Vercel），也需要在对应环境里配置同名环境变量（Vercel Project Settings -> Environment Variables，或使用 `vercel env add ...`）。
-
-## Localnet 常用命令（补充）
-
-查看状态：
-
-```bash
-pnpm localnet:status
-```
-
-停止本地网络（和本地 Explorer）：
-
-```bash
-pnpm localnet:stop
-```
-
-给某个地址打水（localnet）：
+1. 把钱包切到 `localnet`
+2. 用钱包自带 faucet，或者执行：
 
 ```bash
 pnpm localnet:faucet 0xYOURADDRESS
 ```
 
-## 部署 Next.js 应用到 Vercel（从根目录）
+3. 使用 `pnpm dev` 启动应用
 
-推荐用根目录脚本直接部署 `packages/nextjs`：
+本地 Explorer 地址是 [http://localhost:9001](http://localhost:9001)。
+
+## 环境变量缺失时的行为
+
+| 变量 | 作用 | 缺失时的行为 |
+| --- | --- | --- |
+| `DATABASE_URL` | 启用服务端数据库访问和钱包同步 | 应用仍可加载，但 `/api/users` 会返回 `databaseEnabled: false`，钱包同步会跳过 |
+| `EVE_EYES_API_KEY` | 启用更深的 Eve Eyes 历史扫描 | Chronicle 会退回 preview 模式，只能看到公开页面窗口内的数据 |
+| `CHRONICLE_CLAIM_SIGNER_PRIVATE_KEY` | 为奖章领取签发 claim ticket | 仍可扫描和验证奖章，但不会签发 claim ticket |
+| `CHRONICLE_CLAIM_TICKET_TTL_MS` | claim ticket 的有效期，单位毫秒 | 默认值为 `600000` |
+| `NEXT_PUBLIC_*_CONTRACT_PACKAGE_ID` | 各网络对应的合约 package ID | 仍可扫描，但当前网络的领取和链上交互会被禁用 |
+| `NEXT_PUBLIC_SITE_URL` | 用于证据页和分享链接的站点地址 | 回退到 `http://localhost:3000` |
+
+## 常用命令
+
+除非特别说明，以下命令都在仓库根目录执行。
+
+| 命令 | 作用 |
+| --- | --- |
+| `pnpm dev` | 启动 Next.js 开发服务器 |
+| `pnpm build` | 构建 Move 合约和 Next.js 应用 |
+| `pnpm lint` | 运行 Next.js 工作区的 ESLint |
+| `pnpm test` | 运行 Move 合约测试 |
+| `pnpm --filter nextjs test` | 运行 Next.js 集成测试 |
+| `pnpm --filter nextjs db:create-migration <name>` | 创建带序号的 SQL 迁移文件 |
+| `pnpm --filter nextjs db:migrate` | 执行 SQL 迁移 |
+| `pnpm localnet:start` | 启动 localnet 和本地 explorer |
+| `pnpm localnet:deploy` | 发布 Move 合约到 localnet，并把 package ID 写入 `.env.local` |
+| `pnpm devnet:deploy` | 发布到 devnet，并更新 `.env.local` |
+| `pnpm testnet:deploy` | 发布到 testnet，并更新 `.env.local` |
+| `pnpm mainnet:deploy` | 发布到 mainnet，并更新 `.env.local` |
+| `pnpm vercel:prod` | 从仓库根目录通过 Vercel 部署应用 |
+
+只有在你明确知道依赖校验问题来源时，才使用 `*:deploy:no-dependency-check`。
+
+## 数据库与钱包同步
+
+- 钱包连接会触发 `packages/nextjs/src/app/components/WalletUserSync.tsx`
+- 客户端会把钱包身份同步到 `POST /api/users`
+- SQL 迁移文件位于 `packages/nextjs/db/migrations`
+- 当前测试覆盖了迁移流程和用户同步集成逻辑
+
+现有迁移文件：
+
+- `packages/nextjs/db/migrations/00001_init.sql`
+- `packages/nextjs/db/migrations/00002_share_events.sql`
+
+## 网络与部署说明
+
+- 如果没有显式指定网络，应用默认优先按 `testnet` 处理
+- `pnpm localnet:deploy`、`pnpm devnet:deploy`、`pnpm testnet:deploy` 和 `pnpm mainnet:deploy` 都会发布 `packages/contract/move/medals`
+- 部署辅助脚本会把 package ID 写入 `packages/nextjs/.env.local`
+- 不要提交 `packages/nextjs/.env.local` 或任何密钥
+- 如果你从 CI 或 Vercel 部署，请同步配置相同的 `NEXT_PUBLIC_*_CONTRACT_PACKAGE_ID`
+
+常用辅助命令：
+
+- `pnpm devnet:address`
+- `pnpm testnet:address`
+- `pnpm mainnet:address`
+- `pnpm devnet:links`
+- `pnpm testnet:links`
+- `pnpm mainnet:links`
+
+## 测试
+
+合约测试：
 
 ```bash
-pnpm vercel:prod
+pnpm test
 ```
 
-它现在等价于在根目录执行：
+Next.js 集成测试：
 
 ```bash
-vercel --prod
-```
-
-根目录提供了 [`vercel.json`](./vercel.json)，Vercel 会：
-
-- 构建 `packages/nextjs` 这个 Next.js 应用
-- 以 Next.js 应用方式部署，而不是纯静态导出
-
-因此，不管是本地直接跑 `vercel --prod`，还是在 Vercel Dashboard 导入仓库，都建议把 **Root Directory** 保持在仓库根目录，让这份配置生效。
-
-## 数据库与 SQL 迁移
-
-`packages/nextjs` 现在本身就是 Next.js 全栈应用，已通过服务端路由直接访问数据库。
-
-必需环境变量：
-
-- `DATABASE_URL=...`
-
-目前已经包含：
-
-- 钱包登录后自动同步用户：钱包连接成功时，Next.js 应用会调用 `packages/nextjs/src/app/api/users/route.ts`，把用户 upsert 到数据库
-- SQL 迁移执行器：按顺序执行 `.sql` 文件，并记录到 `schema_migrations`
-- SQL 迁移生成器：可以连续生成 `00001_init.sql`、`00002_xxx.sql` 这种文件
-
-常用命令：
-
-```bash
-pnpm --filter nextjs db:create-migration add_profiles
-pnpm --filter nextjs db:migrate
 pnpm --filter nextjs test
 ```
 
-迁移文件目录：
+Lint：
 
-- `packages/nextjs/db/migrations`
+```bash
+pnpm lint
+```
 
-`00001_init.sql` 已经帮你生成好了，位置在：
+## 文档
 
-- `packages/nextjs/db/migrations/00001_init.sql`
+- [黑客松一页纸](./docs/eve-medals-hackathon-one-pager.md)
+- [评审指引](./docs/eve-medals-judge-guide.md)
+- [Chronicle 产品架构](./docs/chronicle-product-architecture.md)
+- [1 分钟答辩稿](./docs/eve-medals-1min-defense.md)
+- [5 分钟演示脚本](./docs/eve-medals-demo-5min-script.md)
 
-当前数据库行为：
+## 许可证
 
-- 迁移会在现有 `users` 表上补齐钱包相关字段
-- 钱包连接后会按 `wallet_address` 创建或更新用户
-- 当前会写入 `wallet_address`、`wallet_name`、`chain`、`last_seen_at`
+Copyright (c) 2024 Konstantin Komelin and other contributors
 
-补充说明：
+代码采用 [MIT](./LICENSE) 许可证。
 
-- `CHRONICLE_CLAIM_SIGNER_PRIVATE_KEY` 是 Next.js 服务端签发 claim ticket 的私钥，只能放在服务端环境变量里，绝不能做成 `NEXT_PUBLIC_*`
-- `CHRONICLE_CLAIM_TICKET_TTL_MS` 用于控制 claim ticket 的有效期
-
-## 其他命令
-
-根目录的 `package.json` 里封装了常用命令（例如 `build`、`lint`、各种网络的 deploy 等）；你也可以进入子项目目录分别运行它们自己的脚本。
+NFT 使用的 SVG 图形采用 [CC-BY 4.0](./LICENSE-GRAPHICS) 许可证。

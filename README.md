@@ -1,292 +1,208 @@
 # EVE Medals
 [![Discord chat](https://img.shields.io/discord/1237259509366521866.svg?logo=discord&style=flat-square)](https://discord.com/invite/HuDPpXz4Hx)
 
-[中文文档](./README.zh-CN.md)
+[English](./README.md) | [简体中文](./README.zh-CN.md) | [Íslenska](./README.is-IS.md)
 
-![Spoiler](https://repository-images.githubusercontent.com/794883099/f0937c6b-c021-41db-b44a-a287b29111c3)
+![EVE Medals](./docs/assets/EveMedals.png)
 
 [Won the 1st place in the Randomness category of the Sui Overflow 2024 hackathon](https://blog.sui.io/2024-sui-overflow-hackathon-winners/)
 
-## One-line Punch
+`EVE Medals` is an `EVE Frontier` achievement product on Sui. It scans player activity, turns verified progress into medal readiness, issues wallet-bound medals, and exposes public Warrior pages for sharing proof.
 
-`EVE Medals` turns real `EVE Frontier` activity into verifiable medals, Warrior profiles, and shareable proof.
+This repository is a `pnpm` monorepo for the live `Frontier Chronicle -> Medal Claim -> Warrior Share` product flow. Some starter-era names still exist in metadata and a few legacy folders, but Chronicle, medals, wallet sync, and Warrior pages are the source of truth.
 
-Current positioning:
+## Product Loop
 
-> A working achievement verification and sharing product for EVE Frontier.
+1. A player connects a Sui wallet
+2. The app builds a Chronicle snapshot from indexed `EVE Frontier` activity plus on-chain medal state
+3. Eligible medals become claimable
+4. The BFF issues signed claim tickets and the Move contract mints wallet-bound medals
+5. Claimed medals show up on Warrior pages and share surfaces
 
-This repository should be read as an `EVE Medals` / `Frontier Chronicle` product, not as a generic starter template.
+## Repository Layout
 
-Core product loop:
+- `packages/nextjs`: Next.js 16 app, Chronicle dashboard, API routes, wallet sync, Warrior pages, share surfaces
+- `packages/contract`: Sui Move package at `move/medals` plus network deployment helpers
+- `docs`: product, architecture, demo, and judge-facing material
 
-`activity scan -> achievement state -> medal claim -> Warrior profile -> share`
+Business-critical paths:
 
-Core packages:
+- `packages/nextjs/src/app/chronicle`
+- `packages/nextjs/src/app/api/chronicle/route.ts`
+- `packages/nextjs/src/app/api/users/route.ts`
+- `packages/nextjs/src/app/server/chronicle`
+- `packages/nextjs/src/app/server/db`
+- `packages/contract/move/medals/sources/medals.move`
 
-- `packages/nextjs`: Chronicle dashboard, Warrior pages, API routes, DB sync, share surfaces
-- `packages/contract`: Sui Move medals contract and deployment helpers
+## What Is Already Working
 
-Judge-facing docs:
-
-- [Hackathon one-pager](./docs/eve-medals-hackathon-one-pager.md)
-- [Chronicle product architecture](./docs/chronicle-product-architecture.md)
-- [1-minute defense](./docs/eve-medals-1min-defense.md)
-- [5-minute demo script](./docs/eve-medals-demo-5min-script.md)
-
-## What This Product Does
-
-`EVE Medals` is built around one focused loop:
-
-1. Scan a player wallet for indexed `EVE Frontier` activity
-2. Map that activity into medal progress and readiness
-3. Let eligible players claim wallet-bound medals on Sui
-4. Reflect the result into a public Warrior page and share surfaces
-
-What is already real:
-
-- Eve Eyes-backed activity scanning
+- Eve Eyes-backed Chronicle activity scanning
 - explainable medal thresholds and claim readiness
-- Sui medal ownership lookup and claim flow
-- Warrior profile pages and share cards
-- QR/share re-entry paths
-
-What is still in progress:
-
-- trusted deployment alignment across target environments
-- stronger proof exits to explorer-linked verification
-- referral, attribution, and conversion measurement
+- signed claim tickets with TTL checks
+- wallet-bound medal minting on Sui
+- wallet-to-database sync when `DATABASE_URL` is configured
+- public Warrior pages and share tracking surfaces
 
 ## Prerequisites
 
-Before you begin, install the following:
-
+- [Node.js 20+](https://nodejs.org/en/download/)
+- [pnpm](https://pnpm.io/installation)
 - [Suibase](https://suibase.io/how-to/install.html)
-- [Node (>= 20)](https://nodejs.org/en/download/)
-- [pnpm (>= 9)](https://pnpm.io/installation)
 
-## Installation
+## Quick Start
 
-### Repository Setup
+### 1. Install dependencies
 
 ```bash
 pnpm install
 ```
 
-This repository is already the product codebase. Clone it directly and use the workspace scripts below instead of starter-template init commands.
+### 2. Configure environment variables
 
-## Usage
-
-#### 1. Run the local Sui network:
+Create `packages/nextjs/.env.local` as needed:
 
 ```bash
-pnpm localnet:start
-```
-
-Local Sui Explorer will be available on [localhost:9001](http://localhost:9001/)
-
-#### 2. Deploy the demo contract to the local network:
-
-```bash
-pnpm localnet:deploy
-```
-
-_This command skips dependency verifications to prevent dependency version mismatch issues, which are caused by local and remote Sui version mismatch. The deploy commands for devnet, testnet and mainnet do perform such verifications._
-
-#### 3. Switch to the local network in your browser wallet settings.
-
-#### 4. Fund your localnet account/address:
-
-You have a few options here:
-
-a) Use the Faucet button integrated into your wallet (e.g. Sui Wallet).
-
-b) Copy the localnet address from your wallet and run the following in your console:
-
-```bash
-pnpm localnet:faucet 0xYOURADDRESS
-```
-
-c) Run the app and use the Faucet button in the footer.
-
-#### 5. Run the app:
-
-```bash
-pnpm start
-```
-Additional commands live in the root and package-level `package.json` files.
-
-## Test
-
-#### Contract
-
-```bash
-pnpm test
-```
-
-## Docs & Support
-
-- [Judge Notes](./docs/eve-medals-judge-guide.md)
-- [Product Architecture](./docs/chronicle-product-architecture.md)
-- [@suiware/kit Docs](https://www.npmjs.com/package/@suiware/kit)
-- [Discord Support](https://discord.com/invite/HuDPpXz4Hx)  
-
-## Useful Links
-
-- [Useful VSCode Extensions](./.vscode/extensions.json)
-- [Suibase Docs](https://suibase.io/intro.html)
-- [Move Book](https://move-book.com/)
-- [Sui Move: Code Conventions](https://docs.sui.io/concepts/sui-move-concepts/conventions)
-- [@mysten/create-dapp - official starter](https://www.npmjs.com/package/@mysten/create-dapp)
-- [Awesome Sui](https://github.com/sui-foundation/awesome-sui)
-
-## License & Copyright
-
-Copyright (c) 2024 Konstantin Komelin and other contributors
-
-Code is licensed under [MIT](./LICENSE)
-
-SVG Graphics used for NFTs is licensed under [CC-BY 4.0](./LICENSE-GRAPHICS)
-
-## Current Repository Notes
-
-This repository should now be treated as the living `EVE Medals` / `Frontier Chronicle` product codebase. Product behavior is defined by the Chronicle scan flow, the claim-only medals contract, wallet sync, and Warrior share surfaces.
-
-This repo is a pnpm monorepo:
-
-- `packages/nextjs`: Next.js app
-- `packages/contract`: Move package + Suibase helpers
-
-## Frontier Chronicle Demo
-
-This repository now ships a hackathon-ready `Frontier Chronicle` flow for EVE Frontier:
-
-- Eve Eyes-backed activity scan via `app/api/chronicle`
-- Non-transferable `medals::medals` SBT contract
-- Claim-only `claim_medal` entrypoint with signed claim tickets, TTL checks, and duplicate-safe admin reissue
-- Wallet dashboard for scan -> claim -> showcase
-
-Recommended environment:
-
-```bash
-NEXT_PUBLIC_TESTNET_CONTRACT_PACKAGE_ID=0x...
+DATABASE_URL=postgres://...
 EVE_EYES_API_KEY=...
 CHRONICLE_CLAIM_SIGNER_PRIVATE_KEY=suiprivkey...
 CHRONICLE_CLAIM_TICKET_TTL_MS=600000
-NEXT_PUBLIC_SITE_URL=https://frontier-chronicle.xyz
-# optional override
-EVE_EYES_BASE_URL=https://eve-eyes.d0v.xyz
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_TESTNET_CONTRACT_PACKAGE_ID=0x...
 ```
 
-Notes:
+If you deploy the Move package with the workspace scripts below, the matching `NEXT_PUBLIC_*_CONTRACT_PACKAGE_ID` value is written into `packages/nextjs/.env.local` automatically.
 
-- If `EVE_EYES_API_KEY` is missing, the dashboard still works in preview mode, but only scans the public page window from Eve Eyes.
-- Claiming requires a configured `NEXT_PUBLIC_*_CONTRACT_PACKAGE_ID` for the wallet network.
-- `CHRONICLE_CLAIM_SIGNER_PRIVATE_KEY` is a server-side key used by the Next.js BFF to sign claim tickets. It must never be exposed through `NEXT_PUBLIC_*`.
-- The default wallet network in the app is now `testnet`, because the Eve Eyes index currently tracks frontier activity there.
-
-### Develop (from repo root)
+### 3. Start the app
 
 ```bash
 pnpm dev
 ```
 
-### Deploy the Next.js app to Vercel (from repo root)
+Open [http://localhost:3000](http://localhost:3000).
 
-```bash
-pnpm vercel:prod
-```
+The app defaults to `testnet` wallet/network behavior unless you intentionally switch to another network.
 
-Notes:
+## Local Development With a Contract
 
-- The repo root now includes [`vercel.json`](./vercel.json), so `vercel` / `vercel --prod` run from the root will build the Next.js app in `packages/nextjs`.
-- `pnpm vercel:prod` is now just a thin wrapper around `vercel --prod`.
-- If you deploy in Vercel Dashboard, keep the project root at the repository root so this config is picked up.
-
-### Database and migrations
-
-The `packages/nextjs` app now includes both the UI and the server-side BFF logic through Next.js route handlers.
-
-Required env:
-
-- `DATABASE_URL=...`
-
-What is included:
-
-- Wallet login auto-sync: when a user connects a wallet, the Next.js app calls [`/api/users`](./packages/nextjs/src/app/api/users/route.ts) and upserts the user into the database.
-- SQL migration runner: execute `.sql` files in order and track them in `schema_migrations`.
-- Migration generator: create sequential files like `00001_init.sql`, `00002_add_profiles.sql`.
-
-Commands:
-
-```bash
-pnpm --filter nextjs db:create-migration add_profiles
-pnpm --filter nextjs db:migrate
-pnpm --filter nextjs test
-```
-
-Migration files live in:
-
-- [`packages/nextjs/db/migrations`](./packages/nextjs/db/migrations)
-
-The initial migration has already been created here:
-
-- [`packages/nextjs/db/migrations/00001_init.sql`](./packages/nextjs/db/migrations/00001_init.sql)
-
-Current database behavior:
-
-- The migration upgrades the existing `users` table to support wallet fields.
-- Wallet connect will create or update a user by `wallet_address`.
-- The API stores `wallet_address`, `wallet_name`, `chain`, and `last_seen_at`.
-
-### Contract (Move) deployment
-
-The `packages/contract` workspace is the Move package. Deploying it will also write the deployed package id into `packages/nextjs/.env.local` so the Next.js app can call it.
-
-#### Localnet (recommended for development)
-
-1) Start local network (+ explorer):
+Start local Sui infrastructure:
 
 ```bash
 pnpm localnet:start
 ```
 
-2) Deploy Move package to localnet:
+Deploy the medals package to localnet:
 
 ```bash
 pnpm localnet:deploy
 ```
 
-After a successful deploy, `packages/nextjs/.env.local` will be created/updated with:
+Then:
 
-- `NEXT_PUBLIC_LOCALNET_CONTRACT_PACKAGE_ID=...`
-
-#### Devnet / Testnet / Mainnet
-
-1) Ensure the corresponding network setup is ready:
+1. Switch your wallet to `localnet`
+2. Fund the wallet with the built-in wallet faucet or:
 
 ```bash
-pnpm devnet:start
-# or: pnpm testnet:start
-# or: pnpm mainnet:start
+pnpm localnet:faucet 0xYOURADDRESS
 ```
 
-2) Deploy:
+3. Run the app with `pnpm dev`
+
+Local Explorer is available on [http://localhost:9001](http://localhost:9001).
+
+## Environment Behavior
+
+| Variable | Purpose | Behavior when missing |
+| --- | --- | --- |
+| `DATABASE_URL` | Enables server-side DB access and wallet sync | App still loads, but `/api/users` returns `databaseEnabled: false` and wallet sync is skipped |
+| `EVE_EYES_API_KEY` | Enables deeper Eve Eyes history scanning | Chronicle falls back to preview mode and only sees the public page window |
+| `CHRONICLE_CLAIM_SIGNER_PRIVATE_KEY` | Signs claim tickets for medal minting | Medals can still be scanned and verified, but claim tickets are not issued |
+| `CHRONICLE_CLAIM_TICKET_TTL_MS` | Claim ticket TTL in milliseconds | Defaults to `600000` |
+| `NEXT_PUBLIC_*_CONTRACT_PACKAGE_ID` | Network-specific contract package IDs | Scan can still run, but claim/on-chain interactions are disabled for that network |
+| `NEXT_PUBLIC_SITE_URL` | Public site base URL used in evidence/share links | Falls back to `http://localhost:3000` |
+
+## Common Commands
+
+Run all commands from the repository root unless noted otherwise.
+
+| Command | What it does |
+| --- | --- |
+| `pnpm dev` | Start the Next.js app in development mode |
+| `pnpm build` | Build the Move package and the Next.js app |
+| `pnpm lint` | Run ESLint for the Next.js workspace |
+| `pnpm test` | Run Move contract tests |
+| `pnpm --filter nextjs test` | Run Next.js integration tests |
+| `pnpm --filter nextjs db:create-migration <name>` | Create a numbered SQL migration |
+| `pnpm --filter nextjs db:migrate` | Apply SQL migrations |
+| `pnpm localnet:start` | Start localnet and the local explorer |
+| `pnpm localnet:deploy` | Publish the Move package to localnet and write the package ID into `.env.local` |
+| `pnpm devnet:deploy` | Publish to devnet and update `.env.local` |
+| `pnpm testnet:deploy` | Publish to testnet and update `.env.local` |
+| `pnpm mainnet:deploy` | Publish to mainnet and update `.env.local` |
+| `pnpm vercel:prod` | Deploy the app from the repo root via Vercel |
+
+Use `*:deploy:no-dependency-check` only when dependency verification issues are understood and the workaround is intentional.
+
+## Database and Wallet Sync
+
+- Wallet connect triggers `packages/nextjs/src/app/components/WalletUserSync.tsx`
+- The client syncs wallet identity to `POST /api/users`
+- SQL migrations live in `packages/nextjs/db/migrations`
+- Current test coverage includes migrations and user sync integration flows
+
+Existing migration files:
+
+- `packages/nextjs/db/migrations/00001_init.sql`
+- `packages/nextjs/db/migrations/00002_share_events.sql`
+
+## Network and Deployment Notes
+
+- The app currently assumes `testnet` first when no network is specified
+- `pnpm localnet:deploy`, `pnpm devnet:deploy`, `pnpm testnet:deploy`, and `pnpm mainnet:deploy` all publish `packages/contract/move/medals`
+- Deployment helpers write package IDs into `packages/nextjs/.env.local`
+- Do not commit `packages/nextjs/.env.local` or any secrets
+- If you deploy from CI or Vercel, mirror the same `NEXT_PUBLIC_*_CONTRACT_PACKAGE_ID` values in that environment
+
+Useful helpers:
+
+- `pnpm devnet:address`
+- `pnpm testnet:address`
+- `pnpm mainnet:address`
+- `pnpm devnet:links`
+- `pnpm testnet:links`
+- `pnpm mainnet:links`
+
+## Testing
+
+Contract tests:
 
 ```bash
-pnpm devnet:deploy
-# or: pnpm testnet:deploy
-# or: pnpm mainnet:deploy
+pnpm test
 ```
 
-This will create/update `packages/nextjs/.env.local` with:
+Next.js integration tests:
 
-- `NEXT_PUBLIC_DEVNET_CONTRACT_PACKAGE_ID=...`
-- `NEXT_PUBLIC_TESTNET_CONTRACT_PACKAGE_ID=...`
-- `NEXT_PUBLIC_MAINNET_CONTRACT_PACKAGE_ID=...`
+```bash
+pnpm --filter nextjs test
+```
 
-Notes:
+Lint:
 
-- Mainnet has no faucet; you need a funded address.
-- Useful helpers: `pnpm devnet:address` / `pnpm testnet:address` / `pnpm mainnet:address` and `pnpm devnet:links` / `pnpm testnet:links` / `pnpm mainnet:links`.
-- If you run into dependency verification issues, there are `*:deploy:no-dependency-check` scripts (use with care).
-- If you deploy from another machine/CI (e.g. Vercel), set the same `NEXT_PUBLIC_*_CONTRACT_PACKAGE_ID` env vars in that environment as well (Vercel Project Settings -> Environment Variables, or `vercel env add ...`).
+```bash
+pnpm lint
+```
+
+## Docs
+
+- [Hackathon one-pager](./docs/eve-medals-hackathon-one-pager.md)
+- [Judge guide](./docs/eve-medals-judge-guide.md)
+- [Chronicle product architecture](./docs/chronicle-product-architecture.md)
+- [1-minute defense](./docs/eve-medals-1min-defense.md)
+- [5-minute demo script](./docs/eve-medals-demo-5min-script.md)
+
+## License
+
+Copyright (c) 2024 Konstantin Komelin and other contributors
+
+Code is licensed under [MIT](./LICENSE).
+
+SVG graphics used for NFTs are licensed under [CC-BY 4.0](./LICENSE-GRAPHICS).
