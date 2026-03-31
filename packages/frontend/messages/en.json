@@ -1,8 +1,8 @@
 {
   "meta": {
     "title": "EVE Medals | Achievement Verification for EVE Frontier",
-    "description": "EVE Medals turns indexed EVE Frontier activity into verifiable achievement states, on-chain medals, Warrior profiles, and shareable cards.",
-    "socialDescription": "From indexed activity to medals, Warrior profiles, and shareable honor."
+    "description": "EVE Medals turns real EVE Frontier activity into verifiable medals, Warrior profiles, and shareable proof.",
+    "socialDescription": "From Frontier activity to verifiable honor."
   },
   "header": {
     "runtimeLabel": "eve frontier achievement verification",
@@ -32,8 +32,8 @@
   "home": {
     "hero": {
       "eyebrow": "achievement verification for EVE Frontier",
-      "title": "Turn Frontier Activity into Verifiable Honor",
-      "subtitle": "EVE Medals turns indexed EVE Frontier activity into achievement states, on-chain medals, Warrior profiles, and shareable cards, so player contribution can be verified, displayed, and carried beyond the game session.",
+      "title": "Turn Real Frontier Actions into Verifiable Honor",
+      "subtitle": "EVE Medals turns real EVE Frontier activity into verifiable medals, Warrior profiles, and shareable cards, so player contribution becomes visible, provable, and easy to carry beyond the game session.",
       "primaryCta": "Open Chronicle",
       "secondaryCta": "See Demo Flow",
       "chips": {
@@ -43,8 +43,8 @@
       },
       "nextTitle": "What happens next",
       "nextBody": "Connect a wallet, inspect what the system already recognizes, then decide whether to keep pushing progress or claim immediately.",
-      "postureTitle": "Product posture",
-      "postureBody": "This is not a static Web3 poster page. It is a working flow around Chronicle scanning, on-chain medals, and public-facing player identity.",
+      "postureTitle": "Current status",
+      "postureBody": "This is a working achievement verification and sharing product, not a concept-only social growth engine.",
       "previewLabel": "live preview",
       "previewTitle": "See what was indexed, how far it is from the threshold, and whether it is ready to claim.",
       "previewRecentLabel": "recent trace",
@@ -67,8 +67,8 @@
     },
     "solution": {
       "eyebrow": "How It Works",
-      "title": "A clear product loop, not a wall of explanation.",
-      "body": "The homepage should explain the loop directly: inspect indexed activity, understand achievement state, then decide whether the player can claim.",
+      "title": "A product loop a judge can understand in seconds.",
+      "body": "The loop is simple: connect a wallet, scan real activity, understand medal state, then decide whether the player can claim and share.",
       "steps": {
         "connectTitle": "Connect Wallet",
         "connectDescription": "Use a Sui wallet as the player identity anchor. Chronicle builds the profile around that address.",
@@ -113,8 +113,8 @@
     },
     "trust": {
       "eyebrow": "Proof & Trust",
-      "title": "A player does not care about style unless they can trust the system.",
-      "body": "The product has to explain data source, behavior class, threshold logic, and the on-chain result. If a button is enabled or disabled, the homepage should make that understandable.",
+      "title": "Why this is credible, not just visually polished.",
+      "body": "The product has to explain where activity comes from, where medal logic is applied, and what the blockchain is responsible for. If claim is enabled or disabled, the system should make that understandable.",
       "cards": {
         "dataSourceLabel": "Data Source",
         "dataSourceTitle": "Eve Eyes Chronicle",
@@ -132,18 +132,21 @@
     },
     "demo": {
       "eyebrow": "Demo Flow",
-      "title": "A loop that can be shown live in under a minute.",
-      "body": "The strongest demo path is simple: show indexed activity, open a medal share card, then return through the verification entry point.",
+      "title": "One focused demo path, not a feature parade.",
+      "body": "The strongest live path is simple: show an active wallet, reveal medal progress, prove the claimed result on the Warrior page, then open a share surface.",
       "steps": {
         "oneLabel": "Step 1",
-        "oneTitle": "Show the Chronicle state",
-        "oneBody": "Start with a wallet that already has meaningful activity and show what is locked, verified, claimable, or claimed.",
+        "oneTitle": "Open Chronicle with a real wallet",
+        "oneBody": "Start with a wallet that already has meaningful Frontier activity and show what the system has indexed.",
         "twoLabel": "Step 2",
-        "twoTitle": "Open a real share card",
-        "twoBody": "Use the Medal share dialog to show that the card is already designed for social distribution.",
+        "twoTitle": "Show medal progress and claim readiness",
+        "twoBody": "Use one medal to explain the difference between in-progress, claimable, and claimed states.",
         "threeLabel": "Step 3",
-        "threeTitle": "Return through the verification path",
-        "threeBody": "Use the share link or QR path to land back in the product instead of ending on a static image."
+        "threeTitle": "Jump to the Warrior page",
+        "threeBody": "Show that the claimed result flows back into a public-facing profile instead of stopping at the transaction step.",
+        "fourLabel": "Step 4",
+        "fourTitle": "Open a share card or QR path",
+        "fourBody": "Use a share card or QR entry to prove this is a portable product surface, not a dead-end screenshot."
       }
     },
     "cta": {
@@ -305,17 +308,43 @@
       "finalized": "checkpoint finalized"
     },
     "sections": {
+      "transaction": "transaction summary",
+      "gas": "gas & effects",
+      "callArguments": "move call arguments",
+      "balanceChanges": "balance changes",
+      "claimPayload": "signed claim payload",
       "events": "events",
       "objectChanges": "object changes"
     },
     "fields": {
       "digest": "digest",
       "checkpoint": "checkpoint",
+      "status": "status",
+      "epoch": "epoch",
+      "sender": "sender",
       "package": "package",
+      "function": "function",
+      "target": "target",
+      "registry": "registry",
+      "template": "template",
+      "templateVersion": "template version",
+      "medalKind": "medal kind",
       "object": "object",
       "gasBudget": "gas budget",
+      "gasPrice": "gas price",
+      "gasPayment": "gas payment",
       "gasUsed": "gas used",
+      "computationCost": "computation cost",
+      "storageCost": "storage cost",
       "storageRebate": "storage rebate",
+      "nonRefundableStorageFee": "non-refundable storage fee",
+      "proofDigest": "proof digest",
+      "issuedAt": "issued at",
+      "deadline": "deadline",
+      "evidenceUri": "evidence uri",
+      "nonce": "nonce",
+      "signerPublicKey": "signer public key",
+      "signature": "signature",
       "updatedAt": "updated at"
     },
     "wallet": {
@@ -326,6 +355,8 @@
       "cancel": "Cancel",
       "confirm": "Approve {action}",
       "estimateTitle": "estimated transaction footprint",
+      "callTitle": "programmable transaction inputs",
+      "claimPayloadTitle": "signed claim payload",
       "note": "This is still a mock wallet surface. It does not touch a live chain, but it mirrors the approval rhythm a real wallet should expose before sign-and-submit.",
       "actions": {
         "mint": "Mint Medal",
@@ -337,9 +368,24 @@
         "medal": "Medal",
         "wallet": "Wallet",
         "package": "Package",
+        "function": "Function",
+        "target": "Target",
+        "registry": "Registry",
+        "template": "Template",
+        "templateVersion": "Template version",
+        "medalKind": "Medal kind",
         "object": "Object",
         "gasBudget": "Gas budget",
-        "storageRebate": "Storage rebate"
+        "gasPrice": "Gas price",
+        "gasPayment": "Gas payment",
+        "storageRebate": "Storage rebate",
+        "proofDigest": "Proof digest",
+        "issuedAt": "Issued at",
+        "deadline": "Deadline",
+        "evidenceUri": "Evidence URI",
+        "nonce": "Nonce",
+        "signerPublicKey": "Signer public key",
+        "signature": "Signature"
       },
       "checklist": {
         "prepare": {
@@ -357,6 +403,10 @@
       }
     },
     "events": {
+      "medalClaimed": {
+        "label": "EventMedalClaimed",
+        "detail": "The contract emitted the live-style medal claim event, binding {medalTitle} to the destination wallet."
+      },
       "proofVerified": {
         "label": "Proof verified",
         "detail": "Chronicle proof material for {medalTitle} has been validated and accepted into the transaction plan."
@@ -383,7 +433,8 @@
         "medal": "medal object",
         "registry": "registry object",
         "template": "template object",
-        "claimTicket": "claim ticket"
+        "claimTicket": "claim ticket",
+        "gasCoin": "gas coin"
       },
       "kinds": {
         "created": "created",
@@ -392,6 +443,7 @@
         "deleted": "deleted"
       },
       "owner": "owner // {owner}",
+      "ownerShared": "owner // Shared",
       "ownerDeleted": "owner // deleted"
     },
     "stages": {
@@ -540,7 +592,9 @@
     "evidenceTitle": "indexed evidence",
     "evidenceFallback": "Chronicle has not published an evidence string for this medal yet.",
     "requirementTitle": "requirement",
+    "contextTitle": "frontier context",
     "stateTitle": "medal state",
+    "whyTitle": "why this medal matters",
     "chips": {
       "rarity": "{rarity} Medal",
       "bound": "Bound",
@@ -631,6 +685,11 @@
       "title": "pilot chronicle",
       "body": "This is not just a medal list. It translates Frontier activity into explainable thresholds, evidence, and on-chain claim state."
     },
+    "lore": {
+      "eyebrow": "frontier context",
+      "title": "Why these medals matter in the game world.",
+      "body": "Chronicle keeps the proof strict, but players still need world context. These notes explain why infrastructure, logistics, fuel, and transit matter in Frontier without changing the indexed evidence rules."
+    },
     "metrics": {
       "claimReady": {
         "label": "Claim Ready",
@@ -698,6 +757,9 @@
       }
     },
     "card": {
+      "sections": {
+        "whyItMatters": "why this matters"
+      },
       "status": {
         "bound": "Bound",
         "ready": "Ready",

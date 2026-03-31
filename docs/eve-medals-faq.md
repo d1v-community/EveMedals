@@ -4,7 +4,7 @@
 
 ## 1. What is EVE Medals?
 
-`EVE Medals` is an achievement verification and social identity product for `EVE Frontier`.
+`EVE Medals` turns real `EVE Frontier` activity into verifiable medals, Warrior profiles, and shareable cards.
 
 It transforms meaningful Frontier activity into verifiable medal states, on-chain honors, Warrior profiles, and shareable cards.
 

@@ -2,6 +2,21 @@
 
 这个仓库当前的产品主线是 **EVE Frontier Chronicle 奖章产品**，不是通用 starter 模板。
 
+## 一句话
+
+`EVE Medals` 把 `EVE Frontier` 玩家真实发生过的行为，变成可验证的勋章、Warrior 档案和可分享卡片。
+
+当前更准确的定位是：
+
+> 一个面向 `EVE Frontier` 的成就验证与分享产品。
+
+面向评审的材料：
+
+- [`docs/eve-medals-hackathon-one-pager.md`](./docs/eve-medals-hackathon-one-pager.md)
+- [`docs/chronicle-product-architecture.md`](./docs/chronicle-product-architecture.md)
+- [`docs/eve-medals-1min-defense.md`](./docs/eve-medals-1min-defense.md)
+- [`docs/eve-medals-demo-5min-script.md`](./docs/eve-medals-demo-5min-script.md)
+
 使用 pnpm workspace 管理前后端代码：
 
 - `packages/frontend`：Next.js 前端

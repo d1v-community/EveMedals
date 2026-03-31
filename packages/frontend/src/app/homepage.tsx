@@ -446,6 +446,11 @@ export async function HomePage({
       title: t('demo.steps.threeTitle'),
       body: t('demo.steps.threeBody'),
     },
+    {
+      label: t('demo.steps.fourLabel'),
+      title: t('demo.steps.fourTitle'),
+      body: t('demo.steps.fourBody'),
+    },
   ]
 
   const chainLoopSteps = [
@@ -742,7 +747,7 @@ export async function HomePage({
               </p>
             </div>
 
-            <div className="mt-8 grid gap-4 xl:grid-cols-3">
+            <div className="mt-8 grid gap-4 xl:grid-cols-4">
               {demoSteps.map((step) => (
                 <DemoStepCard key={step.label} step={step} />
               ))}

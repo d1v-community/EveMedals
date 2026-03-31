@@ -6,11 +6,11 @@
 
 ### Hero 标题
 
-Turn Frontier Activity into Verifiable Honor
+Turn Real Frontier Actions into Verifiable Honor
 
 ### Hero 副标题
 
-`EVE Medals` transforms meaningful `EVE Frontier` activity into verifiable medals, Warrior profiles, and shareable cards, so player effort becomes visible, portable, and socially expressive.
+`EVE Medals` turns real `EVE Frontier` activity into verifiable medals, Warrior profiles, and shareable cards, so player contribution becomes visible, provable, and easy to carry beyond the game session.
 
 ### CTA
 
@@ -100,11 +100,11 @@ An Achievement and Identity Layer for EVE Frontier
 
 ### Title
 
-Make Frontier Honor Visible, Verifiable, and Shareable
+Turn Real Frontier Actions into Verifiable Honor
 
 ### Subtitle
 
-`EVE Medals` transforms meaningful `EVE Frontier` activity into verifiable medals, on-chain honors, and shareable Warrior cards, creating a new identity layer around what players have actually done.
+`EVE Medals` turns real `EVE Frontier` activity into verifiable medals, Warrior profiles, and shareable cards, so player contribution becomes visible, provable, and easy to carry beyond the game session.
 
 ### Primary CTA
 
@@ -122,4 +122,4 @@ View Warrior Demo
 
 ### Hero 下方一句解释
 
-Built for players who want their contribution in Frontier to be seen, proven, and remembered.
+Built as a working achievement verification and sharing product for players who want their contribution in Frontier to be seen, proven, and remembered.

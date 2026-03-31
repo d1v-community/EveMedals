@@ -1,8 +1,8 @@
 {
   "meta": {
     "title": "EVE Medals | 面向 EVE Frontier 的成就验证",
-    "description": "EVE Medals 将被索引到的 EVE Frontier 行为转化为可验证的成就状态、链上勋章、Warrior 档案和可分享卡片。",
-    "socialDescription": "从行为索引到勋章、档案与可分享荣誉。"
+    "description": "EVE Medals 把真实发生过的 EVE Frontier 行为，变成可验证的勋章、Warrior 档案和可分享证明。",
+    "socialDescription": "从 Frontier 行为到可验证荣誉。"
   },
   "header": {
     "runtimeLabel": "eve frontier 成就验证",
@@ -32,8 +32,8 @@
   "home": {
     "hero": {
       "eyebrow": "面向 EVE Frontier 的成就验证",
-      "title": "把 Frontier 行为变成可验证的荣誉",
-      "subtitle": "EVE Medals 将被索引到的 EVE Frontier 行为转化为成就状态、链上勋章、Warrior 档案和可分享卡片，让玩家的真实贡献可以被验证、展示并带出游戏过程。",
+      "title": "把真实 Frontier 行为变成可验证的荣誉",
+      "subtitle": "EVE Medals 把 EVE Frontier 玩家真实发生过的行为，变成可验证的勋章、Warrior 档案和可分享卡片，让玩家贡献真正变得可见、可证、可传播。",
       "primaryCta": "打开 Chronicle",
       "secondaryCta": "查看 Demo 流程",
       "chips": {
@@ -43,8 +43,8 @@
       },
       "nextTitle": "接下来会发生什么",
       "nextBody": "先连接钱包，看看系统已经识别出了什么，再决定继续补进度还是直接领取。",
-      "postureTitle": "产品姿态",
-      "postureBody": "这不是一张摆拍用的 Web3 海报页，而是一条围绕 Chronicle 扫描、链上勋章和公开玩家身份的可运行链路。",
+      "postureTitle": "当前状态",
+      "postureBody": "这已经是一个可运行的成就验证与分享产品，不是只会讲故事的社交增长概念页。",
       "previewLabel": "实时预览",
       "previewTitle": "扫到了什么、差多少、能不能领，一眼看清。",
       "previewRecentLabel": "最近轨迹",
@@ -67,8 +67,8 @@
     },
     "solution": {
       "eyebrow": "How It Works",
-      "title": "讲清产品闭环，不给玩家塞说明书。",
-      "body": "首页应该把闭环讲直：看系统扫到了什么，理解成就状态，再决定能不能领取。",
+      "title": "让评审几秒内看懂产品闭环。",
+      "body": "闭环就这一条：连接钱包，扫描真实行为，看懂勋章状态，再决定是否领取和分享。",
       "steps": {
         "connectTitle": "连接钱包",
         "connectDescription": "用 Sui 钱包作为玩家身份锚点，Chronicle 围绕这个地址建立档案。",
@@ -113,8 +113,8 @@
     },
     "trust": {
       "eyebrow": "Proof & Trust",
-      "title": "玩家最在乎的不是样子，而是凭什么信你。",
-      "body": "产品必须把数据来源、行为类型、阈值逻辑和链上结果讲清。按钮为什么亮、为什么灰，首页都应该能解释。",
+      "title": "先讲可信，再讲好看。",
+      "body": "产品必须把行为数据从哪来、勋章规则在哪算、区块链负责什么讲清。按钮为什么亮、为什么灰，系统都应该解释得通。",
       "cards": {
         "dataSourceLabel": "数据来源",
         "dataSourceTitle": "Eve Eyes Chronicle",
@@ -132,18 +132,21 @@
     },
     "demo": {
       "eyebrow": "Demo Flow",
-      "title": "一分钟内能讲明白的产品闭环。",
-      "body": "最强的 Demo 路径很简单：展示索引状态，打开勋章分享卡，然后从验证入口重新回到产品。",
+      "title": "演一个点，别演成产品说明书。",
+      "body": "最强的现场路径很简单：打开真实钱包，展示勋章进度，证明领取结果会回流到 Warrior 页面，再打开分享入口。",
       "steps": {
         "oneLabel": "步骤 1",
-        "oneTitle": "展示 Chronicle 状态",
-        "oneBody": "从一个已有明显行为的钱包开始，展示哪些是 locked、verified、claimable、claimed。",
+        "oneTitle": "打开真实钱包的 Chronicle",
+        "oneBody": "从一个已有明显 Frontier 行为的钱包开始，先让评审看到系统到底识别到了什么。",
         "twoLabel": "步骤 2",
-        "twoTitle": "打开真实分享卡",
-        "twoBody": "用 Medal 分享弹窗证明这张卡已经是现成可传播资产，不是临时摆拍图。",
+        "twoTitle": "讲清勋章进度与可领取状态",
+        "twoBody": "挑一枚 medal，把 in progress、claimable、claimed 的区别当场讲明白。",
         "threeLabel": "步骤 3",
-        "threeTitle": "从验证入口回流",
-        "threeBody": "使用分享链接或二维码重新落回产品，而不是停在一张静态图片上。"
+        "threeTitle": "跳到 Warrior 页面",
+        "threeBody": "证明链上领取结果不是只停在交易里，而是会回流成公开可看的玩家档案。",
+        "fourLabel": "步骤 4",
+        "fourTitle": "打开分享卡或二维码入口",
+        "fourBody": "用分享卡或二维码证明这不是站内死页面，而是能传播出去的产品表面。"
       }
     },
     "cta": {
@@ -305,17 +308,43 @@
       "finalized": "checkpoint 已确认"
     },
     "sections": {
+      "transaction": "交易摘要",
+      "gas": "Gas 与执行效果",
+      "callArguments": "Move 调用参数",
+      "balanceChanges": "余额变化",
+      "claimPayload": "签名 claim payload",
       "events": "事件",
       "objectChanges": "对象变化"
     },
     "fields": {
       "digest": "交易摘要",
       "checkpoint": "检查点",
+      "status": "状态",
+      "epoch": "Epoch",
+      "sender": "发送方",
       "package": "合约包",
+      "function": "函数",
+      "target": "目标函数",
+      "registry": "Registry",
+      "template": "Template",
+      "templateVersion": "模板版本",
+      "medalKind": "勋章类型",
       "object": "对象",
       "gasBudget": "gas 预算",
+      "gasPrice": "gas 单价",
+      "gasPayment": "gas 支付对象",
       "gasUsed": "gas 消耗",
+      "computationCost": "计算成本",
+      "storageCost": "存储成本",
       "storageRebate": "storage 返还",
+      "nonRefundableStorageFee": "不可退 storage 费用",
+      "proofDigest": "证明摘要",
+      "issuedAt": "签发时间",
+      "deadline": "截止时间",
+      "evidenceUri": "证据链接",
+      "nonce": "Nonce",
+      "signerPublicKey": "签名公钥",
+      "signature": "签名",
       "updatedAt": "更新时间"
     },
     "wallet": {
@@ -326,6 +355,8 @@
       "cancel": "取消",
       "confirm": "确认{action}",
       "estimateTitle": "预估交易足迹",
+      "callTitle": "Programmable Transaction 输入",
+      "claimPayloadTitle": "签名 claim payload",
       "note": "这里仍然是 mock 钱包界面，不会真的触链，但它会完整模拟真实钱包在 sign-and-submit 之前该有的确认节奏。",
       "actions": {
         "mint": "铸造勋章",
@@ -337,9 +368,24 @@
         "medal": "勋章",
         "wallet": "钱包",
         "package": "合约包",
+        "function": "函数",
+        "target": "目标函数",
+        "registry": "Registry",
+        "template": "Template",
+        "templateVersion": "模板版本",
+        "medalKind": "勋章类型",
         "object": "对象",
         "gasBudget": "Gas 预算",
-        "storageRebate": "Storage 返还"
+        "gasPrice": "Gas 单价",
+        "gasPayment": "Gas 支付对象",
+        "storageRebate": "Storage 返还",
+        "proofDigest": "证明摘要",
+        "issuedAt": "签发时间",
+        "deadline": "截止时间",
+        "evidenceUri": "证据链接",
+        "nonce": "Nonce",
+        "signerPublicKey": "签名公钥",
+        "signature": "签名"
       },
       "checklist": {
         "prepare": {
@@ -357,6 +403,10 @@
       }
     },
     "events": {
+      "medalClaimed": {
+        "label": "EventMedalClaimed",
+        "detail": "合约已经发出了接近真实链上的勋章领取事件，表示 {medalTitle} 已绑定到目标钱包。"
+      },
       "proofVerified": {
         "label": "证据已验证",
         "detail": "{medalTitle} 的 Chronicle 证明材料已经通过校验，并被纳入本次交易计划。"
@@ -383,7 +433,8 @@
         "medal": "勋章对象",
         "registry": "注册表对象",
         "template": "模板对象",
-        "claimTicket": "claim ticket"
+        "claimTicket": "claim ticket",
+        "gasCoin": "gas coin"
       },
       "kinds": {
         "created": "已创建",
@@ -392,6 +443,7 @@
         "deleted": "已删除"
       },
       "owner": "所有者 // {owner}",
+      "ownerShared": "所有者 // Shared",
       "ownerDeleted": "所有者 // 已删除"
     },
     "stages": {
@@ -540,7 +592,9 @@
     "evidenceTitle": "索引证据",
     "evidenceFallback": "Chronicle 还没有为这枚勋章发布证据字符串。",
     "requirementTitle": "达成条件",
+    "contextTitle": "frontier 语境",
     "stateTitle": "勋章状态",
+    "whyTitle": "为什么这枚勋章重要",
     "chips": {
       "rarity": "{rarity} 勋章",
       "bound": "已绑定",
@@ -631,6 +685,11 @@
       "title": "pilot chronicle",
       "body": "这里不只是列出 medals，而是把 Frontier 真实行为翻译成可解释的门槛、证据和链上领取状态。"
     },
+    "lore": {
+      "eyebrow": "frontier 语境",
+      "title": "先让玩家看懂这些勋章为什么在游戏里成立。",
+      "body": "Chronicle 必须保持 proof 口径严格，但玩家仍然需要世界语境。这些说明只解释基础设施、物流、燃料和跃迁为什么重要，不改任何索引证据规则。"
+    },
     "metrics": {
       "claimReady": {
         "label": "可领取",
@@ -698,6 +757,9 @@
       }
     },
     "card": {
+      "sections": {
+        "whyItMatters": "为什么这件事重要"
+      },
       "status": {
         "bound": "已绑定",
         "ready": "可执行",

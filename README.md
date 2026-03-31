@@ -1,4 +1,4 @@
-# Sui dApp Starter - Easy-to-Use Full-Stack Sui Starter
+# EVE Medals
 [![Build and Lint (frontend)](https://github.com/suiware/sui-dapp-starter/actions/workflows/build_and_lint.yaml/badge.svg)](https://github.com/suiware/sui-dapp-starter/actions/workflows/build_and_lint.yaml)
 [![Discord chat](https://img.shields.io/discord/1237259509366521866.svg?logo=discord&style=flat-square)](https://discord.com/invite/HuDPpXz4Hx)
 
@@ -8,36 +8,54 @@
 
 [Won the 1st place in the Randomness category of the Sui Overflow 2024 hackathon](https://blog.sui.io/2024-sui-overflow-hackathon-winners/)
 
-## Frontier Chronicle Product Direction
+## One-line Punch
 
-This repository now ships an EVE Frontier-focused `Frontier Chronicle` product, not just a generic starter template.
+`EVE Medals` turns real `EVE Frontier` activity into verifiable medals, Warrior profiles, and shareable proof.
 
-- `packages/frontend`: Chronicle dashboard, warrior pages, API routes, DB sync
+Current positioning:
+
+> A working achievement verification and sharing product for EVE Frontier.
+
+This repository should be read as an `EVE Medals` / `Frontier Chronicle` product, not as a generic starter template.
+
+Core product loop:
+
+`activity scan -> achievement state -> medal claim -> Warrior profile -> share`
+
+Core packages:
+
+- `packages/frontend`: Chronicle dashboard, Warrior pages, API routes, DB sync, share surfaces
 - `packages/backend`: Sui Move medals contract and deployment helpers
 
-Architecture notes:
+Judge-facing docs:
 
+- [Hackathon one-pager](./docs/eve-medals-hackathon-one-pager.md)
 - [Chronicle product architecture](./docs/chronicle-product-architecture.md)
+- [1-minute defense](./docs/eve-medals-1min-defense.md)
+- [5-minute demo script](./docs/eve-medals-demo-5min-script.md)
 
-## Motivation
+## What This Product Does
 
-Most of the Sui starters I found were either very basic or one-sided (frontend or backend). Thanks to my experience with various full-stack starters and templates, I knew how to do better, so I started this template with the goal of providing all basic tools and components for you to focus on your business logic from day one and not spend weeks on creating your app skeleton. // [@kkomelin](https://github.com/kkomelin)
+`EVE Medals` is built around one focused loop:
 
-## Features
+1. Scan a player wallet for indexed `EVE Frontier` activity
+2. Map that activity into medal progress and readiness
+3. Let eligible players claim wallet-bound medals on Sui
+4. Reflect the result into a public Warrior page and share surfaces
 
-- **[Suibase](https://suibase.io/)**: Painless work with the networks and system dependencies
-- **[Local Sui Explorer](https://github.com/suiware/sui-explorer)**: Browse your transactions and objects locally
-- **pnpm**: More efficient package management for monorepos
-- **TypeScript**: Less error-prone JavaScript
-- **React or Next.js**: Choose a template with a framework of your choice
-- **Tailwind CSS**: Utility-first CSS for more efficient styling
-- **Vite + SWC**: Faster app bundling and optimizing
-- **Radix UI**: Accessible React components to prototype quicker 
-- **Sui dApp Kit**: All you need to work with Sui network on frontend
-- **[@suiware/kit](https://www.npmjs.com/package/@suiware/kit)**: Useful react primitives, such as useTransact, useNetworkType, NetworkType, useBalance, Balance, useFaucet, Faucet and more
-- **Frontend Deployment**: [Firebase](https://sui-dapp-starter.dev/docs/frontend/deployment/firebase), [Walrus Sites](https://sui-dapp-starter.dev/docs/frontend/deployment/walrus), [Arweave](https://sui-dapp-starter.dev/docs/frontend/deployment/arweave)
-- **One-liner Install**: Just `pnpm create sui-dapp@latest`
-- **[Demo app](https://demo.sui-dapp-starter.dev/)**: Default Greeting (React) template
+What is already real:
+
+- Eve Eyes-backed activity scanning
+- explainable medal thresholds and claim readiness
+- Sui medal ownership lookup and claim flow
+- Warrior profile pages and share cards
+- QR/share re-entry paths
+
+What is still in progress:
+
+- trusted deployment alignment across target environments
+- stronger proof exits to explorer-linked verification
+- referral, attribution, and conversion measurement
 
 ## Prerequisites
 
@@ -145,6 +163,12 @@ Copyright (c) 2024 Konstantin Komelin and other contributors
 Code is licensed under [MIT](https://github.com/suiware/sui-dapp-starter?tab=MIT-1-ov-file)
 
 SVG Graphics used for NFTs is licensed under [CC-BY 4.0](https://github.com/suiware/sui-dapp-starter?tab=CC-BY-4.0-2-ov-file)
+
+## Legacy Repository Context
+
+This repository originated from `sui-dapp-starter`, so some metadata, scripts, and historical sections still reflect that heritage.
+
+When making product decisions, treat the current `EVE Medals` / `Frontier Chronicle` flow as the source of truth, not the starter-era naming.
 
 ## sui-nextjs-auth-template
 
