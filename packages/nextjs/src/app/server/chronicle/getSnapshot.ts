@@ -19,6 +19,10 @@ import {
   loadChronicleContractState,
   resolveContractPackageId,
 } from '~~/server/chronicle/contractState'
+import {
+  isDemoMintRuntimeReady,
+} from '~~/server/chronicle/demoMint'
+import { resolveDemoMintState } from '~~/server/chronicle/demoMintState'
 import { fetchWalletActivitySnapshot } from '~~/server/chronicle/eveEyes'
 import { buildMedalStates } from '~~/server/chronicle/snapshot'
 import { ENetwork } from '~~/types/ENetwork'
@@ -31,7 +35,7 @@ export const getChronicleSnapshot = async (
   const contractPackageId = resolveContractPackageId(network)
   const contractConfigured = isContractConfigured(contractPackageId)
   const activitySnapshot = await fetchWalletActivitySnapshot(walletAddress)
-  let claimedSlugs = new Set<string>()
+  let claimedMedalOrigins = new Map<string, 'claim' | 'demo-mint'>()
   let registryObjectId: string | null = null
   let activeTemplates = new Map<number, ActiveMedalTemplate>()
   let registeredSignerPublicKeys = new Set<string>()
@@ -43,7 +47,7 @@ export const getChronicleSnapshot = async (
       network,
       contractPackageId
     )
-    claimedSlugs = contractState.claimedSlugs
+    claimedMedalOrigins = contractState.claimedMedalOrigins
     registryObjectId = contractState.registryObjectId
     activeTemplates = contractState.activeTemplates
     registeredSignerPublicKeys = contractState.registeredSignerPublicKeys
@@ -57,7 +61,7 @@ export const getChronicleSnapshot = async (
 
   const baseMedals = buildMedalStates(
     activitySnapshot.counts,
-    claimedSlugs,
+    claimedMedalOrigins,
     {},
     activeTemplates,
     locale
@@ -101,11 +105,26 @@ export const getChronicleSnapshot = async (
 
   const medals = buildMedalStates(
     activitySnapshot.counts,
-    claimedSlugs,
+    claimedMedalOrigins,
     claimTicketsByKind,
     activeTemplates,
     locale
   )
+  const demoMintRuntimeReady =
+    contractConfigured &&
+    registryObjectId &&
+    activeTemplates.size > 0 &&
+    !medals.some((medal) => medal.claimable)
+      ? await isDemoMintRuntimeReady(network, contractPackageId)
+      : false
+  const demoMint = resolveDemoMintState({
+    network,
+    medals,
+    activeTemplates,
+    contractConfigured,
+    registryObjectId,
+    runtimeReady: demoMintRuntimeReady,
+  })
 
   return {
     profile: {
@@ -124,6 +143,7 @@ export const getChronicleSnapshot = async (
     metrics: activitySnapshot.counts,
     medals,
     warnings,
+    demoMint,
     warriorScore: computeWarriorScore(medals),
   }
 }

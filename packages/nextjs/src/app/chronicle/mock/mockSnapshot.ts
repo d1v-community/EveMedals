@@ -169,6 +169,7 @@ export function buildMockSnapshot(
         : null,
       templateObjectId,
       claimTicket,
+      claimOrigin: isClaimed ? 'claim' : null,
     }
   })
 
@@ -201,6 +202,7 @@ export function buildMockSnapshot(
     },
     medals,
     warnings: [getMockModeWarning(businessLocale)],
+    demoMint: null,
     warriorScore,
   }
 }

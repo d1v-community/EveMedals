@@ -1,6 +1,8 @@
 import { SuiClient, type SuiObjectResponse, getFullnodeUrl } from '@mysten/sui/client'
 import { isValidSuiObjectId } from '@mysten/sui/utils'
 import { getMedalDefinitionBySlug } from '~~/chronicle/config/medals'
+import type { ChronicleClaimOrigin } from '~~/chronicle/types'
+import { resolveClaimOriginFromEvidenceUri } from '~~/server/chronicle/claimOrigin'
 import {
   CONTRACT_PACKAGE_ID_NOT_DEFINED,
   DEVNET_CONTRACT_PACKAGE_ID,
@@ -13,7 +15,7 @@ import { type ActiveMedalTemplate } from '~~/server/chronicle/claimTickets'
 import { ENetwork } from '~~/types/ENetwork'
 
 export interface ChronicleContractState {
-  claimedSlugs: Set<string>
+  claimedMedalOrigins: Map<string, Exclude<ChronicleClaimOrigin, null>>
   registryObjectId: string | null
   activeTemplates: Map<number, ActiveMedalTemplate>
   registeredSignerPublicKeys: Set<string>
@@ -32,16 +34,29 @@ export const resolveContractPackageId = (network: ENetwork) => {
 export const isContractConfigured = (packageId: string) =>
   packageId !== CONTRACT_PACKAGE_ID_NOT_DEFINED && isValidSuiObjectId(packageId)
 
-const getClaimedSlugs = (objects: SuiObjectResponse[]) => {
-  const slugs = new Set<string>()
+const getClaimedMedalOrigins = (objects: SuiObjectResponse[]) => {
+  const claimedMedalOrigins = new Map<
+    string,
+    Exclude<ChronicleClaimOrigin, null>
+  >()
+
   objects.forEach((object) => {
     const slug = getResponseContentField(object, 'slug')
+    const evidenceUri = getResponseContentField(object, 'evidence_uri')
 
-    if (typeof slug === 'string' && slug.length > 0) {
-      slugs.add(slug)
+    if (typeof slug !== 'string' || slug.length === 0) {
+      return
     }
+
+    claimedMedalOrigins.set(
+      slug,
+      resolveClaimOriginFromEvidenceUri(
+        typeof evidenceUri === 'string' ? evidenceUri : null
+      )
+    )
   })
-  return slugs
+
+  return claimedMedalOrigins
 }
 
 const queryAllEvents = async (
@@ -235,7 +250,7 @@ export const loadChronicleContractState = async (
   ])
 
   return {
-    claimedSlugs: getClaimedSlugs(ownedMedals),
+    claimedMedalOrigins: getClaimedMedalOrigins(ownedMedals),
     registryObjectId,
     activeTemplates,
     registeredSignerPublicKeys,

@@ -1,9 +1,12 @@
 import { bcs } from '@mysten/sui/bcs'
-import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519'
 import { createHash, randomBytes } from 'node:crypto'
 import type { MedalSlug } from '~~/chronicle/config/medals'
 import type { ChronicleClaimTicket, ChronicleMedalState } from '~~/chronicle/types'
 import { ENetwork } from '~~/types/ENetwork'
+import {
+  loadChronicleKeypairConfig,
+  type ChronicleKeypairConfig,
+} from '~~/server/chronicle/keypairLoader'
 
 const CLAIM_DOMAIN_SEPARATOR = 'frontier-chronicle-claim-v1'
 const DEFAULT_TICKET_TTL_MS = 10 * 60 * 1000
@@ -29,69 +32,24 @@ export interface ActiveMedalTemplate {
 }
 
 interface ClaimSignerConfig {
-  keypair: Ed25519Keypair
+  keypair: ChronicleKeypairConfig['keypair']
   publicKeyBytes: Uint8Array
 }
 
 const trimTrailingSlash = (value: string) => value.replace(/\/+$/, '')
 
-const decodeHex = (value: string) => {
-  const normalized = value.startsWith('0x') ? value.slice(2) : value
-
-  if (normalized.length === 0 || normalized.length % 2 !== 0) {
-    return null
-  }
-
-  if (!/^[0-9a-fA-F]+$/.test(normalized)) {
-    return null
-  }
-
-  return Uint8Array.from(Buffer.from(normalized, 'hex'))
-}
-
-const decodeBase64 = (value: string) => {
-  try {
-    const bytes = Buffer.from(value, 'base64')
-
-    if (bytes.length === 0) {
-      return null
-    }
-
-    return Uint8Array.from(bytes)
-  } catch {
-    return null
-  }
-}
-
-const parseSignerSecretKey = (rawValue: string) => {
-  if (rawValue.startsWith('suiprivkey1')) {
-    return Ed25519Keypair.fromSecretKey(rawValue)
-  }
-
-  const trimmed = rawValue.trim()
-  const decoded = decodeHex(trimmed) || decodeBase64(trimmed)
-
-  if (!decoded || decoded.length !== 32) {
-    throw new Error(
-      'CHRONICLE_CLAIM_SIGNER_PRIVATE_KEY must be a suiprivkey string, 32-byte hex, or 32-byte base64 secret'
-    )
-  }
-
-  return Ed25519Keypair.fromSecretKey(decoded)
-}
-
 const loadClaimSignerConfig = (): ClaimSignerConfig | null => {
-  const secret = process.env.CHRONICLE_CLAIM_SIGNER_PRIVATE_KEY
+  const loadedSigner = loadChronicleKeypairConfig(
+    process.env.CHRONICLE_CLAIM_SIGNER_PRIVATE_KEY
+  )
 
-  if (!secret) {
+  if (!loadedSigner) {
     return null
   }
-
-  const keypair = parseSignerSecretKey(secret)
 
   return {
-    keypair,
-    publicKeyBytes: keypair.getPublicKey().toRawBytes(),
+    keypair: loadedSigner.keypair,
+    publicKeyBytes: loadedSigner.publicKeyBytes,
   }
 }
 

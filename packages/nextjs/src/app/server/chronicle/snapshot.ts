@@ -8,6 +8,7 @@ import {
 import { getMedalDefinitionByKind } from '~~/chronicle/config/medals'
 import type {
   ChronicleClaimTicket,
+  ChronicleClaimOrigin,
   ChronicleMedalState,
   ChronicleMetrics,
 } from '~~/chronicle/types'
@@ -25,12 +26,13 @@ const buildStandardMedal = (
   definition: MedalDefinition,
   current: number,
   target: number,
-  claimed: boolean,
+  claimOrigin: ChronicleClaimOrigin,
   proof: string | null,
   progressLabel: string,
   templateObjectId: string | null,
   claimTicket: ChronicleClaimTicket | null
 ): ChronicleMedalState => {
+  const claimed = claimOrigin != null
   const unlocked = current >= target
 
   return {
@@ -51,11 +53,12 @@ const buildStandardMedal = (
     proof,
     templateObjectId,
     claimTicket,
+    claimOrigin,
   }
 }
 
 const buildVoidPioneerMedal = (
-  claimed: boolean,
+  claimOrigin: ChronicleClaimOrigin,
   networkNodeAnchors: number,
   storageUnitAnchors: number,
   templateObjectId: string | null,
@@ -69,6 +72,7 @@ const buildVoidPioneerMedal = (
   }
 
   const unlocked = networkNodeAnchors >= 1 || storageUnitAnchors >= 3
+  const claimed = claimOrigin != null
   const progressCurrent = unlocked
     ? networkNodeAnchors >= 1
       ? 1
@@ -106,12 +110,13 @@ const buildVoidPioneerMedal = (
     proof,
     templateObjectId,
     claimTicket,
+    claimOrigin,
   }
 }
 
 export const buildMedalStates = (
   counts: ChronicleMetrics,
-  claimedSlugs: Set<string>,
+  claimedMedalOrigins: Map<string, Exclude<ChronicleClaimOrigin, null>>,
   claimTicketsByKind: Partial<Record<number, ChronicleClaimTicket>>,
   activeTemplatesByKind: Map<number, ActiveMedalTemplate> = new Map(),
   locale?: string
@@ -141,7 +146,7 @@ export const buildMedalStates = (
       bloodlust,
       counts.killmailAttacks,
       5,
-      claimedSlugs.has(bloodlust.slug),
+      claimedMedalOrigins.get(bloodlust.slug) ?? null,
       counts.killmailAttacks >= 5
         ? buildStandardProof({
             slug: bloodlust.slug,
@@ -159,7 +164,7 @@ export const buildMedalStates = (
       claimTicketsByKind[bloodlust.kind] || null
     ),
     buildVoidPioneerMedal(
-      claimedSlugs.has('void-pioneer'),
+      claimedMedalOrigins.get('void-pioneer') ?? null,
       counts.networkNodeAnchors,
       counts.storageUnitAnchors,
       activeTemplatesByKind.get(2)?.objectId ?? null,
@@ -170,7 +175,7 @@ export const buildMedalStates = (
       courier,
       counts.gateJumps,
       10,
-      claimedSlugs.has(courier.slug),
+      claimedMedalOrigins.get(courier.slug) ?? null,
       counts.gateJumps >= 10
         ? buildStandardProof({
             slug: courier.slug,
@@ -191,7 +196,7 @@ export const buildMedalStates = (
       turretSentry,
       counts.turretOps,
       3,
-      claimedSlugs.has(turretSentry.slug),
+      claimedMedalOrigins.get(turretSentry.slug) ?? null,
       counts.turretOps >= 3
         ? buildStandardProof({
             slug: turretSentry.slug,
@@ -212,7 +217,7 @@ export const buildMedalStates = (
       assemblyPioneer,
       counts.assemblyOps,
       3,
-      claimedSlugs.has(assemblyPioneer.slug),
+      claimedMedalOrigins.get(assemblyPioneer.slug) ?? null,
       counts.assemblyOps >= 3
         ? buildStandardProof({
             slug: assemblyPioneer.slug,
@@ -233,7 +238,7 @@ export const buildMedalStates = (
       turretAnchor,
       counts.turretAnchors,
       3,
-      claimedSlugs.has(turretAnchor.slug),
+      claimedMedalOrigins.get(turretAnchor.slug) ?? null,
       counts.turretAnchors >= 3
         ? buildStandardProof({
             slug: turretAnchor.slug,
@@ -254,7 +259,7 @@ export const buildMedalStates = (
       ssuTrader,
       counts.ssuTradeOps,
       5,
-      claimedSlugs.has(ssuTrader.slug),
+      claimedMedalOrigins.get(ssuTrader.slug) ?? null,
       counts.ssuTradeOps >= 5
         ? buildStandardProof({
             slug: ssuTrader.slug,
@@ -275,7 +280,7 @@ export const buildMedalStates = (
       fuelFeeder,
       counts.networkNodeFuels,
       5,
-      claimedSlugs.has(fuelFeeder.slug),
+      claimedMedalOrigins.get(fuelFeeder.slug) ?? null,
       counts.networkNodeFuels >= 5
         ? buildStandardProof({
             slug: fuelFeeder.slug,

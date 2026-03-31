@@ -59,7 +59,7 @@ const buildRuntimeWarnings = (runtime: {
 const getBloodlustState = (claimTicketEnabled: boolean) =>
   buildMedalStates(
     baseCounts,
-    new Set(),
+    new Map(),
     claimTicketEnabled ? { 1: sampleClaimTicket } : {},
     activeTemplates,
     'en'

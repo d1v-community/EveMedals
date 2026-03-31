@@ -89,6 +89,7 @@ const buildDemoMedal = ({
     proof,
     templateObjectId: null,
     claimTicket: null,
+    claimOrigin: claimed ? 'claim' : null,
   }
 }
 
@@ -151,6 +152,7 @@ export function generateDemoSnapshot(
     metrics: DEMO_METRICS,
     medals,
     warnings: [getDemoModeWarning(locale)],
+    demoMint: null,
     warriorScore: computeWarriorScore(medals),
   }
 }

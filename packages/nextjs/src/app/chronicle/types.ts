@@ -45,6 +45,7 @@ export interface ChronicleMedalState {
   proof: string | null
   templateObjectId: string | null
   claimTicket: ChronicleClaimTicket | null
+  claimOrigin: ChronicleClaimOrigin
 }
 
 export interface ChronicleClaimTicket {
@@ -59,11 +60,34 @@ export interface ChronicleClaimTicket {
   signatureBase64: string
 }
 
+export type ChronicleClaimOrigin = 'claim' | 'demo-mint' | null
+
+export interface ChronicleDemoMintCandidate {
+  kind: MedalKind
+  slug: MedalSlug
+  title: string
+  subtitle: string
+  rarity: string
+  requirement: string
+  teaser: string
+  progressCurrent: number
+  progressTarget: number
+  progressPercent: number
+  progressLabel: string
+  proof: string | null
+  templateObjectId: string
+}
+
+export interface ChronicleDemoMintState {
+  candidates: ChronicleDemoMintCandidate[]
+}
+
 export interface ChronicleSnapshot {
   profile: ChronicleProfile
   metrics: ChronicleMetrics
   medals: ChronicleMedalState[]
   warnings: string[]
+  demoMint: ChronicleDemoMintState | null
   warriorScore: WarriorScore
 }
 
