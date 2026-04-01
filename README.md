@@ -65,6 +65,7 @@ Create `packages/nextjs/.env.local` as needed:
 DATABASE_URL=postgres://...
 EVE_EYES_API_KEY=...
 CHRONICLE_CLAIM_SIGNER_PRIVATE_KEY=suiprivkey...
+CHRONICLE_DEMO_MINTER_PRIVATE_KEY=suiprivkey...
 CHRONICLE_CLAIM_TICKET_TTL_MS=600000
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 NEXT_PUBLIC_TESTNET_CONTRACT_PACKAGE_ID=0x...
@@ -116,6 +117,7 @@ Local Explorer is available on [http://localhost:9001](http://localhost:9001).
 | `DATABASE_URL` | Enables server-side DB access and wallet sync | App still loads, but `/api/users` returns `databaseEnabled: false` and wallet sync is skipped |
 | `EVE_EYES_API_KEY` | Enables deeper Eve Eyes history scanning | Chronicle falls back to preview mode and only sees the public page window |
 | `CHRONICLE_CLAIM_SIGNER_PRIVATE_KEY` | Signs claim tickets for medal minting | Medals can still be scanned and verified, but claim tickets are not issued |
+| `CHRONICLE_DEMO_MINTER_PRIVATE_KEY` | Enables the testnet-only hackathon demo mint fallback for wallets with no claimable medals | Normal Chronicle scanning/claim still works, but the demo fallback button never appears |
 | `CHRONICLE_CLAIM_TICKET_TTL_MS` | Claim ticket TTL in milliseconds | Defaults to `600000` |
 | `NEXT_PUBLIC_*_CONTRACT_PACKAGE_ID` | Network-specific contract package IDs | Scan can still run, but claim/on-chain interactions are disabled for that network |
 | `NEXT_PUBLIC_SITE_URL` | Public site base URL used in evidence/share links | Falls back to `http://localhost:3000` |
@@ -181,12 +183,15 @@ To keep Chronicle medal minting live on both local Next.js and a future Vercel d
   - `NEXT_PUBLIC_TESTNET_CONTRACT_PACKAGE_ID=0x4de6789f05183cdfbc7756ee7d30e34996ad7ff506142c86146012aaa371fc60`
   - `NEXT_PUBLIC_SITE_URL=http://localhost:3000`
   - `CHRONICLE_CLAIM_SIGNER_PRIVATE_KEY=<server-side signer secret>`
+  - `CHRONICLE_DEMO_MINTER_PRIVATE_KEY=<testnet admin-cap owner secret>`
 - Vercel must mirror the same signer and package settings:
   - `NEXT_PUBLIC_TESTNET_CONTRACT_PACKAGE_ID`
   - `NEXT_PUBLIC_SITE_URL=https://<your-vercel-domain>`
   - `CHRONICLE_CLAIM_SIGNER_PRIVATE_KEY`
+  - `CHRONICLE_DEMO_MINTER_PRIVATE_KEY`
   - optional: `CHRONICLE_CLAIM_TICKET_TTL_MS`
 - the frontend can only mint when that server-side signer public key is already registered on-chain for the same package and registry; setting env vars without `pnpm testnet:register-signer` will still leave claim disabled
+- the hackathon demo-mint fallback only appears when `CHRONICLE_DEMO_MINTER_PRIVATE_KEY` resolves to the address that owns the live testnet `AdminCap`
 - if you rotate `CHRONICLE_CLAIM_SIGNER_PRIVATE_KEY`, register the new public key before deploying the new server env to Vercel, or claim tickets will stop minting
 
 ## Testing
@@ -213,7 +218,9 @@ pnpm lint
 
 - [Hackathon one-pager](./docs/eve-medals-hackathon-one-pager.md)
 - [Judge guide](./docs/eve-medals-judge-guide.md)
+- [4-minute demo script](./docs/eve-medals-demo-4min-script.md)
 - [Chronicle product architecture](./docs/chronicle-product-architecture.md)
+- [Chronicle claim success flow](./docs/chronicle-claim-success-flow.md)
 - [1-minute defense](./docs/eve-medals-1min-defense.md)
 - [5-minute demo script](./docs/eve-medals-demo-5min-script.md)
 
